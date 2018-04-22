@@ -1,0 +1,649 @@
+
+#Remove scientific notation and set decimal places to 3
+options(scipen=100, digits=3)
+
+#MICROSOFT R OPEN (MRO) ONLY
+###########################
+#MKL libraries are installed alongside the MRO instalation
+#Check the number of CPU cores being used
+getMKLthreads()
+
+#Set the # of CPU cores to use
+cpucores <- 4
+setMKLthreads(cpucores)
+###########################
+
+#Install the parallel processing packges required for certain functions not covered by MRO's parallel processing capabilites
+#NB - this masks 'cluster', 'matrix', 'nlme', and 'survival'
+#biocLite("parallel")
+library(parallel)
+
+#Set number of CPU cores 
+options("mc.cores"=cpucores)
+
+#biocLite("doParallel")
+library(doParallel)
+cores <- makeCluster(detectCores(), type='PSOCK')
+registerDoParallel(cores)
+
+
+#Convert FCS to CSV
+fcs2csv(sample1.fcs, sample1.csv)
+fcs2csv(sample2.fcs, sample2.csv)
+fcs2csv(sample3.fcs, sample3.csv)
+
+load("/Kev/CollegeWork/14Harvard2016-17/Proggetti/clusGapNet/SampleData/QMUL/R4RA-CyTOF.rdata")
+
+#sample1 <- read.csv("sample1.csv")
+#sample2 <- read.csv("sample2.csv")
+#sample3 <- read.csv("sample3.csv")
+sample1 <- rbind(rtx017_V1_NS, rtx019_V1_NS)
+sample2 <- rbind(rtx017_V3_NS, rtx019_V3_NS)
+sample3 <- rbind(rtx017_Ve_NS, rtx019_Ve_NS)
+
+rm(rtx008_V1_NS)
+rm(rtx008_V1_S)
+rm(rtx008_V3_S)
+rm(rtx008_V3_NS)
+rm(rtx008_Ve_NS)
+rm(rtx008_Ve_S)
+rm(rtx011_Ve_S)
+rm(rtx011_Ve_NS)
+rm(rtx011_V3_NS)
+rm(rtx011_V3_S)
+rm(rtx011_V1_S)
+rm(rtx011_V1_NS)
+rm(rtx012_V1_NS)
+rm(rtx012_V1_S)
+rm(rtx012_V3_S)
+rm(rtx012_V3_NS)
+rm(rtx012_Ve_NS)
+rm(rtx012_Ve_S)
+rm(rtx014_Ve_S)
+rm(rtx014_Ve_NS)
+rm(rtx014_V3_NS)
+rm(rtx014_V3_S)
+rm(rtx014_V1_S)
+rm(rtx014_V1_NS)
+rm(rtx017_V1_NS)
+rm(rtx017_V1_S)
+rm(rtx017_V3_S)
+rm(rtx017_V3_NS)
+rm(rtx017_Ve_NS)
+rm(rtx017_Ve_S)
+rm(rtx019_Ve_S)
+rm(rtx019_Ve_NS)
+rm(rtx019_V3_NS)
+rm(rtx019_V3_S)
+rm(rtx019_V1_S)
+rm(rtx019_V1_NS)
+rm(rtx022_V1_NS)
+rm(rtx022_V1_S)
+rm(rtx022_V3_S)
+rm(rtx022_V3_NS)
+rm(rtx022_Ve_NS)
+rm(rtx022_Ve_S)
+rm(rtx023_Ve_S)
+rm(rtx023_Ve_NS)
+rm(rtx023_V3_NS)
+rm(rtx023_V3_S)
+rm(rtx023_V1_S)
+rm(rtx023_V1_NS)
+
+#Create a vector of all variable names for the samples (used later for 'for' loops)
+AllSamples <- c("sample1","sample2","sample3")
+
+save.image("/home/kblighe/Escritorio/testing.rdata")
+
+q()
+
+load("/home/kblighe/Escritorio/testing.rdata")
+setwd("/home/kblighe/Escritorio/")
+
+#Set global variables
+#Set background noise threshold
+#Values below this are set to 0
+#Nikolay Samusik (X-shift/Vortex):
+#	"Noise threshold is a way to remove low-level noise out of clustering variables.  All values (raw, before numerical transformation) that are below the threshold will be set to zero. This improves the separation of clusters in multidimensional datasets, because it increases the sparseness of expression vectors and thus alleviates the so-called 'curse of dimensionality'"
+BackgroundNoiseThreshold <- 1
+
+#Set hyperbolic arc-sine factor
+#NB - asinh(x/5) is recommended for CyTOF and FACS data
+asinhFactor <- 5
+
+#Euclidean norm threshold
+#This is the square root of the sum of all the squares
+EuclideanNormThreshold <- 1
+
+#Choose a transformation function (any mathematical function)
+transFun <- function (x) asinh(x)
+
+
+
+#Histograms to check distribution of data
+par(mfrow=c(1,3))
+checkdistribution(as.matrix(get(AllSamples[1])), 1.0, main="Hyperbolic arc-sine\nsample 1", breaks=30)
+checkdistribution(as.matrix(get(AllSamples[2])), 1.0, main="Hyperbolic arc-sine\nsample 2", breaks=30)
+checkdistribution(as.matrix(get(AllSamples[3])), 1.0, main="Hyperbolic arc-sine\nsample 3", breaks=30)
+
+#Hexagonal binning to capture and summarise the 3-dimensional nature of CyTOF data
+require(RColorBrewer)
+rf <- colorRampPalette(rev(brewer.pal(9,"BuPu")))
+#HexBin ignores NAs and doesn't count them whilst binning
+facsplot("CD8", "HLA.DR", get(AllSamples[1]), bins=400, main="FACS plot", xlim=c(-10,10), ylim=c(-10,10), x1=0, x2=5, y1=0, y2=5, cex=1.0, colramp=rf)
+
+
+
+#Method:	Remove cells based on variance, identify cell populations with Gap Statistic, then identify main expressed/non-expressed markers in each population
+#Redefine the clusGap function to incorporate parallel processing
+x <- as.matrix(get(AllSamples[1]))
+x <- x[,-which(colnames(x) %in% c("DNA.1", "DeadLive"))]
+#Define a custom function for PAM (activate 'cluster.only')
+CustomPAM <- function(x,k) list(cluster=pam(x, k, diss=FALSE, metric="manhattan", medoids=NULL, stand=FALSE, cluster.only=TRUE, do.swap=FALSE, keep.diss=FALSE, keep.data=FALSE, pamonce=TRUE, trace.lev=1))
+gap <- findk(x=x, varianceFactor=20, FUNcluster=CustomPAM, K.max=50, B=250)
+
+First SE max=10
+Tibshirani et al. (2001)=7
+Dudoit & Fridlyand (2002)=50
+First max=10
+Global max=50
+
+gap$Tab
+
+      logW E.logW   gap  SE.sim
+ [1,] 9.02   9.86 0.839 0.00101
+ [2,] 8.80   9.85 1.046 0.00269
+ [3,] 8.75   9.84 1.093 0.00325
+ [4,] 8.73   9.83 1.100 0.00269
+ [5,] 8.69   9.82 1.138 0.00163
+ [6,] 8.66   9.82 1.163 0.00203
+ [7,] 8.64   9.81 1.174 0.00280
+ [8,] 8.63   9.81 1.175 0.00253
+ [9,] 8.62   9.80 1.183 0.00386
+[10,] 8.61   9.80 1.191 0.00315
+[11,] 8.61   9.80 1.188 0.00237
+[12,] 8.60   9.79 1.197 0.00277
+[13,] 8.59   9.79 1.205 0.00187
+[14,] 8.58   9.79 1.213 0.00154
+[15,] 8.57   9.79 1.213 0.00166
+[16,] 8.57   9.78 1.216 0.00216
+[17,] 8.57   9.78 1.215 0.00173
+[18,] 8.56   9.78 1.215 0.00159
+[19,] 8.56   9.78 1.218 0.00242
+[20,] 8.55   9.77 1.223 0.00216
+[21,] 8.55   9.77 1.228 0.00201
+[22,] 8.54   9.77 1.226 0.00234
+[23,] 8.54   9.77 1.226 0.00215
+[24,] 8.54   9.77 1.231 0.00171
+[25,] 8.53   9.77 1.232 0.00165
+[26,] 8.53   9.76 1.232 0.00168
+[27,] 8.53   9.76 1.236 0.00174
+[28,] 8.53   9.76 1.236 0.00186
+[29,] 8.52   9.76 1.240 0.00193
+[30,] 8.52   9.76 1.243 0.00183
+[31,] 8.51   9.76 1.245 0.00173
+[32,] 8.51   9.76 1.245 0.00202
+[33,] 8.51   9.75 1.245 0.00200
+[34,] 8.51   9.75 1.245 0.00186
+[35,] 8.51   9.75 1.245 0.00173
+[36,] 8.50   9.75 1.246 0.00211
+[37,] 8.50   9.75 1.249 0.00186
+[38,] 8.50   9.75 1.252 0.00197
+[39,] 8.50   9.75 1.252 0.00193
+[40,] 8.49   9.75 1.252 0.00184
+[41,] 8.49   9.75 1.252 0.00168
+[42,] 8.49   9.74 1.252 0.00166
+[43,] 8.49   9.74 1.252 0.00156
+[44,] 8.49   9.74 1.252 0.00160
+[45,] 8.49   9.74 1.252 0.00187
+[46,] 8.49   9.74 1.252 0.00189
+[47,] 8.49   9.74 1.253 0.00182
+[48,] 8.48   9.74 1.254 0.00195
+[49,] 8.48   9.74 1.254 0.00191
+[50,] 8.48   9.74 1.258 0.00219
+
+par(mar=c(5,5,5,5), cex=1.5)
+plot(gap, main="A", cex.main=3, adj=0.5, pch=16)
+abline(v=7, col="steelblue", lty=2, lwd=2)
+abline(v=10, col="steelblue", lty=2, lwd=2)
+
+#Elbow method (looks at within-cluster sum of squares), i.e., cluster 'withinness')
+#Silhouette coefficient
+require(factoextra)
+require(NbClust)
+x <- as.matrix(get(AllSamples[1]))
+x <- x[,-which(colnames(x) %in% c("DNA.1", "DeadLive"))]
+es <- findElbowSilhouette(x=x, varianceFactor=20, K.max=15, B=1)
+require(cowplot)
+par(mar=c(5,5,5,5), cex=1.5)
+options(scipn=3)
+plot_grid(es[[1]] + geom_vline(xintercept=2, linetype=2, colour="steelblue") + geom_vline(xintercept=5, linetype=2, colour="steelblue"),
+	es[[2]] + geom_vline(xintercept=2, linetype=2, colour="steelblue") + geom_vline(xintercept=5, linetype=2, colour="steelblue"),
+	labels=c("B", "C"), vjust=2.25, label_size=24, ncol=2, nrow=1)
+options(scipen=999)
+
+
+
+#IDEAL CLUSTERS for AllSamples[15] is 10
+k=10
+
+
+#Re-perform clustering with the identified number of clusters, k
+x <- as.matrix(get(AllSamples[1]))
+x <- x[,-which(colnames(x) %in% c("DNA.1", "DeadLive"))]
+#Define a custom function for PAM
+CustomPAM <- function(x,k) list(cluster=pam(x, k, diss=FALSE, metric="manhattan", medoids=NULL, stand=FALSE, cluster.only=FALSE, do.swap=TRUE, keep.diss=TRUE, keep.data=TRUE, pamonce=FALSE, trace.lev=1))
+gap <- clusterWithk(x=x, varianceFactor=20, FUNcluster=CustomPAM, k=k, lowerPercentile=12.5, upperPercentile=12.5, p=0.05)
+
+[1] "1, 4.52994692949204, CD56+, CD16-"
+[1] "2, 6.17892342683851, HLA.DR+CXCR5+, CD8-CD56-GB-"
+[1] "3, 11.2585291887794, CD8+GB+IL.10+, CD56-"
+[1] "4, 14.2721758908264, CD8+CD56+IL6+, HLA.DR-CXCR5-"
+[1] "5, 23.1425322213798, CD56+, HLA.DR-CXCR5-"
+[1] "6, 8.83244882486732, CD8+, CD27-CXCR5-CD16-"
+[1] "7, 4.71948445792267, CD27+, CD56-"
+[1] "8, 8.66186504927976, CD56+, CD45RA-HLA.DR-CXCR5-"
+[1] "9, 14.6133434420015, HLA.DR+CXCR5+, CD8-CD56-"
+[1] "10, 3.79075056861259, CD4+CD27+, CD8-CD56-"
+
+
+
+
+#Plot the signature for each cluster
+require(RColorBrewer)
+pick.col <- brewer.pal(10, "RdBu")
+my_palette <- c(colorRampPalette(rev(pick.col))(200))
+par(mar=c(1,1,1,1))
+plotSignatures(gap, my_palette, cexlab=1.2, cexlegend=1.2)
+
+
+
+
+#################################
+#Complex heatmap
+#################################
+#Set colour
+#biocLite("RColorBrewer")
+library(RColorBrewer)
+#myCol <- colorRampPalette(c("violet", "black", "springgreen"))(100)
+myCol <- colorRampPalette(c("dodgerblue", "black", "yellow"))(100)
+myBreaks <- seq(-3, 3, length.out=100)
+
+#biocLite("ComplexHeatmap")
+library(ComplexHeatmap)
+
+#biocLite("circlize")
+library(circlize)
+#biocLite("cluster")
+library(cluster)
+
+#Create a gradient colour for CD20 and other markers
+#biocLite("RColorBrewer")
+library("RColorBrewer")
+
+#Perform PAM on the genes (rows)
+pamClusters <- gap$clustering
+gap
+
+varianceFactor <- 20
+
+	x <- as.matrix(get(AllSamples[15]))
+	x <- x[,-which(colnames(x) %in% c("DNA.1", "DeadLive"))]
+	
+	x <- x[apply(x, 1, FUN=function(x) sqrt(sum(x^2)))>EuclideanNormThreshold,]
+	NoiseCorrected <- x
+	NoiseCorrected[NoiseCorrected<BackgroundNoiseThreshold] <- 0
+	x <- transFUN(NoiseCorrected/asinhFactor)
+
+	#Select out the top markers based on variance
+	variances <- apply(x, 1, var)
+	x <- x[order(variances, decreasing=TRUE),]
+	x <- x[1:round((nrow(x)/varianceFactor),0),]
+
+	#x <- t(scale(t(x)))
+	x <- scale(x)
+
+	#Create a sample boxplot / violin plot
+	sampleBoxplot <- HeatmapAnnotation(boxplot=anno_boxplot(x, which="column", pch=".", size=unit(1.0, "mm"), border=TRUE, axis=TRUE))
+	#sampleAnno <- HeatmapAnnotation(boxplot=anno_boxplot(x, which="column", pch=".", size=unit(2.0, "mm"), border=TRUE, axis=TRUE), violin=anno_density(x, type="violin", which="column", size=unit(1.0, "mm"), border=FALSE, outline=TRUE, axis=TRUE))
+
+	annCD4 <- gap$clustering
+	annCD4[which(annCD4 %in% (grep("CD4\\+", gap$PositiveMarkers, invert=FALSE)))] <- "Positive"
+	annCD4[which(annCD4 %in% (grep("CD4\\+", gap$PositiveMarkers, invert=TRUE)))] <- "Negative"
+
+	annCD8 <- gap$clustering
+	annCD8[which(annCD8 %in% (grep("CD8\\+", gap$PositiveMarkers, invert=FALSE)))] <- "Positive"
+	annCD8[which(annCD8 %in% (grep("CD8\\+", gap$PositiveMarkers, invert=TRUE)))] <- "Negative"
+
+	annCD56 <- gap$clustering
+	annCD56[which(annCD56 %in% (grep("CD56\\+", gap$PositiveMarkers, invert=FALSE)))] <- "Positive"
+	annCD56[which(annCD56 %in% (grep("CD56\\+", gap$PositiveMarkers, invert=TRUE)))] <- "Negative"
+
+	rowAnn <- rowAnnotation(data.frame(CD4=annCD4, CD8=annCD8, CD56=annCD56), col=list(CD4=c("Positive"="skyblue", "Negative"="white"), CD8=c("Positive"="lawngreen", "Negative"="white"), CD56=c("Positive"="plum", "Negative"="white")), show_legend=TRUE, width=unit(1, "cm"))
+
+	par(mar=c(2,2,2,2), cex=0.8)
+
+	hmap <- Heatmap(x, name="Cell Z-score", col=colorRamp2(myBreaks, myCol),
+
+		#heatmap_legend_param=list(color_bar="continuous", legend_direction="horizontal", labels=c("Low", "Mean", "High"), at=c(-4, 0, 4), title_position="lefttop", legend_width=unit(5,"cm")),
+heatmap_legend_param = list(color_bar = "continuous", legend_direction = "horizontal",
+    legend_width = unit(5, "cm"), title_position = "lefttop"),
+		split=paste0(pamClusters, "\n", round(gap$iPercentage[pamClusters], 2), "%"), gap=unit(1.5, "mm"),
+
+		row_title="Genes", row_title_side="left", row_title_gp=gpar(fontsize=10,  fontface="bold"), show_row_names=FALSE, row_names_gp=gpar(fontsize=6, fontface="bold"), row_names_max_width=unit(2, "cm"),
+
+		column_title="", column_title_side="top", column_title_gp=gpar(fontsize=10, fontface="bold"), column_title_rot=0, show_column_names=TRUE,
+
+		#clustering_distance_columns="euclidean", clustering_method_columns="ward.D2",
+		clustering_distance_columns=function(x) as.dist(1-cor(t(x))), clustering_method_columns="ward.D2",
+
+		#clustering_distance_rows="euclidean", clustering_method_rows="ward.D2",
+		clustering_distance_rows=function(x) as.dist(1-cor(t(x))), clustering_method_rows="ward.D2",
+
+		row_dend_width=unit(20,"mm"), column_dend_height=unit(20,"mm"),
+
+		#top_annotation=colAnn, top_annotation_height=unit(3,"cm"),
+		#top_annotation=sampleViolin, top_annotation_height=unit(3,"cm"),
+
+		top_annotation=sampleBoxplot, top_annotation_height=unit(3, "cm"))
+
+	draw(hmap + rowAnn, heatmap_legend_side="right", annotation_legend_side="right")
+
+
+
+#################################
+#Graph and minimum spanning tree
+#################################
+
+require(igraph) 
+
+g <- graph.adjacency(as.matrix(dist(gap$medoids)), mode="directed", weighted=TRUE, diag=TRUE)
+V(g)$name <- V(g)$name
+V(g)$label <- paste(gap$PositiveMarkers, gap$NegativeMarkers, sep="\n")
+V(g)$color <- "white"
+V(g)$shape <- "sphere"
+V(g)$vertex.frame.color <- "white"
+E(g)$color <- "grey"
+E(g)$arrow.size <- 1.0
+
+mst <- as.undirected(minimum.spanning.tree(g))
+#mst <- as.directed(minimum.spanning.tree(g))
+
+cd4t <- grep("CD4\\+", gap$PositiveMarkers)
+cd8t <- grep("CD8\\+", gap$PositiveMarkers)
+NK <- grep("CD56\\+", gap$PositiveMarkers)
+
+V(g)[cd4t]$color <- "skyblue"
+V(g)[cd8t]$color <- "lawngreen"
+V(g)[NK]$color <- "plum"
+
+V(mst)[cd4t]$color <- "skyblue"
+V(mst)[cd8t]$color <- "lawngreen"
+V(mst)[NK]$color <- "plum"
+
+pdf("MST.pdf", width=15, height=7)
+	par(mar=c(1,1,1,1), cex=1.0, mfrow=c(1,2))
+
+	plot(g, main="Directed graph", layout=layout.graphopt, vertex.size=(gap$iPercentage)*3, vertex.label.dist=0, vertex.label.color="black", asp=FALSE, vertex.label.cex=0.8, edge.arrow.mode=1)
+
+	plot(mst, main="Minimal spanning tree", layout=layout.graphopt, vertex.size=(gap$iPercentage)*3, vertex.label.dist=0, vertex.label.color="black", asp=FALSE, vertex.label.cex=0.5, edge.arrow.mode=0, edge.width=3)
+	legend("topleft", bty="n", cex=0.8, title="Cell-type", c("Natural killer (CD56+)", "T (CD4+)", "T (CD8+)"), fill=c("plum", "skyblue", "lawngreen"), horiz=FALSE)
+
+	###
+
+	require(plotrix)
+	V(g)$label <- V(g)$name
+	mst <- as.undirected(minimum.spanning.tree(g))
+
+	plot.new()
+	table <- data.frame(c(1:k), round(gap$iPercentage, 2), gap$PositiveMarkers, gap$NegativeMarkers)
+	colnames(table) <- c("Cluster #", "% cells", "Pos markers", "Neg markers")
+	addtable2plot(0.05, 0.05, table, cex=0.6, bg="grey", lwd=3, bty="o", display.rownames=FALSE, hlines=TRUE, vlines=TRUE, title="Markers by cluster #")
+
+	plot(mst, main="Minimal spanning tree", layout=layout.graphopt, vertex.size=(gap$iPercentage)*3, vertex.label.dist=0, vertex.label.color="black", asp=FALSE, vertex.label.cex=1.75, edge.arrow.mode=0, edge.width=3)
+	legend("topleft", bty="n", cex=0.8, title="Cell-type", c("Natural killer (CD56+)", "T (CD4+)", "T (CD8+)"), fill=c("plum", "skyblue", "lawngreen"), horiz=FALSE)
+dev.off()
+
+#Look at cluster #2 and 24 individually
+c2 <- x[gap$clustering==2,]
+g2 <- graph.adjacency(as.matrix(dist(t(c2))), mode="directed", weighted=TRUE, diag=TRUE)
+V(g2)$name <- V(g2)$name
+V(g2)$color <- "gold"
+V(g2)$shape <- "sphere"
+V(g2)$vertex.frame.color <- "white"
+E(g2)$color <- "grey"
+E(g2)$arrow.size <- 1.0
+mst2 <- as.directed(minimum.spanning.tree(g2))
+
+c24 <- x[gap$clustering==24,]
+g24 <- graph.adjacency(as.matrix(dist(t(c24))), mode="directed", weighted=TRUE, diag=TRUE)
+V(g24)$name <- V(g24)$name
+V(g24)$color <- "gold"
+V(g24)$shape <- "sphere"
+V(g24)$vertex.frame.color <- "white"
+E(g24)$color <- "grey"
+E(g24)$arrow.size <- 1.0
+mst24 <- as.directed(minimum.spanning.tree(g24))
+
+c17 <- x[gap$clustering==17,]
+g17 <- graph.adjacency(as.matrix(dist(t(c17))), mode="directed", weighted=TRUE, diag=TRUE)
+V(g17)$name <- V(g24)$name
+V(g17)$color <- "gold"
+V(g17)$shape <- "sphere"
+V(g17)$vertex.frame.color <- "white"
+E(g17)$color <- "grey"
+E(g17)$arrow.size <- 1.0
+mst17 <- as.directed(minimum.spanning.tree(g17))
+
+c5 <- x[gap$clustering==5,]
+g5 <- graph.adjacency(as.matrix(dist(t(c5))), mode="directed", weighted=TRUE, diag=TRUE)
+V(g5)$name <- V(g24)$name
+V(g5)$color <- "gold"
+V(g5)$shape <- "sphere"
+V(g5)$vertex.frame.color <- "white"
+E(g5)$color <- "grey"
+E(g5)$arrow.size <- 1.0
+mst5 <- as.directed(minimum.spanning.tree(g5))
+
+pdf("MST.clusters.pdf", width=15, height=7)
+	par(mar=c(1,1,1,1), cex=1.0, mfrow=c(1,2))
+
+	plot(g2, main="Directed graph\nCluster 2", layout=layout.graphopt, vertex.size=apply(c2, 2, mean)*2, vertex.label.dist=0, vertex.label.color="black", asp=FALSE, vertex.label.cex=1.0, edge.arrow.mode=1)
+
+	plot(mst2, main="Minimal spanning tree\nCluster 2", layout=layout_nicely, vertex.size=apply(c2, 2, mean)*2, vertex.label.dist=0, vertex.label.color="black", asp=FALSE, vertex.label.cex=0.6, edge.arrow.mode=1, edge.width=3)
+
+	###
+
+	plot(g24, main="Directed graph\nCluster 24", layout=layout.graphopt, vertex.size=apply(c24, 2, mean)*2, vertex.label.dist=0, vertex.label.color="black", asp=FALSE, vertex.label.cex=1.0, edge.arrow.mode=1)
+
+	plot(mst24, main="Minimal spanning tree\nCluster 24", layout=layout_nicely, vertex.size=apply(c24, 2, mean)*2, vertex.label.dist=0, vertex.label.color="black", asp=FALSE, vertex.label.cex=0.6, edge.arrow.mode=1, edge.width=3)
+
+	###
+
+	plot(g17, main="Directed graph\nCluster 17", layout=layout.graphopt, vertex.size=apply(c17, 2, mean)*2, vertex.label.dist=0, vertex.label.color="black", asp=FALSE, vertex.label.cex=1.0, edge.arrow.mode=1)
+
+	plot(mst17, main="Minimal spanning tree\nCluster 17", layout=layout_nicely, vertex.size=apply(c17, 2, mean)*2, vertex.label.dist=0, vertex.label.color="black", asp=FALSE, vertex.label.cex=0.6, edge.arrow.mode=1, edge.width=3)
+
+	###
+
+	plot(g5, main="Directed graph\nCluster 5", layout=layout.graphopt, vertex.size=apply(c5, 2, mean)*2, vertex.label.dist=0, vertex.label.color="black", asp=FALSE, vertex.label.cex=1.0, edge.arrow.mode=1)
+
+	plot(mst5, main="Minimal spanning tree\nCluster 5", layout=layout_nicely, vertex.size=apply(c5, 2, mean)*2, vertex.label.dist=0, vertex.label.color="black", asp=FALSE, vertex.label.cex=0.6, edge.arrow.mode=1, edge.width=3)
+dev.off()
+
+
+
+
+
+#Traveling Salesman
+require(TSP)
+pdf("TSP.pdf")
+	par(mar=c(1,1,1,1), cex=1.0)
+
+	i <- ETSP(gap$medoids)
+	tour <- solve_TSP(i, method="nn", control="concorde")
+	tour_length(tour)
+
+	plot(i, tour, tour_col="red4")
+dev.off()
+
+
+
+
+
+
+x <- as.matrix(get(AllSamples[15]))
+x <- x[,-which(colnames(x) %in% c("DNA.1", "DeadLive"))]
+	
+x <- x[apply(x, 1, FUN=function(x) sqrt(sum(x^2)))>EuclideanNormThreshold,]
+NoiseCorrected <- x
+NoiseCorrected[NoiseCorrected<BackgroundNoiseThreshold] <- 0
+x <- transformation(NoiseCorrected/asinhFactor)
+
+#Select out the top markers based on variance
+variances <- apply(x, 1, var)
+x <- x[order(variances, decreasing=TRUE),]
+x2 <- x[1:round((nrow(x)/varianceFactor),0),]
+
+#Voronoi diagram
+library(tripack)
+x <- prcomp(x2)$x[,1]
+y <- prcomp(x2)$x[,2]
+plot(voronoi.mosaic(x, y))
+segments(x[i[,1]], y[i[,1]], x[i[,2]], y[i[,2]], lwd=3, col="grey")  
+points(x, y, pch=3, cex=2, lwd=3)
+box()
+
+# Delaunay triangulation
+# See also the "deldir" package
+plot(tri.mesh(x,y))
+plot(voronoi.mosaic(x, y), add=T, col="grey")
+points(x, y, pch=3, cex=2, lwd=3)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+###
+
+
+par(mar=c(5,5,5,5), cex=0.8)
+
+		###
+
+		#k-means dimensions plot
+
+		clusplot(x, gap$clustering, main="kmeans clustering", color=TRUE, shade=TRUE, labels=1, lines=0)
+		plotcluster(x, method="dc", gap$clustering, pch=19, xlab="Dimension 1", ylab="Dimension 2")
+		plotcluster(x, method="wnc", gap$clustering, pch=19, xlab="Dimension 1", ylab="Dimension 2")
+
+		###
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+###
+
+#Display the data as a pie chart
+################################
+
+StimulatedSamples <- AllSamples[grep("*_S_*", AllSamples)]
+NonStimulatedSamples <- AllSamples[grep("*_NS_*", AllSamples)]
+
+NewAllSamples <- c(NonStimulatedSamples, StimulatedSamples)
+
+clusterinfo <- read.table("Variance/CountInformation.tsv", header=TRUE, sep="\t")
+
+i <- 1
+
+while (i < length(NewAllSamples))
+{
+	PieInfoSam1 <- clusterinfo[which(clusterinfo[,1] %in% NewAllSamples[i]),]
+	Sam1Percentages <- PieInfoSam1[,3]
+	Sam1Markers <- c()
+	for (j in 1:nrow(PieInfoSam1))
+	{
+		Sam1Markers <- c(Sam1Markers, paste(paste(PieInfoSam1[j,4], sep="", collapse=""), paste(PieInfoSam1[j,5], sep="", collapse=""), sep="\n"))
+	}
+
+	PieInfoSam2 <- clusterinfo[which(clusterinfo[,1] %in% NewAllSamples[i+1]),]
+	Sam2Percentages <- PieInfoSam2[,3]
+	Sam2Markers <- c()
+	for (j in 1:nrow(PieInfoSam2))
+	{
+		Sam2Markers <- c(Sam2Markers, paste(paste(PieInfoSam2[j,4], sep="", collapse=""), paste(PieInfoSam2[j,5], sep="", collapse=""), sep="\n"))
+	}
+
+	PieInfoSam3 <- clusterinfo[which(clusterinfo[,1] %in% NewAllSamples[i+2]),]
+	Sam3Percentages <- PieInfoSam3[,3]
+	Sam3Markers <- c()
+	for (j in 1:nrow(PieInfoSam3))
+	{
+		Sam3Markers <- c(Sam3Markers, paste(paste(PieInfoSam3[j,4], sep="", collapse=""), paste(PieInfoSam3[j,5], sep="", collapse=""), sep="\n"))
+	}
+
+	pdf(paste("Variance/PieChart", gsub("_[A-Za-z0-9]*_", "_", NewAllSamples[i]), ".pdf", sep=""))
+	{
+		par(mar=c(5.5,5.5,5.5,5.5), cex=0.8, mfrow=c(2,2))
+
+		pie(Sam1Percentages, labels=paste(Sam1Markers, paste(round(Sam1Percentages, 2), "%"), sep=", "), cex=0.3, cex.main=0.8, col=rainbow(length(Sam1Markers)), main=NewAllSamples[i])
+		pie(Sam2Percentages, labels=paste(Sam2Markers, paste(round(Sam2Percentages, 2), "%"), sep=", "), cex=0.3, cex.main=0.8, col=rainbow(length(Sam2Markers)), main=NewAllSamples[i+1])
+		pie(Sam3Percentages, labels=paste(Sam3Markers, paste(round(Sam3Percentages, 2), "%"), sep=", "), cex=0.3, cex.main=0.8, col=rainbow(length(Sam3Markers)), main=NewAllSamples[i+2])
+
+		#biocLite("plotrix")
+		library(plotrix)
+
+		#pie3D(iClusterPercentages, labels=paste(Sam1Markers, paste(round(Sam1Percentages, 2), "%"), sep=", "), cex=0.3, cex.main=0.8, col=rainbow(length(Sam1Markers)), main=NewAllSamples[i], explode=0.1)
+		#pie3D(iClusterPercentages, labels=paste(Sam2Markers, paste(round(Sam2Percentages, 2), "%"), sep=", "), cex=0.3, cex.main=0.8, col=rainbow(length(Sam2Markers)), main=NewAllSamples[i+1], explode=0.1)
+		#pie3D(iClusterPercentages, labels=paste(Sam3Markers, paste(round(Sam3Percentages, 2), "%"), sep=", "), cex=0.3, cex.main=0.8, col=rainbow(length(Sam3Markers)), main=NewAllSamples[i+2], explode=0.1)
+	}
+	dev.off()
+
+	i <- i + 3
+	print(i)
+}
+
+
+
+#####
+#END#
+#####
