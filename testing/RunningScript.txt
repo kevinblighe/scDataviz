@@ -24,6 +24,7 @@ load("testing/testing2.rdata")
 
 #sample1 <- read.csv("sample1.csv")
 
+
 #Create a vector of all variable names for the samples (used later for 'for' loops)
 AllSamples <- c("sample1")
 
@@ -46,7 +47,9 @@ asinhFactor <- 5
 #Histograms to check distribution of data
 par(mfrow=c(1,3), cex=1.2)
 source("testing/transform.R")
-x <- transform(get(AllSamples[1]), BackgroundNoiseThreshold, EuclideanNormThreshold, transFun, asinhFactor)
+x <- as.matrix(get(AllSamples[1]))
+x <- x[,-which(colnames(x) %in% c("DNA.1", "DeadLive"))]
+x <- transform(x, BackgroundNoiseThreshold, EuclideanNormThreshold, transFun, asinhFactor)
 hist(data.matrix(x), main="Hyperbolic arc-sine\nsample 1", breaks=30, col="red")
 hist(data.matrix(x), main="Hyperbolic arc-sine\nsample 2", breaks=30, col="gold")
 hist(data.matrix(x), main="Hyperbolic arc-sine\nsample 3", breaks=30, col="skyblue")
@@ -54,18 +57,19 @@ hist(data.matrix(x), main="Hyperbolic arc-sine\nsample 3", breaks=30, col="skybl
 #Hexagonal binning to capture and summarise the 3-dimensional nature of CyTOF data
 require(RColorBrewer)
 rf <- colorRampPalette(rev(brewer.pal(9,"BuPu")))
-#HexBin ignores NAs and doesn't count them whilst binning
-facsplot("CD8", "HLA.DR", get(AllSamples[1]), bins=400, main="FACS plot", xlim=c(-10,10), ylim=c(-10,10), x1=0, x2=5, y1=0, y2=5, cex=1.0, colramp=rf)
-
-
+source("testing/facsplot.R")
+facsplot("CD8", "HLA.DR", get(AllSamples[1]), bins=400, main="FACS plot", xlim=c(-10,10), ylim=c(-10,10), x1=0, x2=5, y1=0, y2=5, cex=1.0, colramp=rf) # HexBin ignores NAs and doesn't count them whilst binning
 
 #Method:	Remove cells based on variance, identify cell populations with Gap Statistic, then identify main expressed/non-expressed markers in each population
 #Redefine the clusGap function to incorporate parallel processing
 x <- as.matrix(get(AllSamples[1]))
 x <- x[,-which(colnames(x) %in% c("DNA.1", "DeadLive"))]
+x <- transform(x, BackgroundNoiseThreshold, EuclideanNormThreshold, transFun, asinhFactor)
 #Define a custom function for PAM (activate 'cluster.only')
 CustomPAM <- function(x,k) list(cluster=pam(x, k, diss=FALSE, metric="manhattan", medoids=NULL, stand=FALSE, cluster.only=TRUE, do.swap=FALSE, keep.diss=FALSE, keep.data=FALSE, pamonce=TRUE, trace.lev=1))
-gap <- findk(x=x, varianceFactor=20, FUNcluster=CustomPAM, K.max=50, B=250)
+source("testing/findk.R")
+source("testing/clusGapKB.R")
+gap <- findk(x=x, varianceFactor=25, FUNcluster=CustomPAM, K.max=40, B=50)
 
 First SE max=10
 Tibshirani et al. (2001)=7

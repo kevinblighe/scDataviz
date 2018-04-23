@@ -12,11 +12,6 @@ findk <- function(x, varianceFactor=5, FUNcluster, K.max=100, B=5)
 		stop( "Please install fpc first.", call.=FALSE)
 	}
 
-	x <- x[apply(x, 1, FUN=function(x) sqrt(sum(x^2)))>EuclideanNormThreshold,]
-	NoiseCorrected <- x
-	NoiseCorrected[NoiseCorrected<BackgroundNoiseThreshold] <- 0
-	x <- transFun(NoiseCorrected/asinhFactor)
-
 	#Select out the top markers based on variance
 	variances <- apply(x, 1, var)
 	x <- x[order(variances, decreasing=TRUE),]
