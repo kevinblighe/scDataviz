@@ -7,5 +7,5 @@ fcs2csv <- function(in.file, out.file)
 	}
 
 	FCS <- read.FCS(in.file, transformation=FALSE)
-	write.csv(FCS at exprs, file=out.file, row.names=FALSE)
+	write.csv(exprs(FCS), file=out.file, row.names=FALSE)
 }
