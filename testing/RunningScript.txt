@@ -69,72 +69,61 @@ x <- transform(x, BackgroundNoiseThreshold, EuclideanNormThreshold, transFun, as
 CustomPAM <- function(x,k) list(cluster=pam(x, k, diss=FALSE, metric="manhattan", medoids=NULL, stand=FALSE, cluster.only=TRUE, do.swap=FALSE, keep.diss=FALSE, keep.data=FALSE, pamonce=TRUE, trace.lev=1))
 source("testing/findk.R")
 source("testing/clusGapKB.R")
-gap <- findk(x=x, varianceFactor=25, FUNcluster=CustomPAM, K.max=40, B=50)
+gap <- findk(x=x, varianceFactor=10, FUNcluster=CustomPAM, K.max=40, B=50)
 
-First SE max=10
-Tibshirani et al. (2001)=7
-Dudoit & Fridlyand (2002)=50
-First max=10
-Global max=50
+#First SE max=11
+#Tibshirani et al. (2001)=6
+#Dudoit & Fridlyand (2002)=39
+#First max=11
+#Global max=39
 
 gap$Tab
+      logW E.logW   gap   SE.sim
+ [1,] 9.74   10.6 0.863 0.000852
+ [2,] 9.53   10.6 1.062 0.002341
+ [3,] 9.49   10.6 1.093 0.002588
+ [4,] 9.41   10.6 1.160 0.002820
+ [5,] 9.39   10.6 1.180 0.003057
+ [6,] 9.36   10.6 1.199 0.003161
+ [7,] 9.36   10.6 1.202 0.003125
+ [8,] 9.33   10.6 1.222 0.003133
+ [9,] 9.32   10.6 1.226 0.003054
+[10,] 9.31   10.5 1.240 0.002815
+[11,] 9.30   10.5 1.243 0.002590
+[12,] 9.30   10.5 1.243 0.002652
+[13,] 9.29   10.5 1.245 0.002731
+[14,] 9.28   10.5 1.255 0.002558
+[15,] 9.28   10.5 1.256 0.002417
+[16,] 9.27   10.5 1.264 0.002301
+[17,] 9.26   10.5 1.269 0.002277
+[18,] 9.26   10.5 1.270 0.002199
+[19,] 9.25   10.5 1.273 0.002214
+[20,] 9.25   10.5 1.272 0.002106
+[21,] 9.25   10.5 1.272 0.002050
+[22,] 9.25   10.5 1.274 0.001980
+[23,] 9.24   10.5 1.276 0.001935
+[24,] 9.24   10.5 1.276 0.001895
+[25,] 9.24   10.5 1.280 0.001806
+[26,] 9.23   10.5 1.284 0.001764
+[27,] 9.23   10.5 1.284 0.001794
+[28,] 9.23   10.5 1.285 0.001775
+[29,] 9.23   10.5 1.285 0.001780
+[30,] 9.22   10.5 1.285 0.001776
+[31,] 9.22   10.5 1.286 0.001715
+[32,] 9.22   10.5 1.288 0.001779
+[33,] 9.22   10.5 1.288 0.001862
+[34,] 9.21   10.5 1.290 0.001881
+[35,] 9.21   10.5 1.290 0.001875
+[36,] 9.21   10.5 1.291 0.001885
+[37,] 9.21   10.5 1.292 0.001903
+[38,] 9.21   10.5 1.293 0.001902
+[39,] 9.20   10.5 1.296 0.001885
+[40,] 9.20   10.5 1.295 0.001863
 
-      logW E.logW   gap  SE.sim
- [1,] 9.02   9.86 0.839 0.00101
- [2,] 8.80   9.85 1.046 0.00269
- [3,] 8.75   9.84 1.093 0.00325
- [4,] 8.73   9.83 1.100 0.00269
- [5,] 8.69   9.82 1.138 0.00163
- [6,] 8.66   9.82 1.163 0.00203
- [7,] 8.64   9.81 1.174 0.00280
- [8,] 8.63   9.81 1.175 0.00253
- [9,] 8.62   9.80 1.183 0.00386
-[10,] 8.61   9.80 1.191 0.00315
-[11,] 8.61   9.80 1.188 0.00237
-[12,] 8.60   9.79 1.197 0.00277
-[13,] 8.59   9.79 1.205 0.00187
-[14,] 8.58   9.79 1.213 0.00154
-[15,] 8.57   9.79 1.213 0.00166
-[16,] 8.57   9.78 1.216 0.00216
-[17,] 8.57   9.78 1.215 0.00173
-[18,] 8.56   9.78 1.215 0.00159
-[19,] 8.56   9.78 1.218 0.00242
-[20,] 8.55   9.77 1.223 0.00216
-[21,] 8.55   9.77 1.228 0.00201
-[22,] 8.54   9.77 1.226 0.00234
-[23,] 8.54   9.77 1.226 0.00215
-[24,] 8.54   9.77 1.231 0.00171
-[25,] 8.53   9.77 1.232 0.00165
-[26,] 8.53   9.76 1.232 0.00168
-[27,] 8.53   9.76 1.236 0.00174
-[28,] 8.53   9.76 1.236 0.00186
-[29,] 8.52   9.76 1.240 0.00193
-[30,] 8.52   9.76 1.243 0.00183
-[31,] 8.51   9.76 1.245 0.00173
-[32,] 8.51   9.76 1.245 0.00202
-[33,] 8.51   9.75 1.245 0.00200
-[34,] 8.51   9.75 1.245 0.00186
-[35,] 8.51   9.75 1.245 0.00173
-[36,] 8.50   9.75 1.246 0.00211
-[37,] 8.50   9.75 1.249 0.00186
-[38,] 8.50   9.75 1.252 0.00197
-[39,] 8.50   9.75 1.252 0.00193
-[40,] 8.49   9.75 1.252 0.00184
-[41,] 8.49   9.75 1.252 0.00168
-[42,] 8.49   9.74 1.252 0.00166
-[43,] 8.49   9.74 1.252 0.00156
-[44,] 8.49   9.74 1.252 0.00160
-[45,] 8.49   9.74 1.252 0.00187
-[46,] 8.49   9.74 1.252 0.00189
-[47,] 8.49   9.74 1.253 0.00182
-[48,] 8.48   9.74 1.254 0.00195
-[49,] 8.48   9.74 1.254 0.00191
-[50,] 8.48   9.74 1.258 0.00219
-
-par(mar=c(5,5,5,5), cex=1.5)
+par(mar=c(3,3,3,3), cex=1.5)
 plot(gap, main="A", cex.main=3, adj=0.5, pch=16)
-abline(v=7, col="steelblue", lty=2, lwd=2)
-abline(v=10, col="steelblue", lty=2, lwd=2)
+abline(v=6, col="steelblue", lty=2, lwd=2)
+abline(v=11, col="steelblue", lty=2, lwd=2)
 
 #Elbow method (looks at within-cluster sum of squares), i.e., cluster 'withinness')
 #Silhouette coefficient
@@ -142,120 +131,107 @@ require(factoextra)
 require(NbClust)
 x <- as.matrix(get(AllSamples[1]))
 x <- x[,-which(colnames(x) %in% c("DNA.1", "DeadLive"))]
-es <- findElbowSilhouette(x=x, varianceFactor=20, K.max=15, B=1)
+x <- transform(x, BackgroundNoiseThreshold, EuclideanNormThreshold, transFun, asinhFactor)
+source("testing/findElbowSilhouette.R")
+es <- findElbowSilhouette(x=x, varianceFactor=10, K.max=40, B=50)
 require(cowplot)
 par(mar=c(5,5,5,5), cex=1.5)
 options(scipn=3)
-plot_grid(es[[1]] + geom_vline(xintercept=2, linetype=2, colour="steelblue") + geom_vline(xintercept=5, linetype=2, colour="steelblue"),
-	es[[2]] + geom_vline(xintercept=2, linetype=2, colour="steelblue") + geom_vline(xintercept=5, linetype=2, colour="steelblue"),
+plot_grid(es[[1]] + geom_vline(xintercept=2, linetype=2, colour="steelblue") + geom_vline(xintercept=6, linetype=2, colour="steelblue") + geom_vline(xintercept=11, linetype=2, colour="steelblue"),
+	es[[2]] + geom_vline(xintercept=2, linetype=2, colour="steelblue") + geom_vline(xintercept=6, linetype=2, colour="steelblue") + geom_vline(xintercept=11, linetype=2, colour="steelblue"),
 	labels=c("B", "C"), vjust=2.25, label_size=24, ncol=2, nrow=1)
 options(scipen=999)
 
-
-
-#IDEAL CLUSTERS for AllSamples[15] is 10
-k=10
+#IDEAL CLUSTERS
+k=6; k=11
 
 
 #Re-perform clustering with the identified number of clusters, k
 x <- as.matrix(get(AllSamples[1]))
 x <- x[,-which(colnames(x) %in% c("DNA.1", "DeadLive"))]
+x <- transform(x, BackgroundNoiseThreshold, EuclideanNormThreshold, transFun, asinhFactor)
+source("testing/clusterWithk.R")
 #Define a custom function for PAM
 CustomPAM <- function(x,k) list(cluster=pam(x, k, diss=FALSE, metric="manhattan", medoids=NULL, stand=FALSE, cluster.only=FALSE, do.swap=TRUE, keep.diss=TRUE, keep.data=TRUE, pamonce=FALSE, trace.lev=1))
-gap <- clusterWithk(x=x, varianceFactor=20, FUNcluster=CustomPAM, k=k, lowerPercentile=12.5, upperPercentile=12.5, p=0.05)
+gap <- clusterWithk(x=x, varianceFactor=10, FUNcluster=CustomPAM, k=k, lowerPercentile=12.5, upperPercentile=12.5, p=0.05)
 
-[1] "1, 4.52994692949204, CD56+, CD16-"
-[1] "2, 6.17892342683851, HLA.DR+CXCR5+, CD8-CD56-GB-"
-[1] "3, 11.2585291887794, CD8+GB+IL.10+, CD56-"
-[1] "4, 14.2721758908264, CD8+CD56+IL6+, HLA.DR-CXCR5-"
-[1] "5, 23.1425322213798, CD56+, HLA.DR-CXCR5-"
-[1] "6, 8.83244882486732, CD8+, CD27-CXCR5-CD16-"
-[1] "7, 4.71948445792267, CD27+, CD56-"
-[1] "8, 8.66186504927976, CD56+, CD45RA-HLA.DR-CXCR5-"
-[1] "9, 14.6133434420015, HLA.DR+CXCR5+, CD8-CD56-"
-[1] "10, 3.79075056861259, CD4+CD27+, CD8-CD56-"
-
-
-
+[1] "1, 3.93290371493556, CD56+, CD8-CD16-"
+[1] "2, 7.40144048521607, HLA.DR+, CD56-GB-"
+[1] "3, 11.4101592115239, CD8+, CD56-"
+[1] "4, 14.5090978013647, CD56+, HLA.DR-CXCR5-"
+[1] "5, 15.4473085670963, CD56+, CXCR5-"
+[1] "6, 7.12661106899166, CD8+CD56+, HLA.DR-CD4-CD27-LAG3-ICOS-CXCR5-"
+[1] "7, 5.43025018953753, CD27+, CD56-CXCR5-"
+[1] "8, 12.5947687642153, CD8+CD56+, CXCR5-"
+[1] "9, 6.31159969673995, CD4+, CD8-CD56-CXCR5-IL.10-"
+[1] "10, 13.0307050796058, CXCR5+, CD8-CD56-GB-"
+[1] "11, 2.80515542077331, HLA.DR+CXCR5+, CD8-CD56-CD16-"
 
 #Plot the signature for each cluster
 require(RColorBrewer)
 pick.col <- brewer.pal(10, "RdBu")
 my_palette <- c(colorRampPalette(rev(pick.col))(200))
+source("testing/plotSignatures.R")
 par(mar=c(1,1,1,1))
 plotSignatures(gap, my_palette, cexlab=1.2, cexlegend=1.2)
 
-
-
-
-#################################
 #Complex heatmap
-#################################
 #Set colour
-#biocLite("RColorBrewer")
-library(RColorBrewer)
+require(RColorBrewer)
 #myCol <- colorRampPalette(c("violet", "black", "springgreen"))(100)
 myCol <- colorRampPalette(c("dodgerblue", "black", "yellow"))(100)
 myBreaks <- seq(-3, 3, length.out=100)
 
-#biocLite("ComplexHeatmap")
-library(ComplexHeatmap)
+require(ComplexHeatmap)
 
-#biocLite("circlize")
-library(circlize)
-#biocLite("cluster")
-library(cluster)
+require(circlize)
+require(cluster)
 
 #Create a gradient colour for CD20 and other markers
-#biocLite("RColorBrewer")
-library("RColorBrewer")
+require("RColorBrewer")
 
 #Perform PAM on the genes (rows)
 pamClusters <- gap$clustering
 gap
 
-varianceFactor <- 20
+varianceFactor <- 10
 
-	x <- as.matrix(get(AllSamples[15]))
-	x <- x[,-which(colnames(x) %in% c("DNA.1", "DeadLive"))]
-	
-	x <- x[apply(x, 1, FUN=function(x) sqrt(sum(x^2)))>EuclideanNormThreshold,]
-	NoiseCorrected <- x
-	NoiseCorrected[NoiseCorrected<BackgroundNoiseThreshold] <- 0
-	x <- transFUN(NoiseCorrected/asinhFactor)
+x <- as.matrix(get(AllSamples[1]))
+x <- x[,-which(colnames(x) %in% c("DNA.1", "DeadLive"))]
+x <- transform(x, BackgroundNoiseThreshold, EuclideanNormThreshold, transFun, asinhFactor)
 
-	#Select out the top markers based on variance
-	variances <- apply(x, 1, var)
-	x <- x[order(variances, decreasing=TRUE),]
-	x <- x[1:round((nrow(x)/varianceFactor),0),]
+#Select out the top markers based on variance
+variances <- apply(x, 1, var)
+x <- x[order(variances, decreasing=TRUE),]
+x <- x[1:round((nrow(x)/varianceFactor),0),]
 
-	#x <- t(scale(t(x)))
-	x <- scale(x)
+#x <- t(scale(t(x)))
+x <- scale(x)
 
-	#Create a sample boxplot / violin plot
-	sampleBoxplot <- HeatmapAnnotation(boxplot=anno_boxplot(x, which="column", pch=".", size=unit(1.0, "mm"), border=TRUE, axis=TRUE))
-	#sampleAnno <- HeatmapAnnotation(boxplot=anno_boxplot(x, which="column", pch=".", size=unit(2.0, "mm"), border=TRUE, axis=TRUE), violin=anno_density(x, type="violin", which="column", size=unit(1.0, "mm"), border=FALSE, outline=TRUE, axis=TRUE))
+#Create a sample boxplot / violin plot
+sampleBoxplot <- HeatmapAnnotation(boxplot=anno_boxplot(x, which="column", pch=".", size=unit(1.0, "mm"), border=TRUE, axis=TRUE))
+#sampleAnno <- HeatmapAnnotation(boxplot=anno_boxplot(x, which="column", pch=".", size=unit(2.0, "mm"), border=TRUE, axis=TRUE), violin=anno_density(x, type="violin", which="column", size=unit(1.0, "mm"), border=FALSE, outline=TRUE, axis=TRUE))
 
-	annCD4 <- gap$clustering
-	annCD4[which(annCD4 %in% (grep("CD4\\+", gap$PositiveMarkers, invert=FALSE)))] <- "Positive"
-	annCD4[which(annCD4 %in% (grep("CD4\\+", gap$PositiveMarkers, invert=TRUE)))] <- "Negative"
+annCD4 <- gap$clustering
+annCD4[which(annCD4 %in% (grep("CD4\\+", gap$PositiveMarkers, invert=FALSE)))] <- "Positive"
+annCD4[which(annCD4 %in% (grep("CD4\\+", gap$PositiveMarkers, invert=TRUE)))] <- "Negative"
 
-	annCD8 <- gap$clustering
-	annCD8[which(annCD8 %in% (grep("CD8\\+", gap$PositiveMarkers, invert=FALSE)))] <- "Positive"
-	annCD8[which(annCD8 %in% (grep("CD8\\+", gap$PositiveMarkers, invert=TRUE)))] <- "Negative"
+annCD8 <- gap$clustering
+annCD8[which(annCD8 %in% (grep("CD8\\+", gap$PositiveMarkers, invert=FALSE)))] <- "Positive"
+annCD8[which(annCD8 %in% (grep("CD8\\+", gap$PositiveMarkers, invert=TRUE)))] <- "Negative"
 
-	annCD56 <- gap$clustering
-	annCD56[which(annCD56 %in% (grep("CD56\\+", gap$PositiveMarkers, invert=FALSE)))] <- "Positive"
-	annCD56[which(annCD56 %in% (grep("CD56\\+", gap$PositiveMarkers, invert=TRUE)))] <- "Negative"
+annCD56 <- gap$clustering
+annCD56[which(annCD56 %in% (grep("CD56\\+", gap$PositiveMarkers, invert=FALSE)))] <- "Positive"
+annCD56[which(annCD56 %in% (grep("CD56\\+", gap$PositiveMarkers, invert=TRUE)))] <- "Negative"
 
-	rowAnn <- rowAnnotation(data.frame(CD4=annCD4, CD8=annCD8, CD56=annCD56), col=list(CD4=c("Positive"="skyblue", "Negative"="white"), CD8=c("Positive"="lawngreen", "Negative"="white"), CD56=c("Positive"="plum", "Negative"="white")), show_legend=TRUE, width=unit(1, "cm"))
+rowAnn <- rowAnnotation(data.frame(CD4=annCD4, CD8=annCD8, CD56=annCD56), col=list(CD4=c("Positive"="skyblue", "Negative"="white"), CD8=c("Positive"="lawngreen", "Negative"="white"), CD56=c("Positive"="plum", "Negative"="white")), show_legend=TRUE, width=unit(1, "cm"))
 
-	par(mar=c(2,2,2,2), cex=0.8)
+par(mar=c(2,2,2,2), cex=0.8)
 
-	hmap <- Heatmap(x, name="Cell Z-score", col=colorRamp2(myBreaks, myCol),
+hmap <- Heatmap(x, name="Cell Z-score", col=colorRamp2(myBreaks, myCol),
 
-		#heatmap_legend_param=list(color_bar="continuous", legend_direction="horizontal", labels=c("Low", "Mean", "High"), at=c(-4, 0, 4), title_position="lefttop", legend_width=unit(5,"cm")),
-heatmap_legend_param = list(color_bar = "continuous", legend_direction = "horizontal",
+    #heatmap_legend_param=list(color_bar="continuous", legend_direction="horizontal", labels=c("Low", "Mean", "High"), at=c(-4, 0, 4), title_position="lefttop", legend_width=unit(5,"cm")),
+    heatmap_legend_param = list(color_bar = "continuous", legend_direction = "horizontal",
     legend_width = unit(5, "cm"), title_position = "lefttop"),
 		split=paste0(pamClusters, "\n", round(gap$iPercentage[pamClusters], 2), "%"), gap=unit(1.5, "mm"),
 
@@ -276,7 +252,7 @@ heatmap_legend_param = list(color_bar = "continuous", legend_direction = "horizo
 
 		top_annotation=sampleBoxplot, top_annotation_height=unit(3, "cm"))
 
-	draw(hmap + rowAnn, heatmap_legend_side="right", annotation_legend_side="right")
+	draw(hmap + rowAnn, heatmap_legend_side="bottom", annotation_legend_side="top")
 
 
 
@@ -310,13 +286,12 @@ V(mst)[cd4t]$color <- "skyblue"
 V(mst)[cd8t]$color <- "lawngreen"
 V(mst)[NK]$color <- "plum"
 
-pdf("MST.pdf", width=15, height=7)
-	par(mar=c(1,1,1,1), cex=1.0, mfrow=c(1,2))
+par(mar=c(1,1,1,1), cex=1.0, mfrow=c(1,2))
 
-	plot(g, main="Directed graph", layout=layout.graphopt, vertex.size=(gap$iPercentage)*3, vertex.label.dist=0, vertex.label.color="black", asp=FALSE, vertex.label.cex=0.8, edge.arrow.mode=1)
+plot(g, main="Directed graph", layout=layout.graphopt, vertex.size=(gap$iPercentage)*3, vertex.label.dist=0, vertex.label.color="black", asp=FALSE, vertex.label.cex=0.8, edge.arrow.mode=1)
 
-	plot(mst, main="Minimal spanning tree", layout=layout.graphopt, vertex.size=(gap$iPercentage)*3, vertex.label.dist=0, vertex.label.color="black", asp=FALSE, vertex.label.cex=0.5, edge.arrow.mode=0, edge.width=3)
-	legend("topleft", bty="n", cex=0.8, title="Cell-type", c("Natural killer (CD56+)", "T (CD4+)", "T (CD8+)"), fill=c("plum", "skyblue", "lawngreen"), horiz=FALSE)
+plot(mst, main="Minimal spanning tree", layout=layout.graphopt, vertex.size=(gap$iPercentage)*3, vertex.label.dist=0, vertex.label.color="black", asp=FALSE, vertex.label.cex=0.5, edge.arrow.mode=0, edge.width=3)
+legend("topleft", bty="n", cex=0.8, title="Cell-type", c("Natural killer (CD56+)", "T (CD4+)", "T (CD8+)"), fill=c("plum", "skyblue", "lawngreen"), horiz=FALSE)
 
 	###
 
