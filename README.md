@@ -1,4 +1,4 @@
-# cytofNetwork
+# cytofNet
 Unbiased identification of ideal clusters, k, in mass cytometry time-of-flight (CyTOF) data, with interrogation of clusters via network analysis.
 <h1></h1>
 <ul>
