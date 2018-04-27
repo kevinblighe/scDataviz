@@ -6,12 +6,7 @@ Key points:
 
  - data is downsampled based on low variance
 
- - unbiased clustering to identify ideal number of centers, k, is performed via bootstrapped partitioning around medoids (PAM) and 3 metrics:
-<ul>
-  <li>Gap statistic</li>
-  <li>Silhouette coefficient</li>
-  <li>Elbow method</li>
-</ul>
+ - unbiased clustering to identify ideal number of centers, k, is performed via bootstrapped partitioning around medoids (PAM) and 3 metrics: Gap statistic; silhouette coefficient; elbow method
 
  - medoids from PAM are ued to infer low/high marker expression
 
