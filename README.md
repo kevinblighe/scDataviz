@@ -262,7 +262,7 @@ plotSignatures(gap, my_palette, cexlab=1.2, cexlegend=1.2, labDegree=80)
 
 ```
 
-<img src="signature.png"></img>
+<img src="images/signature.png"></img>
 
 <hr>
 
