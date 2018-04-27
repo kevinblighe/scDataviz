@@ -3,7 +3,6 @@ Unbiased identification of ideal clusters, k, in mass cytometry time-of-flight (
 <h1>Tutorial</h1>
 
 <h3>Setup / initialisation</h3>
-
 ```{r}
   #Set CPU cores for parallel-related functions
   cpucores <- 16
@@ -15,6 +14,7 @@ Unbiased identification of ideal clusters, k, in mass cytometry time-of-flight (
   cores <- makeCluster(detectCores(), type='PSOCK')
   registerDoParallel(cores)
 ```
+
 <h3>Set global variables</h3>
 ```{r}
   #Set background noise threshold - values below this are set to 0
@@ -29,11 +29,12 @@ Unbiased identification of ideal clusters, k, in mass cytometry time-of-flight (
   #Set hyperbolic arc-sine factor (NB - asinh(x/5) is recommended for CyTOF and FACS data)
   asinhFactor <- 5
 ```
+
 <h3>Data input and conversion (FCS -> CSV)</h3>
 ```{r}
   #Convert FCS to CSV
   require(flowCore)
-  source("testing/fcs2csv.R")
+  source("R/fcs2csv.R")
   fcs2csv(sample1.fcs, sample1.csv)
   fcs2csv(sample2.fcs, sample2.csv)
   fcs2csv(sample3.fcs, sample3.csv)
@@ -47,17 +48,20 @@ Unbiased identification of ideal clusters, k, in mass cytometry time-of-flight (
 ```
 
 <h3>Histograms to check distribution of data</h3>
-par(mfrow=c(1,3), cex=1.2)
-source("testing/transform.R")
-x <- as.matrix(get(AllSamples[1]))
-x <- x[,-which(colnames(x) %in% c("DNA.1", "DeadLive"))]
-x <- transform(x, BackgroundNoiseThreshold, EuclideanNormThreshold, transFun, asinhFactor)
-hist(data.matrix(x), main="Hyperbolic arc-sine\nsample 1", breaks=30, col="red")
-hist(data.matrix(x), main="Hyperbolic arc-sine\nsample 2", breaks=30, col="gold")
-hist(data.matrix(x), main="Hyperbolic arc-sine\nsample 3", breaks=30, col="skyblue")
-<img src="images/checkDistribution.png"></img>
+```{r}
+  par(mfrow=c(1,3), cex=1.2)
+  source("R/transform.R")
+  x <- as.matrix(get(AllSamples[1]))
+  x <- x[,-which(colnames(x) %in% c("DNA.1", "DeadLive"))]
+  x <- transform(x, BackgroundNoiseThreshold, EuclideanNormThreshold, transFun, asinhFactor)
+  hist(data.matrix(x), main="Hyperbolic arc-sine\nsample 1", breaks=30, col="red")
+  hist(data.matrix(x), main="Hyperbolic arc-sine\nsample 2", breaks=30, col="gold")
+  hist(data.matrix(x), main="Hyperbolic arc-sine\nsample 3", breaks=30, col="skyblue")
+  <img src="images/checkDistribution.png"></img>
 ```
+
 <hr>
+
 <h1>Credits</h1>
 <ul>
   <li>Kevin Blighe (University College London)</li>
