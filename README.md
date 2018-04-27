@@ -193,15 +193,16 @@ Key points:
  
  options(scipen=3)
  
- plot_grid(es[[1]] +
-  geom_vline(xintercept=2, linetype=2, colour="steelblue") +
-  geom_vline(xintercept=6, linetype=2, colour="steelblue") +
-  geom_vline(xintercept=11, linetype=2, colour="steelblue"),
+ plot_grid(
+ 	es[[1]] +
+  		geom_vline(xintercept=2, linetype=2, colour="steelblue") +
+  		geom_vline(xintercept=6, linetype=2, colour="steelblue") +
+  		geom_vline(xintercept=11, linetype=2, colour="steelblue"),
   
 	es[[2]] +
-  geom_vline(xintercept=2, linetype=2, colour="steelblue") +
-  geom_vline(xintercept=6, linetype=2, colour="steelblue") +
-  geom_vline(xintercept=11, linetype=2, colour="steelblue"),
+  		geom_vline(xintercept=2, linetype=2, colour="steelblue") +
+  		geom_vline(xintercept=6, linetype=2, colour="steelblue") +
+  		geom_vline(xintercept=11, linetype=2, colour="steelblue"),
   
 	labels=c("B", "C"), vjust=2.25, label_size=24, ncol=2, nrow=1)
  
