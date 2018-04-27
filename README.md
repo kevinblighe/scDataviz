@@ -174,6 +174,7 @@ Key points:
 <img src="images/clusGapKB.png"></img>
 
 <h3>6b, identify ideal cluster solution via silhouette coefficient and elbow method</h3>
+
 ```{r} 
  x <- as.matrix(get(AllSamples[1]))
  x <- x[,-which(colnames(x) %in% c("DNA.1", "DeadLive"))]
@@ -214,6 +215,7 @@ Key points:
 
 ```{r}
  k=15
+
 ```
 
 <hr>
