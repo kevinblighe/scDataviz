@@ -1,8 +1,9 @@
 # cytofNet
 Unbiased identification of ideal clusters, k, in mass cytometry time-of-flight (CyTOF) data, with interrogation of clusters via network analysis.
-<h1>Tutorial</h1>
+<h2>Tutorial</h2>
 
 <h3>Setup / initialisation</h3>
+
 ```{r}
   #Set CPU cores for parallel-related functions
   cpucores <- 16
@@ -16,6 +17,7 @@ Unbiased identification of ideal clusters, k, in mass cytometry time-of-flight (
 ```
 
 <h3>Set global variables</h3>
+
 ```{r}
   #Set background noise threshold - values below this are set to 0
   BackgroundNoiseThreshold <- 1
@@ -31,6 +33,7 @@ Unbiased identification of ideal clusters, k, in mass cytometry time-of-flight (
 ```
 
 <h3>Data input and conversion (FCS -> CSV)</h3>
+
 ```{r}
   #Convert FCS to CSV
   require(flowCore)
@@ -48,6 +51,7 @@ Unbiased identification of ideal clusters, k, in mass cytometry time-of-flight (
 ```
 
 <h3>Histograms to check distribution of data</h3>
+
 ```{r}
   par(mfrow=c(1,3), cex=1.2)
   source("R/transform.R")
