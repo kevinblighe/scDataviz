@@ -80,7 +80,7 @@ Key points:
     hist(data.matrix(x), main=paste("Hyperbolic arc-sine\nsample",  i), breaks=30, col=colours[i])
   }
 ```
-<img src="images/checkDistribution.png"></img>
+<img src="images/checkdistribution.png"></img>
 
 <h3>5, traditional FACS-like plots for pairwise marker comparison and further gating (if needed)</h3>
 
