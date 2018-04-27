@@ -47,30 +47,43 @@ asinhFactor <- 5
 source("R/downsampleByVar.R")
 
 #Histograms to check distribution of data
+source("R/transform.R")
+  
+colours <- c("red", "gold", "skyblue")
+
 par(mfrow=c(1,3), cex=1.2)
-source("testing/transform.R")
-x <- as.matrix(get(AllSamples[1]))
-x <- x[,-which(colnames(x) %in% c("DNA.1", "DeadLive"))]
-x <- transform(x, BackgroundNoiseThreshold, EuclideanNormThreshold, transFun, asinhFactor)
-hist(data.matrix(x), main="Hyperbolic arc-sine\nsample 1", breaks=30, col="red")
-hist(data.matrix(x), main="Hyperbolic arc-sine\nsample 2", breaks=30, col="gold")
-hist(data.matrix(x), main="Hyperbolic arc-sine\nsample 3", breaks=30, col="skyblue")
+  
+for (i in 1:3)
+{
+  x <- as.matrix(get(AllSamples[1]))
+  x <- x[,-which(colnames(x) %in% c("DNA.1", "DeadLive"))]
+  x <- transform(x, BackgroundNoiseThreshold, EuclideanNormThreshold, transFun, asinhFactor)
+    
+  hist(data.matrix(x), main=paste("Hyperbolic arc-sine\nsample",  i), breaks=30, col=colours[i])
+}
 
 #Hexagonal binning to capture and summarise the 3-dimensional nature of CyTOF data
 require(RColorBrewer)
 rf <- colorRampPalette(rev(brewer.pal(9,"BuPu")))
-source("testing/facsplot.R")
-facsplot("CD8", "HLA.DR", get(AllSamples[1]), bins=400, main="FACS plot", xlim=c(-10,10), ylim=c(-10,10), x1=0, x2=5, y1=0, y2=5, cex=1.0, colramp=rf)
+source("R/facsplot.R")
+x <- get(AllSamples[1])
+facsplot("CD8", "HLA.DR", x, bins=400, main="FACS plot", xlim=c(-10,10), ylim=c(-10,10), x1=0, x2=5, y1=0, y2=5, cex=1.0, colramp=rf)
 
 #All pairwise comparisons
-x <- get(AllSamples[1])
-for (i in 1:ncol(x))
+rf <- colorRampPalette(rev(brewer.pal(9,"YlGn")))
+counter <- 1
+f <- list()
+for (i in 1:3)
 {
-  for (j in 1:ncol(x))
+  for (j in 1:3)
   {
-    facsplot(x[colnames(x)[i]], x[colnames(x)[j]], x, bins=400, main="FACS plot", xlim=c(-10,10), ylim=c(-10,10), x1=0, x2=5, y1=0, y2=5, cex=1.0, colramp=rf)
+    f[[counter]] <- facsplot(colnames(x)[i], colnames(x)[j], x, bins=400, main="FACS plot", xlim=c(-10,10), ylim=c(-10,10), x1=0, x2=0, y1=0, y2=0, cex=1.0, colramp=rf)
+    counter <- counter + 1
   }
 }
+library(gridExtra)
+library(grid)
+grid.arrange(f[[1]], f[[2]], f[[3]], f[[4]], f[[5]], f[[6]], f[[7]], f[[8]], f[[9]], ncol=3)
 
 #Method:	Remove cells based on variance, identify cell populations with Gap Statistic, then identify main expressed/non-expressed markers in each population
 #Redefine the clusGap function to incorporate parallel processing
