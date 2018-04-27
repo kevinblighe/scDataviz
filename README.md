@@ -3,14 +3,18 @@ Unbiased identification of ideal clusters, k, in mass cytometry time-of-flight (
 <h2>Tutorial</h2>
 This tutorial covers just 3 samples (sample1.fcs, sample2.fcs, sample3.fcs) that have already had the basic QC performed on them, e.g., removal of dead cells and manual gating (although, manual gating is supported).
 Key points:
+
  - data is downsampled based on low variance
+
  - unbiased clustering to identify ideal number of centers, k, is performed via bootstrapped partitioning around medoids (PAM) and 3 metrics:
 <ul>
   <li>Gap statistic</li>
   <li>Silhouette coefficient</li>
   <li>Elbow method</li>
 </ul>
+
  - medoids from PAM are ued to infer low/high marker expression
+
  - network plot construction used to show relationships between identified clusters
 
 <h3>Setup / initialisation</h3>
