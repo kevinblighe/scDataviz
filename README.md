@@ -61,8 +61,8 @@ Unbiased identification of ideal clusters, k, in mass cytometry time-of-flight (
   hist(data.matrix(x), main="Hyperbolic arc-sine\nsample 1", breaks=30, col="red")
   hist(data.matrix(x), main="Hyperbolic arc-sine\nsample 2", breaks=30, col="gold")
   hist(data.matrix(x), main="Hyperbolic arc-sine\nsample 3", breaks=30, col="skyblue")
-  <img src="images/checkDistribution.png"></img>
 ```
+<img src="images/checkDistribution.png"></img>
 
 <hr>
 
