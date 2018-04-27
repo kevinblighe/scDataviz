@@ -1,7 +1,7 @@
 # cytofNet
 Unbiased identification of ideal clusters, k, in mass cytometry time-of-flight (CyTOF) data, with interrogation of clusters via network analysis.
 <h1>Tutorial</h1>
-```{r}
+```{R}
   #Remove scientific notation and set decimal places to 3
   options(scipen=100, digits=3)
 
