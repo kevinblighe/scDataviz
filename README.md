@@ -40,6 +40,9 @@ Key points:
 
   #Set hyperbolic arc-sine factor (NB - asinh(x/5) is recommended for CyTOF and FACS data)
   asinhFactor <- 5
+  
+  #load function for downsampling
+  source("R/downsampleByVar.R")
 ```
 
 <h3>3, data input and conversion (FCS -> CSV)</h3>
