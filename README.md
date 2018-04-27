@@ -174,7 +174,46 @@ Key points:
 <img src="images/clusGapKB.png"></img>
 
 <h3>6b, identify ideal cluster solution via silhouette coefficient and elbow method</h3>
+```{r} 
+ x <- as.matrix(get(AllSamples[1]))
+ x <- x[,-which(colnames(x) %in% c("DNA.1", "DeadLive"))]
+ x <- transform(x, BackgroundNoiseThreshold, EuclideanNormThreshold, transFun, asinhFactor)
+
+ require(factoextra)
+ require(NbClust)
+
+ source("R/findElbowSilhouette.R")
+ 
+ es <- findElbowSilhouette(x=x, varianceFactor=3, K.max=40, B=250)
+
+ require(cowplot)
+ 
+ par(mar=c(5,5,5,5), cex=1.5)
+ 
+ options(scipen=3)
+ 
+ plot_grid(es[[1]] +
+  geom_vline(xintercept=2, linetype=2, colour="steelblue") +
+  geom_vline(xintercept=6, linetype=2, colour="steelblue") +
+  geom_vline(xintercept=11, linetype=2, colour="steelblue"),
+  
+	es[[2]] +
+  geom_vline(xintercept=2, linetype=2, colour="steelblue") +
+  geom_vline(xintercept=6, linetype=2, colour="steelblue") +
+  geom_vline(xintercept=11, linetype=2, colour="steelblue"),
+  
+	labels=c("B", "C"), vjust=2.25, label_size=24, ncol=2, nrow=1)
+ 
+ options(scipen=999)
+
+```
+
+<img src="images/es.png"></img>
+
+<h3>6c, choose ideal cluster solution</h3>
+
 ```{r}
+ k=15
 ```
 
 <hr>
