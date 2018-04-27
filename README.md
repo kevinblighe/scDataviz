@@ -214,11 +214,51 @@ Key points:
 <img src="images/es.png"></img>
 
 <h3>6c, choose ideal cluster solution</h3>
+Based on the evidence from clustering, cluster solutions 4 and 15 appear tohave most supporting evidence for the sample processed. For the purposes of this tutorial, we choose 15.
 
 ```{r}
  k=15
 
 ```
+
+<h3>Re-perform clustering with the identified number of clusters, k, and plot the signature</h3>
+
+```{r}
+x <- as.matrix(get(AllSamples[1]))
+x <- x[,-which(colnames(x) %in% c("DNA.1", "DeadLive"))]
+x <- transform(x, BackgroundNoiseThreshold, EuclideanNormThreshold, transFun, asinhFactor)
+
+source("R/clusterWithk.R")
+
+#Define a custom function for PAM and cluster at chosen k
+CustomPAM <- function(x,k) list(cluster=pam(x, k, diss=FALSE, metric="manhattan", medoids=NULL, stand=FALSE, cluster.only=FALSE, do.swap=TRUE, keep.diss=TRUE, keep.data=TRUE, pamonce=FALSE, trace.lev=1))
+gap <- clusterWithk(x=x, varianceFactor=5, FUNcluster=CustomPAM, k=k, lowerPercentile=12.5, upperPercentile=12.5, p=0.05)
+
+[1] "1, 3.93290371493556, CD56+, CD8-CD16-"
+[1] "2, 7.40144048521607, HLA.DR+, CD56-GB-"
+[1] "3, 11.4101592115239, CD8+, CD56-"
+[1] "4, 14.5090978013647, CD56+, HLA.DR-CXCR5-"
+[1] "5, 15.4473085670963, CD56+, CXCR5-"
+[1] "6, 7.12661106899166, CD8+CD56+, HLA.DR-CD4-CD27-LAG3-ICOS-CXCR5-"
+[1] "7, 5.43025018953753, CD27+, CD56-CXCR5-"
+[1] "8, 12.5947687642153, CD8+CD56+, CXCR5-"
+[1] "9, 6.31159969673995, CD4+, CD8-CD56-CXCR5-IL.10-"
+[1] "10, 13.0307050796058, CXCR5+, CD8-CD56-GB-"
+[1] "11, 2.80515542077331, HLA.DR+CXCR5+, CD8-CD56-CD16-"
+
+#Plot the signature for each cluster
+require(RColorBrewer)
+pick.col <- brewer.pal(10, "RdBu")
+my_palette <- c(colorRampPalette(rev(pick.col))(200))
+
+source("R/plotSignatures.R")
+
+par(mar=c(1,1,1,1))
+plotSignatures(gap, my_palette, cexlab=1.2, cexlegend=1.2)
+
+```
+
+<img src="signature.png"></img>
 
 <hr>
 
