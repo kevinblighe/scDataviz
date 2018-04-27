@@ -17,10 +17,10 @@ registerDoParallel(cores)
 
 #Convert FCS to CSV
 require(flowCore)
-source("testing/fcs2csv.R")
+source("R/fcs2csv.R")
 fcs2csv(sample1.fcs, sample1.csv)
 
-load("testing/testing2.rdata")
+load("testing2.rdata")
 
 #sample1 <- read.csv("sample1.csv")
 
