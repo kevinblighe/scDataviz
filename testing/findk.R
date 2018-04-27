@@ -13,9 +13,7 @@ findk <- function(x, varianceFactor=5, FUNcluster, K.max=100, B=5)
 	}
 
 	#Select out the top markers based on variance
-	variances <- apply(x, 1, var)
-	x <- x[order(variances, decreasing=TRUE),]
-	x <- x[1:round((nrow(x)/varianceFactor),0),]
+	x <- downsampleByVar(x, varianceFactor)
 
 	#Compute the gap statistic for the data, using PAM clustering (builds clusters around a cell and distance from this)
 	#K-means builds clusters around the mean of a group of cells

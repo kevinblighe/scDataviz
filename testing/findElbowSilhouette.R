@@ -13,9 +13,7 @@ findElbowSilhouette <- function(x, varianceFactor=5, K.max=100, B=5)
 	}
 
 	#Select out the top markers based on variance
-	variances <- apply(x, 1, var)
-	x <- x[order(variances, decreasing=TRUE),]
-	x <- x[1:round((nrow(x)/varianceFactor),0),]
+	x <- downsampleByVar(x, varianceFactor)
 
 	elbow <- fviz_nbclust(x, FUNcluster=CustomPAM, method="wss", diss=NULL, k.max=K.max, nboot=B)
 

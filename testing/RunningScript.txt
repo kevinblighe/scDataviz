@@ -44,6 +44,8 @@ transFun <- function (x) asinh(x)
 #Set hyperbolic arc-sine factor (NB - asinh(x/5) is recommended for CyTOF and FACS data)
 asinhFactor <- 5
 
+source("R/downsampleByVar.R")
+
 #Histograms to check distribution of data
 par(mfrow=c(1,3), cex=1.2)
 source("testing/transform.R")
@@ -58,7 +60,17 @@ hist(data.matrix(x), main="Hyperbolic arc-sine\nsample 3", breaks=30, col="skybl
 require(RColorBrewer)
 rf <- colorRampPalette(rev(brewer.pal(9,"BuPu")))
 source("testing/facsplot.R")
-facsplot("CD8", "HLA.DR", get(AllSamples[1]), bins=400, main="FACS plot", xlim=c(-10,10), ylim=c(-10,10), x1=0, x2=5, y1=0, y2=5, cex=1.0, colramp=rf) # HexBin ignores NAs and doesn't count them whilst binning
+facsplot("CD8", "HLA.DR", get(AllSamples[1]), bins=400, main="FACS plot", xlim=c(-10,10), ylim=c(-10,10), x1=0, x2=5, y1=0, y2=5, cex=1.0, colramp=rf)
+
+#All pairwise comparisons
+x <- get(AllSamples[1])
+for (i in 1:ncol(x))
+{
+  for (j in 1:ncol(x))
+  {
+    facsplot(x[colnames(x)[i]], x[colnames(x)[j]], x, bins=400, main="FACS plot", xlim=c(-10,10), ylim=c(-10,10), x1=0, x2=5, y1=0, y2=5, cex=1.0, colramp=rf)
+  }
+}
 
 #Method:	Remove cells based on variance, identify cell populations with Gap Statistic, then identify main expressed/non-expressed markers in each population
 #Redefine the clusGap function to incorporate parallel processing
@@ -69,61 +81,62 @@ x <- transform(x, BackgroundNoiseThreshold, EuclideanNormThreshold, transFun, as
 CustomPAM <- function(x,k) list(cluster=pam(x, k, diss=FALSE, metric="manhattan", medoids=NULL, stand=FALSE, cluster.only=TRUE, do.swap=FALSE, keep.diss=FALSE, keep.data=FALSE, pamonce=TRUE, trace.lev=1))
 source("testing/findk.R")
 source("testing/clusGapKB.R")
-gap <- findk(x=x, varianceFactor=10, FUNcluster=CustomPAM, K.max=40, B=50)
+gap <- findk(x=x, varianceFactor=5, FUNcluster=CustomPAM, K.max=40, B=50)
 
-#First SE max=11
-#Tibshirani et al. (2001)=6
-#Dudoit & Fridlyand (2002)=39
-#First max=11
-#Global max=39
+#First SE max=15
+#Tibshirani et al. (2001)=15
+#Dudoit & Fridlyand (2002)=40
+#First max=15
+#Global max=40
 
 gap$Tab
-      logW E.logW   gap   SE.sim
- [1,] 9.74   10.6 0.863 0.000852
- [2,] 9.53   10.6 1.062 0.002341
- [3,] 9.49   10.6 1.093 0.002588
- [4,] 9.41   10.6 1.160 0.002820
- [5,] 9.39   10.6 1.180 0.003057
- [6,] 9.36   10.6 1.199 0.003161
- [7,] 9.36   10.6 1.202 0.003125
- [8,] 9.33   10.6 1.222 0.003133
- [9,] 9.32   10.6 1.226 0.003054
-[10,] 9.31   10.5 1.240 0.002815
-[11,] 9.30   10.5 1.243 0.002590
-[12,] 9.30   10.5 1.243 0.002652
-[13,] 9.29   10.5 1.245 0.002731
-[14,] 9.28   10.5 1.255 0.002558
-[15,] 9.28   10.5 1.256 0.002417
-[16,] 9.27   10.5 1.264 0.002301
-[17,] 9.26   10.5 1.269 0.002277
-[18,] 9.26   10.5 1.270 0.002199
-[19,] 9.25   10.5 1.273 0.002214
-[20,] 9.25   10.5 1.272 0.002106
-[21,] 9.25   10.5 1.272 0.002050
-[22,] 9.25   10.5 1.274 0.001980
-[23,] 9.24   10.5 1.276 0.001935
-[24,] 9.24   10.5 1.276 0.001895
-[25,] 9.24   10.5 1.280 0.001806
-[26,] 9.23   10.5 1.284 0.001764
-[27,] 9.23   10.5 1.284 0.001794
-[28,] 9.23   10.5 1.285 0.001775
-[29,] 9.23   10.5 1.285 0.001780
-[30,] 9.22   10.5 1.285 0.001776
-[31,] 9.22   10.5 1.286 0.001715
-[32,] 9.22   10.5 1.288 0.001779
-[33,] 9.22   10.5 1.288 0.001862
-[34,] 9.21   10.5 1.290 0.001881
-[35,] 9.21   10.5 1.290 0.001875
-[36,] 9.21   10.5 1.291 0.001885
-[37,] 9.21   10.5 1.292 0.001903
-[38,] 9.21   10.5 1.293 0.001902
-[39,] 9.20   10.5 1.296 0.001885
-[40,] 9.20   10.5 1.295 0.001863
+       logW E.logW   gap   SE.sim
+ [1,] 10.47   11.3 0.857 0.000703
+ [2,] 10.28   11.3 1.036 0.001756
+ [3,] 10.20   11.3 1.102 0.002086
+ [4,] 10.12   11.3 1.175 0.002316
+ [5,] 10.12   11.3 1.177 0.002303
+ [6,] 10.09   11.3 1.203 0.002392
+ [7,] 10.07   11.3 1.219 0.002329
+ [8,] 10.04   11.3 1.239 0.002394
+ [9,] 10.03   11.3 1.243 0.002597
+[10,] 10.02   11.3 1.254 0.002776
+[11,] 10.01   11.3 1.264 0.002709
+[12,] 10.00   11.3 1.268 0.002729
+[13,]  9.99   11.3 1.274 0.002594
+[14,]  9.98   11.3 1.280 0.002648
+[15,]  9.98   11.3 1.286 0.002479
+[16,]  9.98   11.3 1.285 0.002383
+[17,]  9.97   11.3 1.287 0.002326
+[18,]  9.97   11.3 1.288 0.002299
+[19,]  9.97   11.3 1.289 0.002210
+[20,]  9.97   11.3 1.288 0.002098
+[21,]  9.96   11.3 1.293 0.002139
+[22,]  9.95   11.3 1.297 0.002105
+[23,]  9.95   11.2 1.299 0.002037
+[24,]  9.95   11.2 1.300 0.001994
+[25,]  9.95   11.2 1.301 0.002015
+[26,]  9.94   11.2 1.300 0.002076
+[27,]  9.94   11.2 1.300 0.002132
+[28,]  9.94   11.2 1.302 0.002164
+[29,]  9.94   11.2 1.305 0.002155
+[30,]  9.93   11.2 1.307 0.002091
+[31,]  9.93   11.2 1.309 0.002076
+[32,]  9.93   11.2 1.309 0.002042
+[33,]  9.93   11.2 1.309 0.001958
+[34,]  9.92   11.2 1.312 0.001975
+[35,]  9.92   11.2 1.313 0.001863
+[36,]  9.92   11.2 1.314 0.001825
+[37,]  9.92   11.2 1.314 0.001767
+[38,]  9.92   11.2 1.315 0.001768
+[39,]  9.92   11.2 1.316 0.001781
+[40,]  9.91   11.2 1.319 0.001781
 
-par(mar=c(3,3,3,3), cex=1.5)
-plot(gap, main="A", cex.main=3, adj=0.5, pch=16)
-abline(v=6, col="steelblue", lty=2, lwd=2)
-abline(v=11, col="steelblue", lty=2, lwd=2)
+
+par(mar=c(5,5,5,5), cex=1.5)
+plot(gap, main="A, Gap statistic", cex.main=2, adj=0.5, pch=".", xlab="k, centers", ylab="Gap")
+abline(v=4, col="steelblue", lty=2, lwd=2)
+abline(v=15, col="steelblue", lty=2, lwd=2)
 
 #Elbow method (looks at within-cluster sum of squares), i.e., cluster 'withinness')
 #Silhouette coefficient
@@ -133,18 +146,18 @@ x <- as.matrix(get(AllSamples[1]))
 x <- x[,-which(colnames(x) %in% c("DNA.1", "DeadLive"))]
 x <- transform(x, BackgroundNoiseThreshold, EuclideanNormThreshold, transFun, asinhFactor)
 source("testing/findElbowSilhouette.R")
-es <- findElbowSilhouette(x=x, varianceFactor=10, K.max=40, B=50)
+es <- findElbowSilhouette(x=x, varianceFactor=5, K.max=40, B=50)
 require(cowplot)
 par(mar=c(5,5,5,5), cex=1.5)
 options(scipn=3)
-plot_grid(es[[1]] + geom_vline(xintercept=2, linetype=2, colour="steelblue") + geom_vline(xintercept=6, linetype=2, colour="steelblue") + geom_vline(xintercept=11, linetype=2, colour="steelblue"),
-	es[[2]] + geom_vline(xintercept=2, linetype=2, colour="steelblue") + geom_vline(xintercept=6, linetype=2, colour="steelblue") + geom_vline(xintercept=11, linetype=2, colour="steelblue"),
+plot_grid(es[[1]] + geom_vline(xintercept=4, linetype=2, colour="steelblue") + geom_vline(xintercept=15, linetype=2, colour="steelblue"),
+	es[[2]] + geom_vline(xintercept=2, linetype=2, colour="steelblue") + geom_vline(xintercept=4, linetype=2, colour="steelblue") + geom_vline(xintercept=7, linetype=2, colour="steelblue") + geom_vline(xintercept=18, linetype=2, colour="steelblue"),
 	labels=c("B", "C"), vjust=2.25, label_size=24, ncol=2, nrow=1)
 options(scipen=999)
 
 #IDEAL CLUSTERS
-k=6; k=11
-
+#k=4;
+k=15;
 
 #Re-perform clustering with the identified number of clusters, k
 x <- as.matrix(get(AllSamples[1]))
@@ -153,114 +166,226 @@ x <- transform(x, BackgroundNoiseThreshold, EuclideanNormThreshold, transFun, as
 source("testing/clusterWithk.R")
 #Define a custom function for PAM
 CustomPAM <- function(x,k) list(cluster=pam(x, k, diss=FALSE, metric="manhattan", medoids=NULL, stand=FALSE, cluster.only=FALSE, do.swap=TRUE, keep.diss=TRUE, keep.data=TRUE, pamonce=FALSE, trace.lev=1))
-gap <- clusterWithk(x=x, varianceFactor=10, FUNcluster=CustomPAM, k=k, lowerPercentile=12.5, upperPercentile=12.5, p=0.05)
+gap <- clusterWithk(x=x, varianceFactor=5, FUNcluster=CustomPAM, k=k, lowerPercentile=12.5, upperPercentile=12.5, p=0.05)
 
-[1] "1, 3.93290371493556, CD56+, CD8-CD16-"
-[1] "2, 7.40144048521607, HLA.DR+, CD56-GB-"
-[1] "3, 11.4101592115239, CD8+, CD56-"
-[1] "4, 14.5090978013647, CD56+, HLA.DR-CXCR5-"
-[1] "5, 15.4473085670963, CD56+, CXCR5-"
-[1] "6, 7.12661106899166, CD8+CD56+, HLA.DR-CD4-CD27-LAG3-ICOS-CXCR5-"
-[1] "7, 5.43025018953753, CD27+, CD56-CXCR5-"
-[1] "8, 12.5947687642153, CD8+CD56+, CXCR5-"
-[1] "9, 6.31159969673995, CD4+, CD8-CD56-CXCR5-IL.10-"
-[1] "10, 13.0307050796058, CXCR5+, CD8-CD56-GB-"
-[1] "11, 2.80515542077331, HLA.DR+CXCR5+, CD8-CD56-CD16-"
+[1] "1, 2.89992418498863, CD56+, CD8-CD16-"
+[1] "2, 6.29264594389689, HLA.DR+, CD56-GB-IL.10-"
+[1] "3, 6.54852160727824, CD8+, HLA.DR-CD56-"
+[1] "4, 10.1307808946171, CD56+, HLA.DR-CXCR5-"
+[1] "5, 10.2824109173616, CD8+CD56+, CXCR5-"
+[1] "6, 5.28335860500379, CD8+CD56+, HLA.DR-CD4-CD27-ICOS-CXCR5-"
+[1] "7, 5.5724033358605, CD27+, CD56-"
+[1] "8, 4.14613343442002, CD56+, HLA.DR-CD8-"
+[1] "9, 11.7181576952237, CD8+CD56+, CXCR5-"
+[1] "10, 3.82391963608795, HLA.DR+, CD8-CD56-"
+[1] "11, 3.64859742228961, CD4+CD27+, CD8-CD56-CXCR5-"
+[1] "12, 10.7136087945413, CXCR5+, CD8-CD56-GB-"
+[1] "13, 5.77141774071266, CD8+, CD56-"
+[1] "14, 4.33093252463988, HLA.DR+CXCR5+, CD8-CD16-"
+[1] "15, 8.83718726307809, CD4+, HLA.DR-CD8-CD56-"
 
 #Plot the signature for each cluster
 require(RColorBrewer)
 pick.col <- brewer.pal(10, "RdBu")
 my_palette <- c(colorRampPalette(rev(pick.col))(200))
 source("testing/plotSignatures.R")
-par(mar=c(1,1,1,1))
-plotSignatures(gap, my_palette, cexlab=1.2, cexlegend=1.2)
+plotSignatures(gap, my_palette, cexlab=1.2, cexlegend=1.2, labDegree=80)
 
 #Complex heatmap
 #Set colour
 require(RColorBrewer)
-#myCol <- colorRampPalette(c("violet", "black", "springgreen"))(100)
-myCol <- colorRampPalette(c("dodgerblue", "black", "yellow"))(100)
+myCol <- colorRampPalette(c("violet", "black", "springgreen"))(100)
 myBreaks <- seq(-3, 3, length.out=100)
 
 require(ComplexHeatmap)
-
 require(circlize)
 require(cluster)
-
-#Create a gradient colour for CD20 and other markers
 require("RColorBrewer")
-
-#Perform PAM on the genes (rows)
-pamClusters <- gap$clustering
-gap
-
-varianceFactor <- 10
 
 x <- as.matrix(get(AllSamples[1]))
 x <- x[,-which(colnames(x) %in% c("DNA.1", "DeadLive"))]
 x <- transform(x, BackgroundNoiseThreshold, EuclideanNormThreshold, transFun, asinhFactor)
-
-#Select out the top markers based on variance
-variances <- apply(x, 1, var)
-x <- x[order(variances, decreasing=TRUE),]
-x <- x[1:round((nrow(x)/varianceFactor),0),]
-
-#x <- t(scale(t(x)))
+x <- downsampleByVar(x, varianceFactor=5)
 x <- scale(x)
 
 #Create a sample boxplot / violin plot
-sampleBoxplot <- HeatmapAnnotation(boxplot=anno_boxplot(x, which="column", pch=".", size=unit(1.0, "mm"), border=TRUE, axis=TRUE))
-#sampleAnno <- HeatmapAnnotation(boxplot=anno_boxplot(x, which="column", pch=".", size=unit(2.0, "mm"), border=TRUE, axis=TRUE), violin=anno_density(x, type="violin", which="column", size=unit(1.0, "mm"), border=FALSE, outline=TRUE, axis=TRUE))
+  sampleBoxplot <- HeatmapAnnotation(boxplot=anno_boxplot(x, which="column", pch=".", size=unit(1.0, "mm"), border=TRUE, axis=TRUE))
 
-annCD4 <- gap$clustering
-annCD4[which(annCD4 %in% (grep("CD4\\+", gap$PositiveMarkers, invert=FALSE)))] <- "Positive"
-annCD4[which(annCD4 %in% (grep("CD4\\+", gap$PositiveMarkers, invert=TRUE)))] <- "Negative"
+  annCD4 <- gap$clustering
+  annCD4[which(annCD4 %in% (grep("CD4\\+", gap$PositiveMarkers, invert=FALSE)))] <- "Positive"
+  annCD4[which(annCD4 %in% (grep("CD4\\+", gap$PositiveMarkers, invert=TRUE)))] <- "Negative"
 
-annCD8 <- gap$clustering
-annCD8[which(annCD8 %in% (grep("CD8\\+", gap$PositiveMarkers, invert=FALSE)))] <- "Positive"
-annCD8[which(annCD8 %in% (grep("CD8\\+", gap$PositiveMarkers, invert=TRUE)))] <- "Negative"
+  annCD8 <- gap$clustering
+  annCD8[which(annCD8 %in% (grep("CD8\\+", gap$PositiveMarkers, invert=FALSE)))] <- "Positive"
+  annCD8[which(annCD8 %in% (grep("CD8\\+", gap$PositiveMarkers, invert=TRUE)))] <- "Negative"
 
-annCD56 <- gap$clustering
-annCD56[which(annCD56 %in% (grep("CD56\\+", gap$PositiveMarkers, invert=FALSE)))] <- "Positive"
-annCD56[which(annCD56 %in% (grep("CD56\\+", gap$PositiveMarkers, invert=TRUE)))] <- "Negative"
+  annCD56 <- gap$clustering
+  annCD56[which(annCD56 %in% (grep("CD56\\+", gap$PositiveMarkers, invert=FALSE)))] <- "Positive"
+  annCD56[which(annCD56 %in% (grep("CD56\\+", gap$PositiveMarkers, invert=TRUE)))] <- "Negative"
 
-rowAnn <- rowAnnotation(data.frame(CD4=annCD4, CD8=annCD8, CD56=annCD56), col=list(CD4=c("Positive"="skyblue", "Negative"="white"), CD8=c("Positive"="lawngreen", "Negative"="white"), CD56=c("Positive"="plum", "Negative"="white")), show_legend=TRUE, width=unit(1, "cm"))
+  rowAnn <- rowAnnotation(data.frame(CD4=annCD4, CD8=annCD8, CD56=annCD56), col=list(CD4=c("Positive"="skyblue", "Negative"="white"), CD8=c("Positive"="lawngreen", "Negative"="white"), CD56=c("Positive"="plum", "Negative"="white")), show_legend=TRUE, width=unit(1, "cm"))
 
 par(mar=c(2,2,2,2), cex=0.8)
 
-hmap <- Heatmap(x, name="Cell Z-score", col=colorRamp2(myBreaks, myCol),
+#Re-order the clusters based on similar marker expression (for the heatmap)
+grouporder <- factor(gap$clustering, levels=c(15, 11, 3, 5, 6, 13, 9, 1, 4, 8, 7, 12, 2, 10, 14))
 
-    #heatmap_legend_param=list(color_bar="continuous", legend_direction="horizontal", labels=c("Low", "Mean", "High"), at=c(-4, 0, 4), title_position="lefttop", legend_width=unit(5,"cm")),
+hmap <- Heatmap(x, name="Cell Z-score", col=colorRamp2(myBreaks, myCol),
     heatmap_legend_param = list(color_bar = "continuous", legend_direction = "horizontal",
     legend_width = unit(5, "cm"), title_position = "lefttop"),
-		split=paste0(pamClusters, "\n", round(gap$iPercentage[pamClusters], 2), "%"), gap=unit(1.5, "mm"),
-
+		split=paste0(grouporder, "\n", round(gap$iPercentage[grouporder], 2), "%"), gap=unit(1.5, "mm"),
 		row_title="Genes", row_title_side="left", row_title_gp=gpar(fontsize=10,  fontface="bold"), show_row_names=FALSE, row_names_gp=gpar(fontsize=6, fontface="bold"), row_names_max_width=unit(2, "cm"),
-
 		column_title="", column_title_side="top", column_title_gp=gpar(fontsize=10, fontface="bold"), column_title_rot=0, show_column_names=TRUE,
-
-		#clustering_distance_columns="euclidean", clustering_method_columns="ward.D2",
 		clustering_distance_columns=function(x) as.dist(1-cor(t(x))), clustering_method_columns="ward.D2",
-
-		#clustering_distance_rows="euclidean", clustering_method_rows="ward.D2",
 		clustering_distance_rows=function(x) as.dist(1-cor(t(x))), clustering_method_rows="ward.D2",
-
 		row_dend_width=unit(20,"mm"), column_dend_height=unit(20,"mm"),
-
-		#top_annotation=colAnn, top_annotation_height=unit(3,"cm"),
-		#top_annotation=sampleViolin, top_annotation_height=unit(3,"cm"),
-
 		top_annotation=sampleBoxplot, top_annotation_height=unit(3, "cm"))
 
-	draw(hmap + rowAnn, heatmap_legend_side="bottom", annotation_legend_side="top")
+draw(hmap + rowAnn, heatmap_legend_side="bottom", annotation_legend_side="top")
 
 
 
-#################################
+
 #Graph and minimum spanning tree
-#################################
-
 require(igraph) 
+
+g <- graph.adjacency(
+  as.matrix(as.dist(cor(t(gap$medoids), method="pearson"))),
+
+  mode="undirected",
+  weighted=TRUE,
+  diag=FALSE
+)
+
+#Simplfy the adjacency object
+g <- simplify(g, remove.multiple=TRUE, remove.loops=TRUE)
+
+#Colour negative correlation edges as blue
+E(g)[which(E(g)$weight<0)]$color <- "darkblue"
+
+#Colour positive correlation edges as red
+E(g)[which(E(g)$weight>0)]$color <- "darkred"
+
+#Convert edge weights to absolute values
+E(g)$weight <- abs(E(g)$weight)
+
+#Remove edges below absolute Pearson correlation 0.8
+g <- delete_edges(g, E(g)[which(E(g)$weight<0.8)])
+
+#Assign names to the graph vertices (optional)
+V(g)$name <- V(g)$name
+
+#Change shape of graph vertices
+V(g)$shape <- "sphere"
+
+#Change colour of graph vertices
+cd4t <- grep("CD4\\+", gap$PositiveMarkers)
+cd8t <- grep("CD8\\+", gap$PositiveMarkers)
+NK <- grep("CD56\\+", gap$PositiveMarkers)
+hla <- grep("HLA.DR\\+", gap$PositiveMarkers)
+V(g)[cd4t]$color <- "skyblue"
+V(g)[cd8t]$color <- "forestgreen"
+V(g)[NK]$color <- "gold"
+V(g)[hla]$color <- "red1"
+V(mst)[cd4t]$color <- "skyblue"
+V(mst)[cd8t]$color <- "forestgreen"
+V(mst)[NK]$color <- "gold"
+V(mst)[hla]$color <- "red1"
+
+#Change colour of vertex frames
+V(g)$vertex.frame.color <- "white"
+
+#Scale the size of the vertices to be proportional to the level of expression of each gene represented by each vertex
+#Multiple scaled vales by a factor of 10
+scale01 <- function(x){(x-min(x))/(max(x)-min(x))}
+vSizes <- (scale01(apply(estrogenMainEffects, 1, mean)) + 1.0) * 10
+
+#Amplify or decrease the width of the edges
+edgeweights <- E(g)$weight * 2.0
+
+#Convert the graph adjacency object into a minimum spanning tree based on Prim's algorithm
+mst <- mst(g, algorithm="prim")
+
+#Plot the tree object
+plot(
+  g,
+  layout=layout.fruchterman.reingold,
+  edge.curved=TRUE,
+  vertex.size=vSizes,
+  vertex.label.dist=-0.5,
+  vertex.label.color="black",
+  asp=FALSE,
+  vertex.label.cex=0.6,
+  edge.width=edgeweights,
+  edge.arrow.mode=0,
+  main="My first graph"
+)
+
+plot(
+  mst,
+  layout=layout.fruchterman.reingold,
+  edge.curved=TRUE,
+  vertex.size=vSizes,
+  vertex.label.dist=-0.5,
+  vertex.label.color="black",
+  asp=FALSE,
+  vertex.label.cex=0.6,
+  edge.width=edgeweights,
+  edge.arrow.mode=0,
+  main="My first graph"
+)
+
+mst.communities <- edge.betweenness.community(mst, directed=FALSE)
+mst.clustering <- make_clusters(mst, membership=mst.communities$membership)
+V(mst)$color <- mst.communities$membership + 1
+
+par(mfrow=c(1,2))
+plot(
+  mst.clustering, mst,
+  layout=layout.fruchterman.reingold,
+  edge.curved=TRUE,
+  vertex.size=vSizes,
+  vertex.label.dist=-0.5,
+  vertex.label.color="black",
+  asp=FALSE,
+  vertex.label.cex=0.6,
+  edge.width=edgeweights,
+  edge.arrow.mode=0,
+  main="My first graph"
+)
+
+plot(
+  mst,
+  layout=layout.fruchterman.reingold,
+  edge.curved=TRUE,
+  vertex.size=vSizes,
+  vertex.label.dist=-0.5,
+  vertex.label.color="black",
+  asp=FALSE,
+  vertex.label.cex=0.6,
+  edge.width=edgeweights,
+  edge.arrow.mode=0,
+  main="My first graph"
+)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 g <- graph.adjacency(as.matrix(dist(gap$medoids)), mode="directed", weighted=TRUE, diag=TRUE)
 V(g)$name <- V(g)$name
@@ -277,14 +402,18 @@ mst <- as.undirected(minimum.spanning.tree(g))
 cd4t <- grep("CD4\\+", gap$PositiveMarkers)
 cd8t <- grep("CD8\\+", gap$PositiveMarkers)
 NK <- grep("CD56\\+", gap$PositiveMarkers)
+hla <- grep("HLA.DR\\+", gap$PositiveMarkers)
 
+#Colour the vertices for each cell-type
 V(g)[cd4t]$color <- "skyblue"
-V(g)[cd8t]$color <- "lawngreen"
-V(g)[NK]$color <- "plum"
+V(g)[cd8t]$color <- "forestgreen"
+V(g)[NK]$color <- "gold"
+V(g)[hla]$color <- "red1"
 
 V(mst)[cd4t]$color <- "skyblue"
-V(mst)[cd8t]$color <- "lawngreen"
-V(mst)[NK]$color <- "plum"
+V(mst)[cd8t]$color <- "forestgreen"
+V(mst)[NK]$color <- "gold"
+V(mst)[hla]$color <- "red1"
 
 par(mar=c(1,1,1,1), cex=1.0, mfrow=c(1,2))
 
