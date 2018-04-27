@@ -12,7 +12,7 @@ Key points:
 
  - network plot construction used to show relationships between identified clusters
 
-<h3>1, Setup / initialisation</h3>
+<h3>1, setup / initialisation</h3>
 
 ```{r}
   #Set CPU cores for parallel-related functions
@@ -26,7 +26,7 @@ Key points:
   registerDoParallel(cores)
 ```
 
-<h3>2, Set global variables</h3>
+<h3>2, set global variables</h3>
 
 ```{r}
   #Set background noise threshold - values below this are set to 0
@@ -42,7 +42,7 @@ Key points:
   asinhFactor <- 5
 ```
 
-<h3>3, Data input and conversion (FCS -> CSV)</h3>
+<h3>3, data input and conversion (FCS -> CSV)</h3>
 
 ```{r}
   #Convert FCS to CSV
@@ -62,7 +62,7 @@ Key points:
   AllSamples <- c("sample1", "sample2", "sample3")
 ```
 
-<h3>4, Histograms to check distribution of data</h3>
+<h3>4, histograms to check distribution of data</h3>
 
 ```{r}
   source("R/transform.R")
@@ -85,19 +85,20 @@ Key points:
 <h3>5, traditional FACS-like plots for pairwise marker comparison and further gating (if needed)</h3>
 
 ```{r}
-require(RColorBrewer)
-rf <- colorRampPalette(rev(brewer.pal(9,"BuPu")))
+ require(RColorBrewer)
+ rf <- colorRampPalette(rev(brewer.pal(9,"BuPu")))
 
-require(hexbin)
-require(lattice)
+ require(hexbin)
+ require(lattice)
 
-source("R/facsplot.R")
+ source("R/facsplot.R")
 
-facsplot("CD8", "HLA.DR", get(AllSamples[1]), bins=400, main="FACS plot", xlim=c(-10,10), ylim=c(-10,10), x1=0, x2=5, y1=0, y2=5, cex=1.0, colramp=rf)
+ facsplot("CD8", "HLA.DR", get(AllSamples[1]), bins=400, main="FACS plot", xlim=c(-10,10), ylim=c(-10,10), x1=0, x2=5, y1=0, y2=5, cex=1.0, colramp=rf)
 ```
+
 <img src="images/facsplot.png"></img>
 
-<h3>6, Remove cells based on variance, identify ideal cluster solution via Gap statistic
+<h3>6a, identify ideal cluster solution via Gap statistic</h3>
 
 ```{r}
  x <- as.matrix(get(AllSamples[1]))
@@ -171,6 +172,10 @@ facsplot("CD8", "HLA.DR", get(AllSamples[1]), bins=400, main="FACS plot", xlim=c
 ```
 
 <img src="images/clusGapKB.png"></img>
+
+<h3>6b, identify ideal cluster solution via silhouette coefficient and elbow method</h3>
+```{r}
+```
 
 <hr>
 
