@@ -221,7 +221,7 @@ Based on the evidence from clustering, cluster solutions 4 and 15 appear tohave 
 
 ```
 
-<h3>7 re-perform clustering with the identified number of clusters, k, and plot the signature</h3>
+<h3>7, re-perform clustering with the identified number of clusters, k, and plot the signature</h3>
 
 ```{r}
 x <- as.matrix(get(AllSamples[1]))
