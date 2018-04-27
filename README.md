@@ -166,12 +166,13 @@ Key points:
  [40,]  9.91   11.2 1.319 0.001781
 
  par(mar=c(5,5,5,5), cex=1.5)
- plot(gap, main="Gap statistic", cex.main=1, adj=0.5, pch=".", xlab="k, centers", ylab="Gap")
+ plot(gap, main="A, Gap statistic", cex.main=2, adj=0.5, pch=".", xlab="k, centers", ylab="Gap")
  abline(v=4, col="steelblue", lty=2, lwd=2)
  abline(v=15, col="steelblue", lty=2, lwd=2)
+
 ```
 
-<img src="images/clusGapKB.png"></img>
+<img src="images/gap.png"></img>
 
 <h3>6b, identify ideal cluster solution via silhouette coefficient and elbow method</h3>
 
@@ -195,14 +196,14 @@ Key points:
  
  plot_grid(
  	es[[1]] +
-  		geom_vline(xintercept=2, linetype=2, colour="steelblue") +
-  		geom_vline(xintercept=6, linetype=2, colour="steelblue") +
-  		geom_vline(xintercept=11, linetype=2, colour="steelblue"),
+  		geom_vline(xintercept=4, linetype=2, colour="steelblue") +
+  		geom_vline(xintercept=15, linetype=2, colour="steelblue"),
   
 	es[[2]] +
   		geom_vline(xintercept=2, linetype=2, colour="steelblue") +
-  		geom_vline(xintercept=6, linetype=2, colour="steelblue") +
-  		geom_vline(xintercept=11, linetype=2, colour="steelblue"),
+  		geom_vline(xintercept=4, linetype=2, colour="steelblue") +
+		geom_vline(xintercept=7, linetype=2, colour="steelblue") +
+  		geom_vline(xintercept=18, linetype=2, colour="steelblue"),
   
 	labels=c("B", "C"), vjust=2.25, label_size=24, ncol=2, nrow=1)
  
