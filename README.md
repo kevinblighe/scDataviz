@@ -1,7 +1,17 @@
 # cytofNet
 Unbiased identification of ideal clusters, k, in mass cytometry time-of-flight (CyTOF) data, with interrogation of clusters via network analysis.
 <h2>Tutorial</h2>
-This tutorial covers just 3 samples (sample1.fcs, sample2.fcs, sample3.fcs) that have already had the basic QC performed on them, e.g., removal of dead cells.
+This tutorial covers just 3 samples (sample1.fcs, sample2.fcs, sample3.fcs) that have already had the basic QC performed on them, e.g., removal of dead cells and manual gating (although, manual gating is supported).
+Key points:
+ - data is downsampled based on low variance
+ - unbiased clustering to identify ideal number of centers, k, is performed via bootstrapped partitioning around medoids (PAM) and 3 metrics:
+<ul>
+  <li>Gap statistic</li>
+  <li>Silhouette coefficient</li>
+  <li>Elbow method</li>
+</ul>
+ - medoids from PAM are ued to infer low/high marker expression
+ - network plot construction used to show relationships between identified clusters
 
 <h3>Setup / initialisation</h3>
 
@@ -17,7 +27,7 @@ This tutorial covers just 3 samples (sample1.fcs, sample2.fcs, sample3.fcs) that
   registerDoParallel(cores)
 ```
 
-<h3>Set global variables</h3>
+<h3>1, Set global variables</h3>
 
 ```{r}
   #Set background noise threshold - values below this are set to 0
@@ -33,7 +43,7 @@ This tutorial covers just 3 samples (sample1.fcs, sample2.fcs, sample3.fcs) that
   asinhFactor <- 5
 ```
 
-<h3>Data input and conversion (FCS -> CSV)</h3>
+<h3>2, Data input and conversion (FCS -> CSV)</h3>
 
 ```{r}
   #Convert FCS to CSV
@@ -51,7 +61,7 @@ This tutorial covers just 3 samples (sample1.fcs, sample2.fcs, sample3.fcs) that
   AllSamples <- c("sample1", "sample2", "sample3")
 ```
 
-<h3>Histograms to check distribution of data</h3>
+<h3>3, Histograms to check distribution of data</h3>
 
 ```{r}
   par(mfrow=c(1,3), cex=1.2)
@@ -66,6 +76,16 @@ This tutorial covers just 3 samples (sample1.fcs, sample2.fcs, sample3.fcs) that
   }
 ```
 <img src="images/checkDistribution.png"></img>
+
+<h3>4, Hexagonal binning to capture and summarise the 3-dimensional nature of CyTOF data</h3>
+
+```{r}
+require(RColorBrewer)
+rf <- colorRampPalette(rev(brewer.pal(9,"BuPu")))
+source("R/facsplot.R")
+facsplot("CD8", "HLA.DR", get(AllSamples[1]), bins=400, main="FACS plot", xlim=c(-10,10), ylim=c(-10,10), x1=0, x2=5, y1=0, y2=5, cex=1.0, colramp=rf) # HexBin ignores NAs and doesn't count them whilst binning
+```
+<img src="images/facsplot.png"></img>
 
 <hr>
 
