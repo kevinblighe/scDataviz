@@ -56,12 +56,14 @@ This tutorial covers just 3 samples (sample1.fcs, sample2.fcs, sample3.fcs) that
 ```{r}
   par(mfrow=c(1,3), cex=1.2)
   source("R/transform.R")
-  x <- as.matrix(get(AllSamples[1]))
-  x <- x[,-which(colnames(x) %in% c("DNA.1", "DeadLive"))]
-  x <- transform(x, BackgroundNoiseThreshold, EuclideanNormThreshold, transFun, asinhFactor)
-  hist(data.matrix(x), main="Hyperbolic arc-sine\nsample 1", breaks=30, col="red")
-  hist(data.matrix(x), main="Hyperbolic arc-sine\nsample 2", breaks=30, col="gold")
-  hist(data.matrix(x), main="Hyperbolic arc-sine\nsample 3", breaks=30, col="skyblue")
+  colours <- c("red", "gold", "skyblue")
+  for (i in 1:length(AllSamples))
+  {
+    x <- as.matrix(get(AllSamples[1]))
+    x <- x[,-which(colnames(x) %in% c("DNA.1", "DeadLive"))]
+    x <- transform(x, BackgroundNoiseThreshold, EuclideanNormThreshold, transFun, asinhFactor)
+    hist(data.matrix(x), main=paste("Hyperbolic arc-sine\nsample",  i), breaks=30, col=colours[i])
+  }
 ```
 <img src="images/checkDistribution.png"></img>
 
