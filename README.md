@@ -76,7 +76,7 @@ Key points:
 ```
 <img src="images/checkDistribution.png"></img>
 
-<h3>5, Hexagonal binning to capture and summarise the 3-dimensional nature of CyTOF data</h3>
+<h3>5, traditional FACS-like plots for pairwise marker comparison and further gating (if needed)</h3>
 
 ```{r}
 require(RColorBrewer)
