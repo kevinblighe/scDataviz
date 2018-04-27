@@ -101,6 +101,26 @@ Key points:
 
 <img src="images/facsplot.png"></img>
 
+We can also plot multiple markers together
+```{r}
+ rf <- colorRampPalette(rev(brewer.pal(9,"YlGn")))
+ counter <- 1
+ f <- list()
+ for (i in 1:3)
+ {
+   for (j in 1:3)
+   {
+     f[[counter]] <- facsplot(colnames(x)[i], colnames(x)[j], x, bins=400, main="FACS plot", xlim=c(-10,10), ylim=c(-10,10), x1=0, x2=0, y1=0, y2=0, cex=1.0, colramp=rf)
+     counter <- counter + 1
+   }
+ }
+ library(gridExtra)
+ library(grid)
+ grid.arrange(f[[1]], f[[2]], f[[3]], f[[4]], f[[5]], f[[6]], f[[7]], f[[8]], f[[9]], ncol=3)
+```
+
+<img src="images/facsplot_multi.png"></a>
+
 <h3>6a, identify ideal cluster solution via Gap statistic</h3>
 
 ```{r}
