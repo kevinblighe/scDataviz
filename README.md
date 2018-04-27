@@ -1,7 +1,8 @@
 # cytofNet
 Unbiased identification of ideal clusters, k, in mass cytometry time-of-flight (CyTOF) data, with interrogation of clusters via network analysis.
 <h1>Tutorial</h1>
-``` r
+
+```{r}
   #Remove scientific notation and set decimal places to 3
   options(scipen=100, digits=3)
 
@@ -29,6 +30,7 @@ Unbiased identification of ideal clusters, k, in mass cytometry time-of-flight (
   #Create a vector of all variable names for the samples
   AllSamples <- c("sample1", "sample2", "sample3")
 ```
+
 <h1>Credits</h1>
 <ul>
   <li>Kevin Blighe (University College London)</li>
