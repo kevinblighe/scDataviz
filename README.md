@@ -28,7 +28,7 @@ Unbiased identification of ideal clusters, k, in mass cytometry time-of-flight (
 
   #Create a vector of all variable names for the samples
   AllSamples <- c("sample1", "sample2", "sample3")
-</code
+</code>
 <h1>Credits</h1>
 <ul>
   <li>Kevin Blighe (University College London)</li>
