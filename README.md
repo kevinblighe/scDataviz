@@ -12,7 +12,7 @@ Key points:
 
  - network plot construction used to show relationships between identified clusters
 
-<h3>Setup / initialisation</h3>
+<h3>1, Setup / initialisation</h3>
 
 ```{r}
   #Set CPU cores for parallel-related functions
@@ -26,7 +26,7 @@ Key points:
   registerDoParallel(cores)
 ```
 
-<h3>1, Set global variables</h3>
+<h3>2, Set global variables</h3>
 
 ```{r}
   #Set background noise threshold - values below this are set to 0
@@ -42,7 +42,7 @@ Key points:
   asinhFactor <- 5
 ```
 
-<h3>2, Data input and conversion (FCS -> CSV)</h3>
+<h3>3, Data input and conversion (FCS -> CSV)</h3>
 
 ```{r}
   #Convert FCS to CSV
@@ -60,7 +60,7 @@ Key points:
   AllSamples <- c("sample1", "sample2", "sample3")
 ```
 
-<h3>3, Histograms to check distribution of data</h3>
+<h3>4, Histograms to check distribution of data</h3>
 
 ```{r}
   par(mfrow=c(1,3), cex=1.2)
@@ -76,7 +76,7 @@ Key points:
 ```
 <img src="images/checkDistribution.png"></img>
 
-<h3>4, Hexagonal binning to capture and summarise the 3-dimensional nature of CyTOF data</h3>
+<h3>5, Hexagonal binning to capture and summarise the 3-dimensional nature of CyTOF data</h3>
 
 ```{r}
 require(RColorBrewer)
