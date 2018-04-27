@@ -234,17 +234,21 @@ source("R/clusterWithk.R")
 CustomPAM <- function(x,k) list(cluster=pam(x, k, diss=FALSE, metric="manhattan", medoids=NULL, stand=FALSE, cluster.only=FALSE, do.swap=TRUE, keep.diss=TRUE, keep.data=TRUE, pamonce=FALSE, trace.lev=1))
 gap <- clusterWithk(x=x, varianceFactor=5, FUNcluster=CustomPAM, k=k, lowerPercentile=12.5, upperPercentile=12.5, p=0.05)
 
-[1] "1, 3.93290371493556, CD56+, CD8-CD16-"
-[1] "2, 7.40144048521607, HLA.DR+, CD56-GB-"
-[1] "3, 11.4101592115239, CD8+, CD56-"
-[1] "4, 14.5090978013647, CD56+, HLA.DR-CXCR5-"
-[1] "5, 15.4473085670963, CD56+, CXCR5-"
-[1] "6, 7.12661106899166, CD8+CD56+, HLA.DR-CD4-CD27-LAG3-ICOS-CXCR5-"
-[1] "7, 5.43025018953753, CD27+, CD56-CXCR5-"
-[1] "8, 12.5947687642153, CD8+CD56+, CXCR5-"
-[1] "9, 6.31159969673995, CD4+, CD8-CD56-CXCR5-IL.10-"
-[1] "10, 13.0307050796058, CXCR5+, CD8-CD56-GB-"
-[1] "11, 2.80515542077331, HLA.DR+CXCR5+, CD8-CD56-CD16-"
+[1] "1, 2.89992418498863, CD56+, CD8-CD16-"
+[1] "2, 6.29264594389689, HLA.DR+, CD56-GB-IL.10-"
+[1] "3, 6.54852160727824, CD8+, HLA.DR-CD56-"
+[1] "4, 10.1307808946171, CD56+, HLA.DR-CXCR5-"
+[1] "5, 10.2824109173616, CD8+CD56+, CXCR5-"
+[1] "6, 5.28335860500379, CD8+CD56+, HLA.DR-CD4-CD27-ICOS-CXCR5-"
+[1] "7, 5.5724033358605, CD27+, CD56-"
+[1] "8, 4.14613343442002, CD56+, HLA.DR-CD8-"
+[1] "9, 11.7181576952237, CD8+CD56+, CXCR5-"
+[1] "10, 3.82391963608795, HLA.DR+, CD8-CD56-"
+[1] "11, 3.64859742228961, CD4+CD27+, CD8-CD56-CXCR5-"
+[1] "12, 10.7136087945413, CXCR5+, CD8-CD56-GB-"
+[1] "13, 5.77141774071266, CD8+, CD56-"
+[1] "14, 4.33093252463988, HLA.DR+CXCR5+, CD8-CD16-"
+[1] "15, 8.83718726307809, CD4+, HLA.DR-CD8-CD56-"
 
 #Plot the signature for each cluster
 require(RColorBrewer)
@@ -254,7 +258,7 @@ my_palette <- c(colorRampPalette(rev(pick.col))(200))
 source("R/plotSignatures.R")
 
 par(mar=c(1,1,1,1))
-plotSignatures(gap, my_palette, cexlab=1.2, cexlegend=1.2)
+plotSignatures(gap, my_palette, cexlab=1.2, cexlegend=1.2, labDegree=80)
 
 ```
 
