@@ -314,21 +314,17 @@ Ceate a complex heatmap to show th distribution of selective positive markers
 
   annCD4 <- gap$clustering
   annCD4[which(annCD4 %in% (grep("CD4\\+", gap$PositiveMarkers, invert=FALSE)))] <- "Positive"
-  annCD4[which(annCD4 %in% (grep("CD4\\+", gap$PositiveMarkers, invert=TRUE)))] <- "Neutral/Negative"
+  annCD4[which(annCD4 %in% (grep("CD4\\+", gap$PositiveMarkers, invert=TRUE)))] <- "Neutral/Neg."
 
   annCD8 <- gap$clustering
   annCD8[which(annCD8 %in% (grep("CD8\\+", gap$PositiveMarkers, invert=FALSE)))] <- "Positive"
-  annCD8[which(annCD8 %in% (grep("CD8\\+", gap$PositiveMarkers, invert=TRUE)))] <- "Neutral/Negative"
+  annCD8[which(annCD8 %in% (grep("CD8\\+", gap$PositiveMarkers, invert=TRUE)))] <- "Neutral/Neg."
 
   annCD56 <- gap$clustering
   annCD56[which(annCD56 %in% (grep("CD56\\+", gap$PositiveMarkers, invert=FALSE)))] <- "Positive"
-  annCD56[which(annCD56 %in% (grep("CD56\\+", gap$PositiveMarkers, invert=TRUE)))] <- "Neutral/Negative"
+  annCD56[which(annCD56 %in% (grep("CD56\\+", gap$PositiveMarkers, invert=TRUE)))] <- "Neutral/Neg."
 
-  annCD27 <- gap$clustering
-  annCD27[which(annCD27 %in% (grep("CD27\\+", gap$PositiveMarkers, invert=FALSE)))] <- "Positive"
-  annCD27[which(annCD27 %in% (grep("CD27\\+", gap$PositiveMarkers, invert=TRUE)))] <- "Neutral/Negative"
-
-  rowAnn <- rowAnnotation(data.frame(CD4=annCD4, CD8=annCD8, CD56=annCD56, CD27=annCD27), col=list(CD4=c("Positive"="royalblue", "Neutral/Negative"="white"), CD8=c("Positive"="red3", "Neutral/Negative"="white"), CD56=c("Positive"="gold", "Neutral/Negative"="white"), CD27=c("Positive"="purple", "Neutral/Negative"="white")), show_legend=TRUE, width=unit(1, "cm"))
+  rowAnn <- rowAnnotation(data.frame(CD4=annCD4, CD8=annCD8, CD56=annCD56), col=list(CD4=c("Positive"="skyblue", "Neutral/Neg."="white"), CD8=c("Positive"="limegreen", "Neutral/Neg."="white"), CD56=c("Positive"="purple", "Neutral/Neg."="white")), show_legend=TRUE, width=unit(1, "cm"))
 
  par(mar=c(2,2,2,2), cex=0.8)
 
@@ -361,6 +357,14 @@ Ceate a complex heatmap to show th distribution of selective positive markers
 ```
 
 <img src="images/complexheatmap.png"></img>
+
+<h3>8, create a network plot of the clusters</h3>
+
+```{r}
+
+```
+
+<img src="network.png"></img>
 
 <hr>
 
