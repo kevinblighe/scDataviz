@@ -249,45 +249,118 @@ Based on the evidence from clustering, cluster solutions 4 and 15 appear tohave 
 <h3>7, re-perform clustering with the identified number of clusters, k, and plot the signature</h3>
 
 ```{r}
-x <- as.matrix(get(AllSamples[1]))
-x <- x[,-which(colnames(x) %in% c("DNA.1", "DeadLive"))]
-x <- transform(x, BackgroundNoiseThreshold, EuclideanNormThreshold, transFun, asinhFactor)
+ x <- as.matrix(get(AllSamples[1]))
+ x <- x[,-which(colnames(x) %in% c("DNA.1", "DeadLive"))]
+ x <- transform(x, BackgroundNoiseThreshold, EuclideanNormThreshold, transFun, asinhFactor)
 
-source("R/clusterWithk.R")
+ source("R/clusterWithk.R")
 
-#Define a custom function for PAM and cluster at chosen k
-CustomPAM <- function(x,k) list(cluster=pam(x, k, diss=FALSE, metric="manhattan", medoids=NULL, stand=FALSE, cluster.only=FALSE, do.swap=TRUE, keep.diss=TRUE, keep.data=TRUE, pamonce=FALSE, trace.lev=1))
-gap <- clusterWithk(x=x, varianceFactor=5, FUNcluster=CustomPAM, k=k, lowerPercentile=12.5, upperPercentile=12.5, p=0.05)
+ #Define a custom function for PAM and cluster at chosen k
+ CustomPAM <- function(x,k) list(cluster=pam(x, k, diss=FALSE, metric="manhattan", medoids=NULL, stand=FALSE, cluster.only=FALSE, do.swap=TRUE, keep.diss=TRUE, keep.data=TRUE, pamonce=FALSE, trace.lev=1))
+ gap <- clusterWithk(x=x, varianceFactor=5, FUNcluster=CustomPAM, k=k, lowerPercentile=12.5, upperPercentile=12.5, p=0.05)
 
-[1] "1, 2.89992418498863, CD56+, CD8-CD16-"
-[1] "2, 6.29264594389689, HLA.DR+, CD56-GB-IL.10-"
-[1] "3, 6.54852160727824, CD8+, HLA.DR-CD56-"
-[1] "4, 10.1307808946171, CD56+, HLA.DR-CXCR5-"
-[1] "5, 10.2824109173616, CD8+CD56+, CXCR5-"
-[1] "6, 5.28335860500379, CD8+CD56+, HLA.DR-CD4-CD27-ICOS-CXCR5-"
-[1] "7, 5.5724033358605, CD27+, CD56-"
-[1] "8, 4.14613343442002, CD56+, HLA.DR-CD8-"
-[1] "9, 11.7181576952237, CD8+CD56+, CXCR5-"
-[1] "10, 3.82391963608795, HLA.DR+, CD8-CD56-"
-[1] "11, 3.64859742228961, CD4+CD27+, CD8-CD56-CXCR5-"
-[1] "12, 10.7136087945413, CXCR5+, CD8-CD56-GB-"
-[1] "13, 5.77141774071266, CD8+, CD56-"
-[1] "14, 4.33093252463988, HLA.DR+CXCR5+, CD8-CD16-"
-[1] "15, 8.83718726307809, CD4+, HLA.DR-CD8-CD56-"
+ [1] "1, 2.89992418498863, CD56+, CD8-CD16-"
+ [1] "2, 6.29264594389689, HLA.DR+, CD56-GB-IL.10-"
+ [1] "3, 6.54852160727824, CD8+, HLA.DR-CD56-"
+ [1] "4, 10.1307808946171, CD56+, HLA.DR-CXCR5-"
+ [1] "5, 10.2824109173616, CD8+CD56+, CXCR5-"
+ [1] "6, 5.28335860500379, CD8+CD56+, HLA.DR-CD4-CD27-ICOS-CXCR5-"
+ [1] "7, 5.5724033358605, CD27+, CD56-"
+ [1] "8, 4.14613343442002, CD56+, HLA.DR-CD8-"
+ [1] "9, 11.7181576952237, CD8+CD56+, CXCR5-"
+ [1] "10, 3.82391963608795, HLA.DR+, CD8-CD56-"
+ [1] "11, 3.64859742228961, CD4+CD27+, CD8-CD56-CXCR5-"
+ [1] "12, 10.7136087945413, CXCR5+, CD8-CD56-GB-"
+ [1] "13, 5.77141774071266, CD8+, CD56-"
+ [1] "14, 4.33093252463988, HLA.DR+CXCR5+, CD8-CD16-"
+ [1] "15, 8.83718726307809, CD4+, HLA.DR-CD8-CD56-"
 
-#Plot the signature for each cluster
-require(RColorBrewer)
-pick.col <- brewer.pal(10, "RdBu")
-my_palette <- c(colorRampPalette(rev(pick.col))(200))
+ #Plot the signature for each cluster
+ require(RColorBrewer)
+ pick.col <- brewer.pal(10, "RdBu")
+ my_palette <- c(colorRampPalette(rev(pick.col))(200))
 
-source("R/plotSignatures.R")
+ source("R/plotSignatures.R")
 
-par(mar=c(1,1,1,1))
-plotSignatures(gap, my_palette, cexlab=1.2, cexlegend=1.2, labDegree=80)
+ par(mar=c(1,1,1,1))
+ plotSignatures(gap, my_palette, cexlab=1.2, cexlegend=1.2, labDegree=80)
 
 ```
 
 <img src="images/signature.png"></img>
+
+Ceate a complex heatmap to show th distribution of selective positive markers
+
+```{r}
+
+ #Set colour
+ require(RColorBrewer)
+ myCol <- colorRampPalette(c("violet", "black", "springgreen"))(100)
+ myBreaks <- seq(-3, 3, length.out=100)
+
+ require(ComplexHeatmap)
+ require(circlize)
+ require(cluster)
+ require("RColorBrewer")
+
+ x <- as.matrix(get(AllSamples[1]))
+ x <- x[,-which(colnames(x) %in% c("DNA.1", "DeadLive"))]
+ x <- transform(x, BackgroundNoiseThreshold, EuclideanNormThreshold, transFun, asinhFactor)
+ x <- downsampleByVar(x, varianceFactor=5)
+ x <- scale(x)
+
+ #Create a sample boxplot / violin plot
+ sampleBoxplot <- HeatmapAnnotation(boxplot=anno_boxplot(x, which="column", pch=".", size=unit(1.0, "mm"), border=TRUE, axis=TRUE))
+
+  annCD4 <- gap$clustering
+  annCD4[which(annCD4 %in% (grep("CD4\\+", gap$PositiveMarkers, invert=FALSE)))] <- "Positive"
+  annCD4[which(annCD4 %in% (grep("CD4\\+", gap$PositiveMarkers, invert=TRUE)))] <- "Neutral/Negative"
+
+  annCD8 <- gap$clustering
+  annCD8[which(annCD8 %in% (grep("CD8\\+", gap$PositiveMarkers, invert=FALSE)))] <- "Positive"
+  annCD8[which(annCD8 %in% (grep("CD8\\+", gap$PositiveMarkers, invert=TRUE)))] <- "Neutral/Negative"
+
+  annCD56 <- gap$clustering
+  annCD56[which(annCD56 %in% (grep("CD56\\+", gap$PositiveMarkers, invert=FALSE)))] <- "Positive"
+  annCD56[which(annCD56 %in% (grep("CD56\\+", gap$PositiveMarkers, invert=TRUE)))] <- "Neutral/Negative"
+
+  annCD27 <- gap$clustering
+  annCD27[which(annCD27 %in% (grep("CD27\\+", gap$PositiveMarkers, invert=FALSE)))] <- "Positive"
+  annCD27[which(annCD27 %in% (grep("CD27\\+", gap$PositiveMarkers, invert=TRUE)))] <- "Neutral/Negative"
+
+  rowAnn <- rowAnnotation(data.frame(CD4=annCD4, CD8=annCD8, CD56=annCD56, CD27=annCD27), col=list(CD4=c("Positive"="royalblue", "Neutral/Negative"="white"), CD8=c("Positive"="red3", "Neutral/Negative"="white"), CD56=c("Positive"="gold", "Neutral/Negative"="white"), CD27=c("Positive"="purple", "Neutral/Negative"="white")), show_legend=TRUE, width=unit(1, "cm"))
+
+ par(mar=c(2,2,2,2), cex=0.8)
+
+ hmap <- Heatmap(x,
+ 	name="Cell Z-score",
+	col=colorRamp2(myBreaks, myCol),
+	heatmap_legend_param = list(color_bar = "continuous", legend_direction = "vertical", legend_width = unit(5, "cm"), title_position = "lefttop"),
+	split=paste0(gap$clustering, "\n", round(gap$iPercentage[gap$clustering], 2), "%"),
+	gap=unit(1.5, "mm"),
+	row_title="Genes",
+	row_title_side="left",
+	row_title_gp=gpar(fontsize=10,  fontface="bold"),
+	show_row_names=FALSE,
+	row_names_gp=gpar(fontsize=6, fontface="bold"),
+	row_names_max_width=unit(2, "cm"),
+	column_title="",
+	column_title_side="top",
+	column_title_gp=gpar(fontsize=10,
+	fontface="bold"), column_title_rot=0, show_column_names=TRUE,
+	clustering_distance_columns=function(x) as.dist(1-cor(t(x))),
+	clustering_method_columns="ward.D2",
+	clustering_distance_rows=function(x) as.dist(1-cor(t(x))),
+	clustering_method_rows="ward.D2",
+	row_dend_width=unit(20,"mm"), column_dend_height=unit(20,"mm"),
+	top_annotation=sampleBoxplot,
+	top_annotation_height=unit(3, "cm"))
+
+ draw(hmap + rowAnn, heatmap_legend_side="right", annotation_legend_side="right")
+
+```
+
+<img src="images/complexheatmap.png"></img>
 
 <hr>
 
