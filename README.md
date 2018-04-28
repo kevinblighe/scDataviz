@@ -295,7 +295,7 @@ Ceate a complex heatmap to show th distribution of selective positive markers
 
  #Set colour
  require(RColorBrewer)
- myCol <- colorRampPalette(c("violet", "black", "springgreen"))(100)
+ myCol <- colorRampPalette(c("dodgerblue", "black", "gold"))(100)
  myBreaks <- seq(-3, 3, length.out=100)
 
  require(ComplexHeatmap)
@@ -361,10 +361,121 @@ Ceate a complex heatmap to show th distribution of selective positive markers
 <h3>8, create a network plot of the clusters</h3>
 
 ```{r}
+#Graph and minimum spanning tree
+require(igraph) 
+
+g <- graph.adjacency(
+  as.matrix(as.dist(cor(t(gap$medoids), method="spearman"))),
+
+  mode="undirected",
+  weighted=TRUE,
+  diag=FALSE
+)
+
+#Simplfy the adjacency object
+g <- simplify(g, remove.multiple=TRUE, remove.loops=TRUE)
+
+#Colour negative correlation edges as blue
+E(g)[which(E(g)$weight<0)]$color <- "grey75"
+
+#Colour positive correlation edges as red
+E(g)[which(E(g)$weight>0)]$color <- "grey75"
+
+#Convert edge weights to absolute values
+E(g)$weight <- abs(E(g)$weight)
+
+#Remove edges below absolute Spearman correlation 0.6
+g <- delete_edges(g, E(g)[which(E(g)$weight<0.6)])
+
+#Assign names to the graph vertices (optional)
+V(g)$name <- V(g)$name
+V(g)$label <- paste(gap$PositiveMarkers, gap$NegativeMarkers, sep="\n")
+
+#Change shape of graph vertices
+V(g)$shape <- "sphere"
+
+#Change colour of graph vertices
+cd4t <- grep("CD4\\+", gap$PositiveMarkers)
+cd8t <- grep("CD8\\+", gap$PositiveMarkers)
+NK <- grep("CD56\\+", gap$PositiveMarkers)
+V(g)[cd4t]$color <- "skyblue"
+V(g)[cd8t]$color <- "limegreen"
+V(g)[NK]$color <- "purple"
+
+#Change colour of vertex frames
+V(g)$vertex.frame.color <- "white"
+
+#Scale the size of the vertices to be proportional to the numer of cells in each
+vSizes <- gap$iPercentage * 2
+
+#Amplify or decrease the width of the edges
+edgeweights <- E(g)$weight * 2.0
+
+#Convert the graph adjacency object into a minimum spanning tree based on Prim's algorithm
+mst <- mst(g, algorithm="prim")
+
+V(mst)[cd4t]$color <- "skyblue"
+V(mst)[cd8t]$color <- "limegreen"
+V(mst)[NK]$color <- "purple"
+
+par(mfrow=c(1,2))
+#Plot the tree object
+plot(
+  g,
+  layout=layout.fruchterman.reingold,
+  edge.curved=FALSE,
+  vertex.size=vSizes,
+  vertex.label.dist=-0.5,
+  vertex.label.color="black",
+  asp=FALSE,
+  vertex.label.cex=0.8,
+  edge.width=edgeweights,
+  edge.arrow.mode=0,
+  main="Graph"
+)
+
+plot(
+  mst,
+  layout=layout.fruchterman.reingold,
+  edge.curved=TRUE,
+  vertex.size=vSizes,
+  vertex.label.dist=-0.5,
+  vertex.label.color="black",
+  asp=FALSE,
+  vertex.label.cex=0.8,
+  edge.width=edgeweights,
+  edge.arrow.mode=0,
+  main="Minimum spanning tree"
+)
 
 ```
 
-<img src="network.png"></img>
+<img src="imges/networkplot.png"></img>
+
+Identify community structure
+
+```{r}
+mst.communities <- edge.betweenness.community(mst, directed=FALSE)
+mst.clustering <- make_clusters(mst, membership=mst.communities$membership)
+V(mst)$color <- mst.communities$membership + 1
+
+plot(
+  mst.clustering, mst,
+  layout=layout.fruchterman.reingold,
+  edge.curved=TRUE,
+  vertex.size=vSizes,
+  vertex.label.dist=-0.5,
+  vertex.label.color="black",
+  asp=FALSE,
+  vertex.label.cex=0.8,
+  edge.width=edgeweights,
+  edge.arrow.mode=0,
+  main="communities"
+)
+
+```
+
+<img src="images/networkplot.communities.png"></img>
 
 <hr>
 
