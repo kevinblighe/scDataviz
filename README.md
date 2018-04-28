@@ -15,6 +15,8 @@ Key points:
 <h3>1, setup / initialisation</h3>
 
 ```{r}
+  source("https://bioconductor.org/biocLite.R")
+
   #Set CPU cores for parallel-related functions
   cpucores <- 16
   require(parallel)
