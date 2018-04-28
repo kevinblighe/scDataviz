@@ -450,7 +450,7 @@ plot(
 
 ```
 
-<img src="imges/networkplot.png"></img>
+<img src="images/networkplot.png"></img>
 
 Identify community structure
 
