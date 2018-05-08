@@ -7,10 +7,14 @@ Key points:
  - data is downsampled based on low variance
 
  - unbiased clustering to identify ideal number of centers, k, is performed via bootstrapped partitioning around medoids (PAM) and 3 metrics: Gap statistic (Tibshirani et al., 2001); silhouette coefficient; elbow method
+ 
+ - extra checks for ideal cluster segregation based on pairwise statistical measures between clusters
 
- - medoids from PAM are ued to infer low/high marker expression
+ - medoids from PAM are used to infer low/high marker expression
 
  - network plot construction used to show relationships between identified clusters
+
+<hr>
 
 <h3>1, setup / initialisation</h3>
 
@@ -27,6 +31,8 @@ Key points:
   cores <- makeCluster(detectCores(), type='PSOCK')
   registerDoParallel(cores)
 ```
+
+<hr>
 
 <h3>2, set global variables</h3>
 
@@ -46,6 +52,8 @@ Key points:
   #load function for downsampling
   source("R/downsampleByVar.R")
 ```
+
+<hr>
 
 <h3>3, data input and conversion (FCS -> CSV)</h3>
 
@@ -67,6 +75,8 @@ Key points:
   AllSamples <- c("sample1", "sample2", "sample3")
 ```
 
+<hr>
+
 <h3>4, histograms to check distribution of data</h3>
 
 ```{r}
@@ -87,6 +97,8 @@ Key points:
 ```
 <img src="images/checkdistribution.png"></img>
 
+<hr>
+
 <h3>5, traditional FACS-like plots for pairwise marker comparison and further gating (if needed)</h3>
 
 ```{r}
@@ -103,7 +115,7 @@ Key points:
 
 <img src="images/facsplot.png"></img>
 
-We can also plot multiple markers together
+We can also plot multiple markers together:
 ```{r}
  rf <- colorRampPalette(rev(brewer.pal(9,"YlGn")))
  counter <- 1
@@ -122,6 +134,8 @@ We can also plot multiple markers together
 ```
 
 <img src="images/facsplot_multi.png"></a>
+
+<hr>
 
 <h3>6a, identify ideal cluster solution via Gap statistic</h3>
 
@@ -239,14 +253,16 @@ We can also plot multiple markers together
 <img src="images/es.png"></img>
 
 <h3>6c, choose ideal cluster solution</h3>
-Based on the evidence from clustering, cluster solutions 4 and 15 appear tohave most supporting evidence for the sample processed. For the purposes of this tutorial, we choose 15.
+Based on the evidence from clustering, cluster solutions 4 and 15 appear to have most supporting evidence for the sample processed. For the purposes of this tutorial, we choose 15.
 
 ```{r}
  k=15
 
 ```
 
-<h3>7, re-perform clustering with the identified number of clusters, k, and plot the signature</h3>
+<hr>
+
+<h3>7a, re-perform clustering with the identified number of clusters, k, and check the segregation</h3>
 
 ```{r}
  x <- as.matrix(get(AllSamples[1]))
@@ -275,7 +291,25 @@ Based on the evidence from clustering, cluster solutions 4 and 15 appear tohave 
  [1] "14, 4.33093252463988, HLA.DR+CXCR5+, CD8-CD16-"
  [1] "15, 8.83718726307809, CD4+, HLA.DR-CD8-CD56-"
 
- #Plot the signature for each cluster
+```
+
+<h3>7b, check the segregation of clusters via ANOVA p-value</h3>
+
+```{r}
+  source("R/clusSignificancePlot.R")
+  clusSignificancePlot(gap$pvalues, 0.8, "PuRd", 9, FALSE, "Cluster segregation")
+
+```
+
+<img src="images/clusSignificancePlot.png"></img>
+
+If the segregation looks poor based on p-value, then go back to step 6 and choose a different value for k.
+
+<hr>
+
+<h3>8a, plot the signature for each cluster</h3>
+
+```{r}
  require(RColorBrewer)
  pick.col <- brewer.pal(10, "RdBu")
  my_palette <- c(colorRampPalette(rev(pick.col))(200))
@@ -289,7 +323,8 @@ Based on the evidence from clustering, cluster solutions 4 and 15 appear tohave 
 
 <img src="images/signature.png"></img>
 
-Ceate a complex heatmap to show th distribution of selective positive markers
+
+<h3>8b, create a complex heatmap to show the distribution of selective positive markers</h3>
 
 ```{r}
 
@@ -358,7 +393,9 @@ Ceate a complex heatmap to show th distribution of selective positive markers
 
 <img src="images/complexheatmap.png"></img>
 
-<h3>8, create a network plot of the clusters</h3>
+<hr>
+
+<h3>9, create a network plot of the clusters</h3>
 
 ```{r}
 #Graph and minimum spanning tree
@@ -478,6 +515,7 @@ plot(
 <img src="images/networkplot.communities.png"></img>
 
 <hr>
+<hr>
 
 <h1>References</h1>
 Tibshirani R, Walther G, Hastie T (2001), Estimating the number of data clusters via the Gap statistic, Journal of the Royal Statistical Society B. 63: 411–423.
@@ -487,7 +525,9 @@ Tibshirani R, Walther G, Hastie T (2001), Estimating the number of data clusters
 <h1>Credits</h1>
 <ul>
   <li>Kevin Blighe (University College London)</li>
+  <li>Lucia Conde (University College London)</li>
   <li>Kevin Blighe (Brigham & Women's Hospital / Harvard Medical School)</li>
   <li>Kevin Blighe (Queen Mary University of London)</li>
+  <li>Myles Lewis (Queen Mary University of London)</li>	
   <li>Davide Lucchesi (Queen Mary University of London)</li>
 </ul>
