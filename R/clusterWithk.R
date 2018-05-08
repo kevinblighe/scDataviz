@@ -1,4 +1,4 @@
-clusterWithk <- function(x, varianceFactor=5, FUNcluster, k=50, lowerPercentile=12.5, upperPercentile=12.5, p=0.05, ...)
+clusterWithk <- function(x, varianceFactor=5, FUNcluster, k=50, lowerPercentile=12.5, upperPercentile=12.5, ...)
 {
 	packageExists <- require(cluster)
 	if(!packageExists)
@@ -44,7 +44,7 @@ clusterWithk <- function(x, varianceFactor=5, FUNcluster, k=50, lowerPercentile=
 		#Positive markers rise above 50%
 		PositiveMarkers <- names(which(DataMatrix[,j] > (max(DataMatrix[,j]) - (((max(DataMatrix[,j]) - min(DataMatrix[,j])) / 100) * upperPercentile))))
 
-		print(paste(j, iPercentage, paste(PositiveMarkers, "+", sep="", collapse=""), paste(NegativeMarkers, "-", sep="", collapse=""), sep=", "))
+		print(paste("Cluster ", j, iPercentage, paste(PositiveMarkers, "+", sep="", collapse=""), paste(NegativeMarkers, "-", sep="", collapse=""), sep=", "))
 
 		clus$iCellsPerCluster[j] <- iCellsPerCluster
 		clus$iTotalCells[j] <- iTotalCells
@@ -52,6 +52,28 @@ clusterWithk <- function(x, varianceFactor=5, FUNcluster, k=50, lowerPercentile=
 		clus$NegativeMarkers[j] <- paste(NegativeMarkers, "-", sep="", collapse="")
 		clus$PositiveMarkers[j] <- paste(PositiveMarkers, "+", sep="", collapse="")
 	}
+
+	###
+
+	#Calculate p-value matrix of pairwise cluster comparisons
+	df <- data.frame()
+	p <- c()
+
+	for (i in 1:ncol(DataMatrix))
+	{
+
+	  p <- c()
+
+	  for (j in 1:ncol(DataMatrix))
+	  {
+	    p <- c(p, summary(aov(DataMatrix[,j] ~ DataMatrix[,i]))[[1]][["Pr(>F)"]][[1]])
+	  }
+
+	  df <- rbind(df, p)
+	  colnames(df)[i] <- i
+	}
+
+  clus$pvalues <- df
 
 return(clus)
 }
