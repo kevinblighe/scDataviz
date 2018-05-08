@@ -53,6 +53,8 @@ Key points:
   source("R/downsampleByVar.R")
 ```
 
+<hr>
+
 <h3>3, data input and conversion (FCS -> CSV)</h3>
 
 ```{r}
@@ -260,7 +262,7 @@ Based on the evidence from clustering, cluster solutions 4 and 15 appear to have
 
 <hr>
 
-<h3>7a, re-perform clustering with the identified number of clusters, k, and plot the signature</h3>
+<h3>7a, re-perform clustering with the identified number of clusters, k, and check the segregation</h3>
 
 ```{r}
  x <- as.matrix(get(AllSamples[1]))
@@ -292,6 +294,7 @@ Based on the evidence from clustering, cluster solutions 4 and 15 appear to have
 ```
 
 <h3>7b, check the segregation of clusters via ANOVA p-value</h3>
+
 ```{r}
   source("R/clusSignificancePlot.R")
   clusSignificancePlot(gap$pvalues, 0.8, "PuRd", 9, FALSE, "Cluster segregation")
@@ -301,6 +304,8 @@ Based on the evidence from clustering, cluster solutions 4 and 15 appear to have
 <img src="images/clusSignificancePlot.png"></img>
 
 If the segregation looks poor based on p-value, then go back to step 6 and choose a different value for k.
+
+<hr>
 
 <h3>8a, plot the signature for each cluster</h3>
 
