@@ -297,7 +297,7 @@ Based on the evidence from clustering, cluster solutions 4 and 15 appear to have
 
 ```{r}
   source("R/clusSignificancePlot.R")
-  clusSignificancePlot(gap$pvalues, 0.8, "PuRd", 9, FALSE, "Cluster segregation")
+  clusSignificancePlot(gap$pvalues, 1.2, "PuRd", 9, FALSE, bquote(Negative~log[10]~p~value~cluster~differences))
 
 ```
 
