@@ -525,9 +525,10 @@ Tibshirani R, Walther G, Hastie T (2001), Estimating the number of data clusters
 <h1>Credits</h1>
 <ul>
   <li>Kevin Blighe (University College London)</li>
-  <li>Lucia Conde (University College London)</li>
+  <li>Nikolay Samusik (Stanford University)</li>
   <li>Kevin Blighe (Brigham & Women's Hospital / Harvard Medical School)</li>
   <li>Kevin Blighe (Queen Mary University of London)</li>
-  <li>Myles Lewis (Queen Mary University of London)</li>	
   <li>Davide Lucchesi (Queen Mary University of London)</li>
+  <li>Myles Lewis (Queen Mary University of London)</li>	
+  <li>Lucia Conde (University College London)</li>
 </ul>
