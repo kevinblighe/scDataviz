@@ -110,7 +110,7 @@ Key points:
 
  source("R/facsplot.R")
 
- facsplot("CD8", "HLA.DR", get(AllSamples[1]), bins=400, main="FACS plot", xlim=c(-10,10), ylim=c(-10,10), x1=0, x2=5, y1=0, y2=5, cex=1.0, colramp=rf)
+ facsplot("CD8", "HLA.DR", get(AllSamples[1]), bins=400, main="FACS plot", x1=0, x2=5, y1=0, y2=5, cex=1.0, colramp=rf)
 ```
 
 <img src="images/facsplot.png"></img>
