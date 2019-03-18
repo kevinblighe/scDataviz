@@ -1,4 +1,4 @@
-facsplot <- function(marker1, marker2, df, bins=200, main="FACS plot", xlim=xlim, ylim=ylim, x1, x2, y1, y2, cex=1, colramp=rf, ...)
+facsplot <- function(marker1, marker2, df, bins=200, main="FACS plot", x1, x2, y1, y2, cex=1, colramp, ...)
 {
 	packageExists <- require(hexbin)
 	if(!packageExists)
@@ -21,9 +21,12 @@ facsplot <- function(marker1, marker2, df, bins=200, main="FACS plot", xlim=xlim
 	y[y==0] <- NA
 	y <- log2(y)
 
+        xlim <- c(min(x), max(x))
+	ylim <- c(min(y), max(y))
+
 	par=mar=c(5,5,5,5, cex=0.8)
 
-	hbplot <- hexbinplot(y ~ x, data=df, aspect="1", xbins=bins, xlab=marker1, ylab=marker2, xlim=xlim, ylim=ylim, cex.labels=1.0, cex.title=1.0, colramp=rf,
+	hbplot <- hexbinplot(y ~ x, data=df, aspect="1", xbins=bins, xlab=marker1, ylab=marker2, xlim=xlim, ylim=ylim, cex.labels=1.0, cex.title=1.0, colramp=colramp,
     		panel=function(x, y, ...)
     		{
         		panel.hexbinplot(x, y, ...)
