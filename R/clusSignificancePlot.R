@@ -19,6 +19,17 @@ clusSignificancePlot <- function(df, labcex, strPalette, iNumColours, boolRevers
   #Save the p-values
   pvals <- round(data.matrix(df),2)
 
+  # Create a new df with same dimensions as corvals
+  # Fill with significances encoded with asterisks
+  signif <- pvals
+  for (i in 1:ncol(pvals)) {
+      signif[,i] <- c(stats::symnum(pvals[,i],
+          corr = FALSE,
+          na = FALSE,
+          cutpoints = c(0, 0.0001, 0.001, 0.01, 0.05, 1),
+          symbols = c("****", "***", "**", "*", "")))
+  }
+
   #Convert to negative log (base 10)
   df <- -log10(data.matrix(df))
   df[df==Inf] <- 1
@@ -44,7 +55,7 @@ clusSignificancePlot <- function(df, labcex, strPalette, iNumColours, boolRevers
   labels=function(x,y,z,...)
   {
     panel.levelplot(x,y,z,...)
-    ltext(x, y, labels=pvals, cex=labcex, font=1)
+    ltext(x, y, labels=signif, cex=labcex, font=1)
   }
 
   levelplot(df, panel=labels, xlab="", ylab="", pretty=TRUE, scales=list(x=list(rot=45, at=seq(1,ncol(df),1)), y=list(rot=180, at=seq(1,ncol(df),1))), aspect="fill", col.regions=cols, main=strTitle, cuts=100, at=seq(iLowerRange,iUpperRange,0.1))
