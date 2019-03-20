@@ -66,7 +66,11 @@ clusterWithk <- function(x, varianceFactor=5, FUNcluster, k=50, lowerPercentile=
 
 	  for (j in 1:ncol(DataMatrix))
 	  {
-	    p <- c(p, summary(aov(DataMatrix[,j] ~ DataMatrix[,i]))[[1]][["Pr(>F)"]][[1]])
+            if (i == j){
+              p <- c(p, 1)
+            } else {
+              p <- c(p, summary(aov(DataMatrix[,j] ~ DataMatrix[,i]))[[1]][["Pr(>F)"]][[1]])
+            }
 	  }
 
 	  df <- rbind(df, p)
