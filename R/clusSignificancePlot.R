@@ -27,7 +27,7 @@ clusSignificancePlot <- function(df, labcex, strPalette, iNumColours, boolRevers
           corr = FALSE,
           na = FALSE,
           cutpoints = c(0, 0.0001, 0.001, 0.01, 0.05, 1),
-          symbols = c("****", "***", "**", "*", "")))
+          symbols = c("****", "***", "**", "*", "NS")))
   }
 
   #Convert to negative log (base 10)
