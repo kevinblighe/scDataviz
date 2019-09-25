@@ -1,0 +1,223 @@
+﻿---
+title: "scToolkit: single cell downstream analyses"
+author: "Kevin Blighe, Steven Hargreaves, Jessica Timms"
+date: "`r Sys.Date()`"
+package: "`r packageVersion('cytotools')`"
+output:
+  github_document:
+    toc: false
+    toc_depth: 3
+fig_width: 7
+bibliography: library.bib
+vignette: >
+    %\VignetteIndexEntry{scToolkit: single cell downstream analyses}
+    %\VignetteEngine{knitr::rmarkdown}
+    %\VignetteEncoding{UTF-8}
+    %\usepackage[utf8]{inputenc}
+---
+
+# Introduction
+
+...
+
+```{r, echo=FALSE}
+
+  library(knitr)
+  opts_chunk$set(tidy = FALSE, message = FALSE, warning = FALSE)
+
+```
+
+# Installation
+
+## 1. Download the package from Bioconductor
+
+```{r getPackage, eval=FALSE}
+
+  if (!requireNamespace('BiocManager', quietly = TRUE))
+    install.packages('BiocManager')
+    BiocManager::install('scToolkit')
+
+```
+
+Note: to install development version:
+
+```{r getPackageDevel, eval=FALSE}
+
+  devtools::install_github('kevinblighe/scToolkit')
+
+```
+
+## 2. Load the package into R session
+
+```{r Load, message=FALSE}
+
+  library(scToolkit)
+
+```
+
+
+# Quick start
+
+...
+
+```{r}
+
+  filelist <- list.files(
+    path = "FCS/",
+    pattern = "*.fcs|*.FCS",
+    full.names = TRUE)
+
+  cte <- processFCS(
+    files = filelist,
+    markersRetain = c("Y89Di","Rh103Di","Sn120Di",
+      "I127Di","Xe131Di","Cs133Di","Ba138Di",
+      "Ce140Di","Pr141Di","Nd142Di","Nd143Di",
+      "Nd144Di","Nd145Di","Nd146Di","Sm147Di,",
+      "Nd148Di","Sm149Di"))
+
+```
+
+## FACS-like plots for pairwise marker comparison 
+
+...
+
+```{r ex1, fig.height = 8.5, fig.width = 7, fig.cap = "..."}
+
+ require(RColorBrewer)
+ require(hexbin)
+ require(lattice)
+
+ facsplot(
+   data = cte,
+   marker1 = 'Nd142Di',
+   marker2 = 'I127Di',
+   x1=0, x2=5, y1=0, y2=5,
+   cex = 1.0)
+
+```
+
+## Perform principal components analysis
+
+...
+
+```{r ex2, fig.height = 8.5, fig.width = 7, fig.cap = "..."}
+
+  require(PCAtools)
+  p <- pca(t(cte),)
+
+  biplot(p, lab = FALSE, pointSize = 1)
+
+```
+
+## Perform UMAP
+
+...
+
+```{r}
+
+  u <- performUMAP(cte)
+
+```
+
+# Advanced features
+
+...
+
+## Create a contour plot of the UMAP layout
+
+...
+
+```{r ex3, fig.height = 8.5, fig.width = 14, fig.cap = "..."}
+
+  ggout <- contourplot(u)
+
+  require(cowplot)
+  plot_grid(ggout, ggout,
+    labels = c("Unstimulated", "Stimulated"),
+    ncol = 2, align = "h", label_size = 24)
+
+```
+
+## Show marker expression across the layout
+
+...
+
+
+```{r ex4, fig.height = 16, fig.width = 16, fig.cap = "..."}
+
+  par(mfrow = c(4,4))
+  markerExpression(u)
+
+```
+
+## Find ideal clusters in the UMAP layout via k-nearest neighbuors
+
+...  
+
+```{r ex5, fig.height = 8.5, fig.width = 7, fig.cap = "..."}
+
+  u <- clusKNN(u)
+
+  # HD, unstim
+  plot(
+    u$layout,
+    main = "HD, unstimulated",
+    xlab = "UMAP 1",
+    ylab = "UMAP 2",
+    #xlim = c(-15, 10),
+    #ylim = c(-13, 14),
+    col = u$colour,
+    pch = ".")
+  text(u$layout, labels = u$lab, cex = 2.0, col = "black")
+
+
+```
+
+## plot marker expression per identified cluster
+
+```{r ex6, fig.height = 12, fig.width = 16, fig.cap = ""}
+
+  markerExpressionPerCluster(u)
+
+```
+
+## Differential expression comparison between clusters
+
+```{r}
+
+  diffExpression(
+    data = u,
+    cluster1 = 5,
+    cluster2 = 8)
+
+```
+
+## Determine enriched markers in each cluster and plot the expression signature
+
+```
+
+  markerEnrichment()
+
+```
+
+```{r ex7, fig.height = 12, fig.width = 16, fig.cap = ""}
+
+  plotSignatures(u)
+  clusSignificancePlot(u)
+
+```
+
+# Acknowledgments
+
+The development of *scToolkit* has benefited from contributions
+and suggestions from:
+
+# Session info
+
+```{r}
+
+sessionInfo()
+
+```
+
+# References
