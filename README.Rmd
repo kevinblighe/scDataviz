@@ -78,7 +78,7 @@ Note: to install development version:
     files = filelist,
     metadata = metadata,
     transformation = TRUE,
-    downsample = 0)
+    downsample = 50)
 
 ```
 
@@ -107,7 +107,7 @@ Note: to install development version:
 ```{r ex2, fig.height = 8.5, fig.width = 7, fig.cap = "..."}
 
   require(PCAtools)
-  p <- pca(t(cte$expression), metadata = metadata)
+  p <- pca(t(sct$expression), metadata = sct$metadata)
 
   biplot(p, lab = FALSE, pointSize = 0.5)
 
