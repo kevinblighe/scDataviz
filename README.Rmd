@@ -73,10 +73,11 @@ Note: to install development version:
     row.names = filelist,
     stringsAsFactors = FALSE)
 
-  cte <- processFCS(
+  require(flowCore)
+  sct <- processFCS(
     files = filelist,
     metadata = metadata,
-    transformation = FALSE,
+    transformation = TRUE,
     downsample = 0)
 
 ```
@@ -92,10 +93,10 @@ Note: to install development version:
  require(lattice)
 
  facsplot(
-   data = cte,
+   data = sct,
    marker1 = 'Sm154Di',
    marker2 = 'Ir193Di',
-   cex = 1.0)
+   log2 = TRUE)
 
 ```
 
@@ -118,7 +119,7 @@ Note: to install development version:
 
 ```{r}
 
-  u <- performUMAP(cte)
+  sct <- performUMAP(sct)
 
 ```
 
@@ -132,7 +133,7 @@ Note: to install development version:
 
 ```{r ex3, fig.height = 8.5, fig.width = 14, fig.cap = "..."}
 
-  ggout <- contourplot(u)
+  ggout <- contourplot(sct)
 
   require(cowplot)
   plot_grid(ggout, ggout,
@@ -148,8 +149,10 @@ Note: to install development version:
 
 ```{r ex4, fig.height = 16, fig.width = 16, fig.cap = "..."}
 
-  par(mfrow = c(4,4))
-  markerExpression(u)
+  par(mfrow = c(2,4))
+  markerExpression(
+    data = sct,
+    markers = sample(colnames(sct$expression), 8))
 
 ```
 
@@ -159,19 +162,19 @@ Note: to install development version:
 
 ```{r ex5, fig.height = 8.5, fig.width = 7, fig.cap = "..."}
 
-  u <- clusKNN(u)
+  sct <- clusKNN(sct)
 
   # HD, unstim
   plot(
-    u$layout,
+    sct$layout,
     main = "HD, unstimulated",
     xlab = "UMAP 1",
     ylab = "UMAP 2",
     #xlim = c(-15, 10),
     #ylim = c(-13, 14),
-    col = u$colour,
+    col = sct$colour,
     pch = ".")
-  text(u$layout, labels = u$lab, cex = 2.0, col = "black")
+  text(sct$layout, labels = sct$lab, cex = 2.0, col = "black")
 
 
 ```
@@ -180,7 +183,9 @@ Note: to install development version:
 
 ```{r ex6, fig.height = 12, fig.width = 16, fig.cap = ""}
 
-  markerExpressionPerCluster(u)
+  require(reshape2)
+  require(ggplot2)
+  markerExpressionPerCluster(sct)
 
 ```
 

@@ -1,7 +1,7 @@
 contourplot <- function(
   data)
 {
-  gg <- ggplot(data$layout, aes(UMAP1, UMAP2)) +
+  gg <- ggplot(as.data.frame(data$layout), aes(UMAP1, UMAP2)) +
 
     stat_density2d(aes(alpha = ..level.., fill = ..level..), size = 1, bins = 350, geom = "polygon") +
 
@@ -42,8 +42,8 @@ contourplot <- function(
     xlab("UMAP 1") +
     ylab("UMAP 2") +
 
-    xlim(-15, 10) +
-    ylim(-13, 14) +
+    #xlim(-15, 10) +
+    #ylim(-13, 14) +
 
   labs(
     title = "",

@@ -1,10 +1,7 @@
 markerExpressionPerCluster <- function(
   data)
 {
-  require(reshape2)
-  require(ggplot2)
-
-  mat <- data$data
+  mat <- data$expression
   ggdata <- melt(data.frame(data$nnc$res.0.01, mat))
   colnames(ggdata) <- c('Cluster', 'Marker', 'Expression')
   ggdata$Marker <- factor(ggdata$Marker, levels = make.names(colnames(mat)))
