@@ -2,7 +2,7 @@
 title: "scToolkit: single cell downstream analyses"
 author: "Kevin Blighe, Steven Hargreaves, Jessica Timms"
 date: "`r Sys.Date()`"
-package: "`r packageVersion('cytotools')`"
+package: "`r packageVersion('scToolkit')`"
 output:
   github_document:
     toc: false
@@ -67,13 +67,17 @@ Note: to install development version:
     pattern = "*.fcs|*.FCS",
     full.names = TRUE)
 
+  metadata <- data.frame(
+    file = filelist,
+    group = c('HD', 'PB'),
+    row.names = filelist,
+    stringsAsFactors = FALSE)
+
   cte <- processFCS(
     files = filelist,
-    markersRetain = c("Y89Di","Rh103Di","Sn120Di",
-      "I127Di","Xe131Di","Cs133Di","Ba138Di",
-      "Ce140Di","Pr141Di","Nd142Di","Nd143Di",
-      "Nd144Di","Nd145Di","Nd146Di","Sm147Di,",
-      "Nd148Di","Sm149Di"))
+    metadata = metadata,
+    transformation = FALSE,
+    downsample = 0)
 
 ```
 
@@ -89,9 +93,8 @@ Note: to install development version:
 
  facsplot(
    data = cte,
-   marker1 = 'Nd142Di',
-   marker2 = 'I127Di',
-   x1=0, x2=5, y1=0, y2=5,
+   marker1 = 'Sm154Di',
+   marker2 = 'Ir193Di',
    cex = 1.0)
 
 ```
@@ -103,9 +106,9 @@ Note: to install development version:
 ```{r ex2, fig.height = 8.5, fig.width = 7, fig.cap = "..."}
 
   require(PCAtools)
-  p <- pca(t(cte),)
+  p <- pca(t(cte$expression), metadata = metadata)
 
-  biplot(p, lab = FALSE, pointSize = 1)
+  biplot(p, lab = FALSE, pointSize = 0.5)
 
 ```
 
