@@ -2,7 +2,7 @@
 title: "scToolkit: single cell downstream analyses"
 author: "Kevin Blighe, Steven Hargreaves, Jessica Timms"
 date: "`r Sys.Date()`"
-package: "r packageVersion('scToolkit')"
+package: "`r packageVersion('scToolkit')`"
 output:
   github_document:
     toc: false
