@@ -1,12 +1,15 @@
 clusKNN <- function(
-  data)
+  data,
+  k.param = 10,
+  resolution = 0.001,
+  algorithm = 2)
 {
   require(Seurat)
 
   data$nn <- FindNeighbors(
     data$layout,
     distance.matrix = FALSE,
-    k.param = 10,
+    k.param = k.param,
     compute.SNN = TRUE,
     prune.SNN = 1/15,
     nn.eps = 0,
@@ -28,8 +31,8 @@ clusKNN <- function(
     initial.membership = NULL,
     weights = NULL,
     node.sizes = NULL,
-    resolution = 0.01,
-    algorithm = 2, #1 = original Louvain algorithm; 2 = Louvain algorithm with multilevel refinement; 3 = SLM algorithm
+    resolution = resolution,
+    algorithm = algorithm, #1 = original Louvain algorithm; 2 = Louvain algorithm with multilevel refinement; 3 = SLM algorithm
     n.start = 10,
     n.iter = 10,
     random.seed = 0,

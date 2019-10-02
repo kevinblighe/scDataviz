@@ -1,48 +1,27 @@
-buildModel <- function()
+buildModel <- function(
+  data,
+  group = NULL,
+  groupfactors = unique(data$metadata[,group]),
+  cluster1 = NULL,
+  cluster2 = NULL,
+  markers = colnames(data$expression))
 {
-  modeling <- read.csv("modeling.txt", sep = '\t', stringsAsFactors = FALSE)
+  modeling <- data$expression[,which(colnames(data$expression) %in% markers)]
 
-  # removes markers that were used for gating (?)
-  modeling <- modeling[,-which(colnames(modeling) %in% c('CD45','CD4','CD3'))]
+  if (!is.null(group1)) {
+    modeling$group <- factor(data$metadata[,group], levels = groupfactors)
 
-  # retrospectively remove markers of high std error
-  modeling <- modeling[,-which(colnames(modeling) %in% c('IFN.g','C3aNeo_i'))]
+    # build a predictive model of OSSTAT
+    f <- as.formula(
+      paste0('group ~ ',
+        paste0(markers, collapse = "+")))
 
-  modeling <- data.frame(
-    Sample = modeling$Sample,
-    asinh(
-      data.frame(
-        data.matrix(modeling[,2:ncol(modeling)])/5)))
-
-  modeling$Sample <- factor(modeling$Sample, levels = c('HD', 'Patient'))
-
-  # determine markers 'co-expressed' with 3 markers of interest
-  mat <- modeling
-  scale01 <- function(x){(x - min(x, na.rm = TRUE)) / (max(x, na.rm = TRUE) - min(x, na.rm = TRUE))}
-  mat[,2:ncol(mat)] <- scale01(mat[,2:ncol(mat)])
-  mat[is.na(mat)] <- 0
-  C5AR1_top20 <- order(mat[which(mat$Sample == 'Patient'),'C5aR1_i'], decreasing = TRUE)[1:10]
-  C3C3B_top20 <- order(mat[which(mat$Sample == 'Patient'),'C3.C3b_i'], decreasing = TRUE)[1:10]
-  C5C5B_top20 <- order(mat[which(mat$Sample == 'Patient'),'C5.C5b_i'], decreasing = TRUE)[1:10]
-  topten <- names(sort(apply(mat[as.numeric(names(which(table(c(C5AR1_top20, C3C3B_top20, C5C5B_top20)) == 2))),2:ncol(mat)], 2, mean), decreasing = TRUE)[1:10])
-  mat <- data.matrix(mat[,topten])
-  rownames(mat) <- modeling$Sample
-  heatmap(mat)
-
-  # build a predictive model of OSSTAT
-  f <- as.formula(
-    paste0("Sample ~ ",
-      paste0(colnames(modeling[,2:ncol(modeling)]), collapse = "+")))
-
-  #f_topten <- as.formula(paste0("Sample ~ ", topten))
-  #f <- f_topten
-
-  # use step-wise regression with AIC in order to reduce model in size and
-  # select 'best' predictors
-  require(arm)
-  modeling[is.na(modeling)] <- 0
-  null <- bayesglm(Sample ~ 1, data = modeling, family = binomial(link = 'logit'))
-  full <- bayesglm(f, data = modeling, family = binomial(link = 'logit'))
+    # use step-wise regression with AIC in order to reduce model in size and
+    # select 'best' predictors
+    require(arm)
+    modeling[is.na(modeling)] <- 0
+    null <- bayesglm(group ~ 1, data = modeling, family = binomial(link = 'logit'))
+    full <- bayesglm(f, data = modeling, family = binomial(link = 'logit'))
 
   require(MASS)
   forward <- stepAIC(null, scope=list(lower=null, upper=full),

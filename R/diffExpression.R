@@ -4,9 +4,9 @@ diffExpression <- function(
   cluster2,
   test = 'wilcox')
 {
-  c1 <- as.character(which(data$nnc$res.0.01 == cluster1))
-  c2 <- as.character(which(data$nnc$res.0.01 == cluster2))
-  mat <- t(data$data)
+  c1 <- as.character(which(data$nnc[,1] == cluster1))
+  c2 <- as.character(which(data$nnc[,1] == cluster2))
+  mat <- t(data$expression)
   colnames(mat) <- 1:ncol(mat)
   FindMarkers(
     object = mat,

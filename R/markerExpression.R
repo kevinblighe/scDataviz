@@ -18,8 +18,8 @@ markerExpression <- function(
       main = paste(colnames(mat)[i], "expression"),
       xlab = "UMAP 1",
       ylab = "UMAP 2",
-      #xlim = c(-15, 10),
-      #ylim = c(-13, 14),
+      xlim = c(min(data$layout[,1], na.rm = TRUE) - 1, max(data$layout[,1], na.rm = TRUE) + 1),
+      ylim = c(min(data$layout[,2], na.rm = TRUE) - 1, max(data$layout[,2], na.rm = TRUE) + 1),
       col = col[sortidx],
       pch = ".")
 

@@ -2,7 +2,7 @@
 title: "scToolkit: single cell downstream analyses"
 author: "Kevin Blighe, Steven Hargreaves, Jessica Timms"
 date: "`r Sys.Date()`"
-package: "`r packageVersion('scToolkit')`"
+package: "r packageVersion('scToolkit')"
 output:
   github_document:
     toc: false
@@ -51,7 +51,10 @@ Note: to install development version:
 
 ```{r Load, message=FALSE}
 
-  library(scToolkit)
+  #library(scToolkit)
+
+  library(R.utils)
+  sourceDirectory('R')
 
 ```
 
@@ -69,7 +72,7 @@ Note: to install development version:
 
   metadata <- data.frame(
     file = filelist,
-    group = c('HD', 'PB'),
+    group = c('PB1', 'HD', 'PB2'),
     row.names = filelist,
     stringsAsFactors = FALSE)
 
@@ -77,8 +80,8 @@ Note: to install development version:
   sct <- processFCS(
     files = filelist,
     metadata = metadata,
-    transformation = TRUE,
-    downsample = 50)
+    transformation = FALSE,
+    downsample = 5)
 
 ```
 
@@ -94,9 +97,10 @@ Note: to install development version:
 
  facsplot(
    data = sct,
-   marker1 = 'Sm154Di',
-   marker2 = 'Ir193Di',
-   log2 = TRUE)
+   marker1 = 'Ho165Di',
+   marker2 = 'Nd144Di',
+   log2 = TRUE,
+   bins = 200)
 
 ```
 
@@ -104,7 +108,7 @@ Note: to install development version:
 
 ...
 
-```{r ex2, fig.height = 8.5, fig.width = 7, fig.cap = "..."}
+```{r ex2, fig.height = 7, fig.width = 7, fig.cap = "..."}
 
   require(PCAtools)
   p <- pca(t(sct$expression), metadata = sct$metadata)
@@ -119,6 +123,7 @@ Note: to install development version:
 
 ```{r}
 
+  require(umap)
   sct <- performUMAP(sct)
 
 ```
@@ -131,7 +136,7 @@ Note: to install development version:
 
 ...
 
-```{r ex3, fig.height = 8.5, fig.width = 14, fig.cap = "..."}
+```{r ex3, fig.height = 8.5, fig.width = 18, fig.cap = "..."}
 
   ggout <- contourplot(sct)
 
@@ -147,7 +152,7 @@ Note: to install development version:
 ...
 
 
-```{r ex4, fig.height = 16, fig.width = 16, fig.cap = "..."}
+```{r ex4, fig.height = 12, fig.width = 24, fig.cap = "..."}
 
   par(mfrow = c(2,4))
   markerExpression(
@@ -156,22 +161,36 @@ Note: to install development version:
 
 ```
 
+```{r ex5, fig.height = 7, fig.width = 14, fig.cap = "..."}
+
+  par(mfrow = c(1,2))
+  markerExpression(
+    data = sct,
+    markers = sample(colnames(sct$expression), 2))
+
+```
+
+
 ## Find ideal clusters in the UMAP layout via k-nearest neighbuors
 
 ...  
 
-```{r ex5, fig.height = 8.5, fig.width = 7, fig.cap = "..."}
+```{r ex6, fig.height = 7, fig.width = 7, fig.cap = "..."}
 
-  sct <- clusKNN(sct)
+  sct <- clusKNN(
+    sct,
+    k.param = 15,
+    resolution = 0.001,
+    algorithm = 2)
 
   # HD, unstim
   plot(
     sct$layout,
-    main = "HD, unstimulated",
+    main = "",
     xlab = "UMAP 1",
     ylab = "UMAP 2",
-    #xlim = c(-15, 10),
-    #ylim = c(-13, 14),
+    xlim = c(min(sct$layout[,1], na.rm = TRUE) - 1, max(sct$layout[,1], na.rm = TRUE) + 1),
+    ylim = c(min(sct$layout[,2], na.rm = TRUE) - 1, max(sct$layout[,2], na.rm = TRUE) + 1),
     col = sct$colour,
     pch = ".")
   text(sct$layout, labels = sct$lab, cex = 2.0, col = "black")
@@ -181,11 +200,14 @@ Note: to install development version:
 
 ## plot marker expression per identified cluster
 
-```{r ex6, fig.height = 12, fig.width = 16, fig.cap = ""}
+```{r ex7, fig.height = 14, fig.width = 32, fig.cap = ""}
 
   require(reshape2)
   require(ggplot2)
-  markerExpressionPerCluster(sct)
+  markerExpressionPerCluster(
+    data = sct,
+    ncol = 3,
+    cluster = c(1,2,5,9,11,12))
 
 ```
 
@@ -193,25 +215,27 @@ Note: to install development version:
 
 ```{r}
 
-  diffExpression(
-    data = u,
+  res <- diffExpression(
+    data = sct,
     cluster1 = 5,
     cluster2 = 8)
+
+  res
 
 ```
 
 ## Determine enriched markers in each cluster and plot the expression signature
 
+```{r}
+
+  markerEnrichment(sct)
+
 ```
 
-  markerEnrichment()
+```{r ex8, fig.height = 10, fig.width = 16, fig.cap = ""}
 
-```
-
-```{r ex7, fig.height = 12, fig.width = 16, fig.cap = ""}
-
-  plotSignatures(u)
-  clusSignificancePlot(u)
+  require(corrplot)
+  plotSignatures(sct)
 
 ```
 

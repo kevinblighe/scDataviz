@@ -7,7 +7,7 @@ processFCS <- function(
   transFun = function (x) asinh(x),
   asinhFactor = 5,
   downsample = 10,
-  colsDiscard = c('Time','Event_length','Center','Offset','Width','Residual','tSNE1','tSNE2'),
+  colsDiscard = c('Time','Event_length','Center','Offset','Width','Residual','tSNE1','tSNE2','BCKG'),
   colsRetain = NULL,
   newColnames = NULL)
 {

@@ -10,7 +10,7 @@ facsplot <- function(
   y1 = 0,
   y2 = 0,
   cex = 1,
-  colramp = colorRampPalette(rev(brewer.pal(9,"BuPu"))))
+  colramp = colorRampPalette(rev(brewer.pal(9,"Spectral"))))
 {
   data <- as.data.frame(data$expression)
 
