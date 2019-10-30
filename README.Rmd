@@ -1,8 +1,8 @@
-﻿---
+---
 title: "scToolkit: single cell downstream analyses"
 author: "Kevin Blighe, Steven Hargreaves, Jessica Timms"
 date: "`r Sys.Date()`"
-package: "`r packageVersion('scToolkit')`"
+package: "`r packageVersion('umap')`"
 output:
   github_document:
     toc: false
@@ -193,7 +193,7 @@ Note: to install development version:
     ylim = c(min(sct$layout[,2], na.rm = TRUE) - 1, max(sct$layout[,2], na.rm = TRUE) + 1),
     col = sct$colour,
     pch = ".")
-  text(sct$layout, labels = sct$lab, cex = 2.0, col = "black")
+  text(sct$layout, labels = sct$lab, cex = 1.0, col = "black")
 
 
 ```

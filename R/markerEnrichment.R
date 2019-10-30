@@ -21,7 +21,7 @@ markerEnrichment <- function(
 
   #Count percentage of cells and determine which markers are expressed or not
   nclus <- length(unique(clus))
-  for (j in 0:nclus) {
+  for (j in 0:(nclus-1)) {
     iCellsPerCluster <- length(clus[clus == j])
     iTotalCells <- length(clus)
     iPercentage <- (iCellsPerCluster/iTotalCells) * 100
