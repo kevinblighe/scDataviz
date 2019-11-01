@@ -1,9 +1,10 @@
 processFCS <- function(
   files,
   metadata = NULL,
+  filter = TRUE,
   bgNoiseThreshold = 1,
   euclideanNormThreshold = 1,
-  transformation = FALSE,
+  transformation = TRUE,
   transFun = function (x) asinh(x),
   asinhFactor = 5,
   downsample = 10,
@@ -45,9 +46,11 @@ processFCS <- function(
       function(x) colnames(x) <- newColnames)
   }
 
-  # transform
-  if (!is.null(transformation)) {
-    #Applying Euclidean norm
+  # filter
+  if (filter == TRUE) {
+    message('--filtering background / noise')
+
+    # Euclidean norm
     samples <- lapply(
       samples,
       function(x) x[apply(x, 1, FUN = function(x) sqrt(sum(x^2))) > euclideanNormThreshold,])
@@ -58,14 +61,17 @@ processFCS <- function(
       x[x < bgNoiseThreshold] <- 0
       samples[[i]] <- x
     }
+  }
 
-    # transform
+  # transform
+  if (transformation == TRUE) {
+    message('--transforming data')
     samples <- lapply(
       samples,
       function(x) transFun(x / asinhFactor))
   }
 
-  #load function for downsampling
+  # load function for downsampling
   if(!is.null(downsample)) {
     if (downsample > 0) {
       samples <- lapply(
@@ -102,9 +108,9 @@ processFCS <- function(
     }
   }
 
-  # return a list object that contains expression data and
-  # coresponding metadata
-  return(list(
-    expression = samples,
-    metadata = metadata))
+  # return a SingleCellExperiment object
+  ret <- SingleCellExperiment(
+    assays = list(scaled = samples))
+  rowData(ret) <- metadata
+  return(ret)
 }

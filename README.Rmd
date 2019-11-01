@@ -71,17 +71,17 @@ Note: to install development version:
     full.names = TRUE)
 
   metadata <- data.frame(
-    file = filelist,
     group = c('PB1', 'HD', 'PB2'),
     row.names = filelist,
     stringsAsFactors = FALSE)
 
   require(flowCore)
-  sct <- processFCS(
+  require(SingleCellExperiment)
+  sce <- processFCS(
     files = filelist,
     metadata = metadata,
-    transformation = FALSE,
-    downsample = 5)
+    transformation = TRUE,
+    downsample = 50)
 
 ```
 
