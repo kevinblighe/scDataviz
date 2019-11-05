@@ -7,9 +7,8 @@ mdsplot <- function(
   require(ggplot2)
   require(limma)
   require(ggrepel)
-
-  # Get the median marker expression per sample without normalization
-  # add marker selection later
+  
+  # Get the median marker expression per sample 
   data.median = data.frame(sample_id = data$metadata$group, data$expression) %>%
                 group_by(sample_id) %>% 
                 summarize_all(list(median))
@@ -24,7 +23,7 @@ mdsplot <- function(
   # Using metadata feature slot
   if(is.null(feature) == FALSE){
     
-    # Summarize feature 
+    # Summarize sampleID to metadata feature 
     feature.summary = data.frame(sample_id = data$metadata$group, feature = data$metadata[feature]) %>%
                       distinct()
     
