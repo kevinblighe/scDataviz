@@ -89,11 +89,11 @@ Note: to install development version:
 ```{r}
 
   mat1 <- matrix(
-    MASS::rnegbin(rexp(200000, rate=.1), theta = 4.5),
+    MASS::rnegbin(rexp(2000000, rate=.1), theta = 4.5),
     ncol = 20)
   colnames(mat1) <- paste0('CD', 1:ncol(mat1))
   mat2 <- matrix(
-    MASS::rnegbin(rexp(200000, rate=.1), theta = 4.5),
+    MASS::rnegbin(rexp(2000000, rate=.1), theta = 2.5),
     ncol = 20)
   colnames(mat2) <- paste0('CD', 1:ncol(mat2))
 
@@ -151,7 +151,7 @@ Note: to install development version:
 ```{r}
 
   require(umap)
-  sce <- performUMAP(sce, stratify = NULL)
+  sce <- performUMAP(sce)
 
 ```
 
@@ -165,7 +165,9 @@ Note: to install development version:
 
 ```{r ex3, fig.height = 8.5, fig.width = 18, fig.cap = "..."}
 
-  ggout <- contourplot(sct)
+  require(ggplot2)
+  require(ggrepel)
+  ggout <- contourplot(sce)
 
   require(cowplot)
   plot_grid(ggout, ggout,
@@ -179,21 +181,20 @@ Note: to install development version:
 ...
 
 
-```{r ex4, fig.height = 12, fig.width = 24, fig.cap = "..."}
-
-  par(mfrow = c(2,4))
-  markerExpression(
-    data = sct,
-    markers = sample(colnames(sct$expression), 8))
-
-```
-
 ```{r ex5, fig.height = 7, fig.width = 14, fig.cap = "..."}
 
+  require(reshape2)
+  require(scales)
+  markerExpression(sce,
+    markers = sample(rownames(sce), 8),
+    #col = c('green','red'),
+    nrow = 2, ncol = 4)
+
+  require(RColorBrewer)
+  require(SDMTools)
+
   par(mfrow = c(1,2))
-  markerExpression(
-    data = sct,
-    markers = sample(colnames(sct$expression), 2))
+  markerExpression(sce)
 
 ```
 

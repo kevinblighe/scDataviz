@@ -15,7 +15,7 @@ facsplot <- function(
   cex = 1,
   colramp = colorRampPalette(rev(brewer.pal(9,'Spectral'))))
 {
-  data <- data.frame(assay(sce, 'scaled'))
+  data <- as.data.frame(t(assay(sce, 'scaled')))
 
   x <- data[[marker1]]
   y <- data[[marker2]]

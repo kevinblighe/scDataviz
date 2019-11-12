@@ -94,11 +94,12 @@ processData <- function(
 
     metadata <- do.call(rbind, metanew)
     colnames(metadata) <- names
+    rownames(metadata) <- paste0('cell', 1:nrow(metadata))
   }
 
   # combine all samples
   samples <- do.call(rbind, samples)
-  rownames(samples) <- 1:nrow(samples)
+  rownames(samples) <- paste0('cell', 1:nrow(samples))
 
   # these should be equal
   if (!is.null(metadata)) {
@@ -110,7 +111,7 @@ processData <- function(
 
   # return a SingleCellExperiment object
   ret <- SingleCellExperiment(
-    assays = list(scaled = samples))
-  rowData(ret) <- metadata
+    assays = list(scaled = t(samples)))
+  metadata(ret) <- metadata
   return(ret)
 }

@@ -3,7 +3,7 @@ performUMAP <- function(
   useMarkers = NULL,
   stratify = NULL)
 {
-  data <- data.frame(assay(sce, 'scaled'))
+  data <- t(assay(sce, 'scaled'))
 
   if (is.null(stratify)) {
     message('--Performing UMAP for all data combined')
@@ -19,13 +19,13 @@ performUMAP <- function(
 
     return(sce)
   } else {
-    groups <- unique(rowData(sce)[,stratify])
+    groups <- unique(metadata(sce)[,stratify])
 
     dims <- list()
 
     for (i in 1:length(groups)) {
       message(paste0('--Performing UMAP for ', groups[i], ' (', i, '/', length(groups), ')'))
-      keep <- which(rowData(sce)[,stratify] == groups[i])
+      keep <- which(metadata(sce)[,stratify] == groups[i])
 
       if (is.null(useMarkers)) {
         u <- umap(data[keep,])

@@ -7,7 +7,7 @@ processFCS <- function(
   transformation = TRUE,
   transFun = function (x) asinh(x),
   asinhFactor = 5,
-  downsample = 10,
+  downsample = 0.1,
   colsDiscard = c('Time','Event_length','Center','Offset','Width','Residual','tSNE1','tSNE2','BCKG'),
   colsRetain = NULL,
   newColnames = NULL)
@@ -96,11 +96,12 @@ processFCS <- function(
 
     metadata <- do.call(rbind, metanew)
     colnames(metadata) <- names
+    rownames(metadata) <- paste0('cell', 1:nrow(metadata))
   }
 
   # combine all samples
   samples <- do.call(rbind, samples)
-  rownames(samples) <- 1:nrow(samples)
+  rownames(samples) <- paste0('cell', 1:nrow(samples))
 
   # these should be equal
   if (!is.null(metadata)) {
@@ -112,7 +113,7 @@ processFCS <- function(
 
   # return a SingleCellExperiment object
   ret <- SingleCellExperiment(
-    assays = list(scaled = samples))
-  rowData(ret) <- metadata
+    assays = list(scaled = t(samples)))
+  metadata(ret) <- metadata
   return(ret)
 }
