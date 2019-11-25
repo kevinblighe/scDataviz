@@ -11,6 +11,7 @@ markerExpression <- function(
   legendPosition = 'right',
   legendLabSize = 12,
   legendIconSize = 5.0,
+  legendKeyHeight = 4.0,
   xlim = NULL,
   ylim = NULL,
 
@@ -60,6 +61,8 @@ markerExpression <- function(
     theme(
       legend.background=element_rect(),
 
+      title=element_text(size=legendLabSize),
+
       plot.title=element_text(angle=0, size=titleLabSize,
         face='bold', vjust=1),
       plot.subtitle=element_text(angle = 0, size = subtitleLabSize,
@@ -73,13 +76,12 @@ markerExpression <- function(
         hjust = ylabhjust, vjust = ylabvjust),
       axis.title=element_text(size=axisLabSize),
 
+      legend.title=element_blank(),
       legend.position=legendPosition,
       legend.key=element_blank(),
       legend.key.size=unit(0.5, 'cm'),
       legend.text=element_text(size=legendLabSize),
-
-      title=element_text(size=legendLabSize),
-      legend.title=element_blank())
+      legend.key.height = unit(legendKeyHeight, 'cm'))
 
   plotobj <- as.data.frame(reducedDim(sce, "UMAP"))
 
@@ -120,14 +122,14 @@ markerExpression <- function(
   plotobj <- plotobj[order(plotobj$Expression, decreasing = FALSE),]
 
   # initialise the plot object
-  plot <- ggplot(plotobj, aes(x = UMAP1, y = UMAP2, colour = Expression)) + th +
+  plot <- ggplot(plotobj, aes(x = UMAP1, y = UMAP2, alpha = Expression)) + th +
 
     guides(
       fill = guide_legend(),
       shape = guide_legend(),
-      colour = guide_legend(override.aes = list(size = legendIconSize)))
+      alpha = FALSE)
 
-  plot <- plot + geom_point(size = pointSize)
+  plot <- plot + geom_point(aes(colour = Expression), size = pointSize)
 
   if (length(col) == 2) {
     plot <- plot +

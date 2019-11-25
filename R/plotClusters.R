@@ -1,19 +1,19 @@
-contourplot <- function(
+plotClusters <- function(
   sce,
-  lowcol = 'darkblue',
-  highcol = 'darkred',
-  alpha = c(0.0, 0.5),
-  contour = 'black',
-  bins = 300,
+  ncol = 3,
+  nrow = 2,
+
+  col,
+  alpha = c(0.0, 1),
+  pointSize = 0.5,
 
   legendPosition = 'none',
   legendLabSize = 12,
   legendIconSize = 5.0,
-  legendKeyHeight = 2.5,
   xlim = NULL,
   ylim = NULL,
 
-  celllab = NULL,
+  label = TRUE,
   labSize = 3.0,
   labhjust = 1.5,
   labvjust = 0,
@@ -60,6 +60,7 @@ contourplot <- function(
       legend.background=element_rect(),
 
       title=element_text(size=legendLabSize),
+
       plot.title=element_text(angle=0, size=titleLabSize,
         face='bold', vjust=1),
       plot.subtitle=element_text(angle = 0, size = subtitleLabSize,
@@ -73,32 +74,24 @@ contourplot <- function(
         hjust = ylabhjust, vjust = ylabvjust),
       axis.title=element_text(size=axisLabSize),
 
-      legend.title=element_blank()
+      legend.title=element_blank(),
       legend.position=legendPosition,
       legend.key=element_blank(),
       legend.key.size=unit(0.5, 'cm'),
-      legend.text=element_text(size=legendLabSize),
-      legend.key.height = unit(legendKeyHeight, 'cm'))
+      legend.text=element_text(size=legendLabSize))
 
   plotobj <- as.data.frame(reducedDim(sce, "UMAP"))
 
-  # set plot labels (e.g. cell names)
-  if (!is.null(celllab)) {
-    plotobj$lab <- rownames(plotobj)
-    plotobj <- as.data.frame(plotobj, stringsAsFactors = FALSE)
+  plotobj <- data.frame(plotobj, as.data.frame(t(assay(sce, 'scaled'))))
 
-    names.new <- rep(NA, length(plotobj$lab))
-    indices <- which(plotobj$lab %in% celllab)
-    names.new[indices] <- plotobj$lab[indices]
-    plotobj$lab <- names.new
-  }
+  plotobj <- melt(plotobj, id.vars = c('UMAP1','UMAP2','Cluster'))
 
-  if (is.null(title)) {
-    title <- 'Cellular density and contours'
-  }
+  colnames(plotobj) <- c('UMAP1','UMAP2','Marker','Expression')
 
-  if (is.null(caption)) {
-    caption <- paste0('Total cells, ', nrow(data), '; Bins, ', bins)
+  # set labels
+  if (label == TRUE) {
+    ggdata$plotobj <- paste0('Cluster', ggdata$Cluster)
+    ggdata$plotobj[duplicated(ggdata$lab)] <- NA
   }
 
   if (is.null(xlim)) {
@@ -113,20 +106,38 @@ contourplot <- function(
       max(plotobj[,'UMAP2'], na.rm = TRUE) + 1)
   }
 
+  # order by expression level to ensure that highly expressed are coloured last
+  plotobj <- plotobj[order(plotobj$Expression, decreasing = FALSE),]
+
   # initialise the plot object
-  plot <- ggplot(plotobj, aes(UMAP1, UMAP2)) + th +
+  plot <- ggplot(plotobj, aes(x = UMAP1, y = UMAP2, alpha = Expression)) + th +
 
-    guides(fill = guide_legend(),
+    guides(
+      fill = guide_legend(),
       shape = guide_legend(),
-      colour = guide_legend(override.aes = list(size = legendIconSize))) +
+      alpha = FALSE)
 
-    stat_density2d(aes(alpha = ..level.., fill = ..level..), size = 1, bins = bins, geom = 'polygon') +
+  plot <- plot + geom_point(aes(colour = Expression), size = pointSize)
 
-    scale_fill_gradient(low = lowcol, high = highcol, name = 'Density') +
+  if (length(col) == 2) {
+    plot <- plot +
+       scale_colour_gradient(
+       #scale_colour_continuous(
+         low = col[1],
+         high = col[2])
+  } else if (length(col) == 3) {
+    plot <- plot +
+      scale_colour_gradient2(
+        low = col[1],
+        mid = col[2],
+        high = col[3],
+        midpoint = (max(plotobj$Expression) - min(plotobj$Expression)) / 2,
+        limits = c(min(plotobj$Expression), max(plotobj$Expression)),
+        space='Lab')
+  }
 
-    scale_alpha(range = c(alpha[1], alpha[2]), guide = FALSE) +
-
-    geom_density2d(colour = contour)
+  plot <- plot + #scale_alpha(range = c(alpha[1], alpha[2]), guide = FALSE) +
+    facet_wrap( ~ Marker, nrow = nrow, ncol = ncol)
 
   # add elements to the plot for xy labeling and axis limits
   plot <- plot + xlab(xlab) + ylab(ylab)
