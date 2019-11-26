@@ -4,7 +4,6 @@ plotClusters <- function(
   nrow = 2,
 
   col,
-  alpha = c(0.0, 1),
   pointSize = 0.5,
 
   legendPosition = 'none',
@@ -110,7 +109,7 @@ plotClusters <- function(
   plotobj <- plotobj[order(plotobj$Expression, decreasing = FALSE),]
 
   # initialise the plot object
-  plot <- ggplot(plotobj, aes(x = UMAP1, y = UMAP2, alpha = Expression)) + th +
+  plot <- ggplot(plotobj, aes(x = UMAP1, y = UMAP2)) + th +
 
     guides(
       fill = guide_legend(),
@@ -120,24 +119,8 @@ plotClusters <- function(
   plot <- plot + geom_point(aes(colour = Expression), size = pointSize)
 
   if (length(col) == 2) {
-    plot <- plot +
-       scale_colour_gradient(
-       #scale_colour_continuous(
-         low = col[1],
-         high = col[2])
   } else if (length(col) == 3) {
-    plot <- plot +
-      scale_colour_gradient2(
-        low = col[1],
-        mid = col[2],
-        high = col[3],
-        midpoint = (max(plotobj$Expression) - min(plotobj$Expression)) / 2,
-        limits = c(min(plotobj$Expression), max(plotobj$Expression)),
-        space='Lab')
   }
-
-  plot <- plot + #scale_alpha(range = c(alpha[1], alpha[2]), guide = FALSE) +
-    facet_wrap( ~ Marker, nrow = nrow, ncol = ncol)
 
   # add elements to the plot for xy labeling and axis limits
   plot <- plot + xlab(xlab) + ylab(ylab)
