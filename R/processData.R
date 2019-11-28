@@ -1,5 +1,5 @@
-processFCS <- function(
-  files,
+processData <- function(
+  mat,
   metadata = NULL,
   filter = TRUE,
   bgNoiseThreshold = 1,
@@ -13,17 +13,15 @@ processFCS <- function(
   newColnames = NULL)
 {
   # if metadata specified, enforce rule that rownames(metadata) is the
-  # same as filelist
+  # same as input list names
   if (!is.null(metadata)) {
-    if(!identical(files, rownames(metadata))) {
-      stop("'filelist' is not identical to 'rownames(metadata)'")
+    if(!identical(names(mat), rownames(metadata))) {
+      stop("'mat' list name order is not identical to 'rownames(metadata)'")
     }
   }
 
-  # read in the data to a list
-  samples <- list()
-  samples <- lapply(files, function(x) exprs(read.FCS(x, transformation = FALSE)))
-  names(samples) <- files
+  # carry over to same workflow as 'processFCS'
+  samples <- mat
 
   # filter markers out
   if (!is.null(colsDiscard)) {

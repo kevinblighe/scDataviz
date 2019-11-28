@@ -1,18 +1,21 @@
 facsplot <- function(
-  data,
+  sce,
   marker1,
   marker2,
-  log2 = TRUE,
+  log2 = FALSE,
   bins = 200,
-  main = 'FACS-like plot',
+  main = 'Pairwise marker comparison',
   x1 = 0,
   x2 = 0,
   y1 = 0,
   y2 = 0,
+  linecol = 'black',
+  linewidth = 1,
+  linetype = 3,
   cex = 1,
-  colramp = colorRampPalette(rev(brewer.pal(9,"Spectral"))))
+  colramp = colorRampPalette(rev(brewer.pal(9,'Spectral'))))
 {
-  data <- as.data.frame(data$expression)
+  data <- as.data.frame(t(assay(sce, 'scaled')))
 
   x <- data[[marker1]]
   y <- data[[marker2]]
@@ -40,7 +43,12 @@ facsplot <- function(
     colramp = colramp,
     panel=function(x, y, ...) {
       panel.hexbinplot(x, y, ...)
-      panel.abline(v=c(x1,x2), h=c(y1,y2), col="black", lwd=4, lty=5)})
+      panel.abline(
+        v = c(x1,x2),
+        h = c(y1,y2),
+        col = linecol,
+        lwd = linewidth,
+        lty = linetype)})
 
   return(hbplot)
 }
