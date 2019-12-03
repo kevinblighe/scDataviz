@@ -8,7 +8,7 @@ medianHeatmap <- function(
   require(dplyr)
   
   # Get the median marker expression per sample
-  data.median = data.frame(sample_id = data$metadata$group, data$expression) %>%
+  data.median = data.frame(sample_id = data@metadata$group, t(assay(sct))) %>%
     group_by(sample_id) %>% 
     summarize_all(list(median))
   
@@ -20,7 +20,7 @@ medianHeatmap <- function(
   if(is.null(feature) == FALSE){
     
     # Summarize sampleID to metadata feature 
-    feature.summary = data.frame(sample_id = data$metadata$group, feature = data$metadata[feature]) %>%
+    feature.summary = data.frame(sample_id = data@metadata$group, feature = data@metadata[feature]) %>%
       distinct()
     
     # Match feature
