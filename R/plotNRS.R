@@ -16,11 +16,11 @@ plotNRS <- function(
   }
   
   # Split the data into a list by sample
-  data.list = data.frame(sample_id = data$metadata$group, data$expression) %>% 
+  data.list = data.frame(sample_id = data@metadata$group, t(assay(sct))) %>% 
               group_by(sample_id) %>% group_split(keep = FALSE) 
   
   # Summarize sampleID to metadata feature 
-  feature.summary = data.frame(sample_id = data$metadata$group, feature = data$metadata[feature]) %>%
+  feature.summary = data.frame(sample_id = data@metadata$group, feature = data@metadata[feature]) %>%
     distinct()
   
   # calculate the score
