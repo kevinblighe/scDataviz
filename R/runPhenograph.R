@@ -21,7 +21,7 @@ runPhenograph <- function(
   }
   else{
     
-    rphenograph_output <- Rphenograph(t(assay(sce)))
+    rphenograph_output <- Rphenograph(t(assay(sce)), k = k)
     
     identity <- factor(membership(rphenograph_output[[2]]))
     
