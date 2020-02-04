@@ -1,6 +1,6 @@
 scToolkit: single cell downstream analyses
 ================
-Kevin Blighe, Steven Hargreaves, Jessica Timms
+Kevin Blighe
 2019-10-03
 
 # Introduction
