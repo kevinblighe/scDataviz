@@ -1,18 +1,17 @@
 contourplot <- function(
   sce,
+  reducedDim = 'UMAP',
   lowcol = 'darkblue',
   highcol = 'darkred',
   alpha = c(0.0, 0.5),
   contour = 'black',
   bins = 300,
-
-  legendPosition = 'none',
+  legendPosition = 'right',
   legendLabSize = 12,
   legendIconSize = 5.0,
   legendKeyHeight = 2.5,
   xlim = NULL,
   ylim = NULL,
-
   celllab = NULL,
   labSize = 3.0,
   labhjust = 1.5,
@@ -20,25 +19,21 @@ contourplot <- function(
   drawConnectors = TRUE,
   widthConnectors = 0.5,
   colConnectors = 'grey50',
-
   xlab = 'UMAP1',
   xlabAngle = 0,
   xlabhjust = 0.5,
   xlabvjust = 0.5,
-
   ylab = 'UMAP2',
   ylabAngle = 0,
   ylabhjust = 0.5,
   ylabvjust = 0.5,
   axisLabSize = 16,
-
-  title = NULL,
-  subtitle = NULL,
-  caption = NULL,
+  title = 'Cellular density and contours',
+  subtitle = '',
+  caption = paste0('Total cells, ', nrow(as.data.frame(reducedDim(sce, "UMAP"))), '; Bins, ', bins),
   titleLabSize = 16,
   subtitleLabSize = 12,
   captionLabSize = 12,
-
   hline = NULL,
   hlineType = 'longdash',
   hlineCol = 'black',
@@ -47,14 +42,13 @@ contourplot <- function(
   vlineType = 'longdash',
   vlineCol = 'black',
   vlineWidth = 0.4,
-
   gridlines.major = TRUE,
   gridlines.minor = TRUE,
   borderWidth = 0.8,
   borderColour = 'black')
 {
   # create a base theme that will later be modified
-  th <- theme_bw(base_size=24) +
+  th <- theme_bw(base_size = 24) +
 
     theme(
       legend.background=element_rect(),
@@ -73,14 +67,14 @@ contourplot <- function(
         hjust = ylabhjust, vjust = ylabvjust),
       axis.title=element_text(size=axisLabSize),
 
-      legend.title=element_blank()
-      legend.position=legendPosition,
-      legend.key=element_blank(),
-      legend.key.size=unit(0.5, 'cm'),
-      legend.text=element_text(size=legendLabSize),
+      legend.title = element_blank(),
+      legend.position = legendPosition,
+      legend.key = element_blank(),
+      legend.key.size = unit(0.5, 'cm'),
+      legend.text=element_text(size = legendLabSize),
       legend.key.height = unit(legendKeyHeight, 'cm'))
 
-  plotobj <- as.data.frame(reducedDim(sce, "UMAP"))
+  plotobj <- as.data.frame(reducedDim(sce, reducedDim))
 
   # set plot labels (e.g. cell names)
   if (!is.null(celllab)) {
@@ -91,14 +85,6 @@ contourplot <- function(
     indices <- which(plotobj$lab %in% celllab)
     names.new[indices] <- plotobj$lab[indices]
     plotobj$lab <- names.new
-  }
-
-  if (is.null(title)) {
-    title <- 'Cellular density and contours'
-  }
-
-  if (is.null(caption)) {
-    caption <- paste0('Total cells, ', nrow(data), '; Bins, ', bins)
   }
 
   if (is.null(xlim)) {
@@ -116,10 +102,6 @@ contourplot <- function(
   # initialise the plot object
   plot <- ggplot(plotobj, aes(UMAP1, UMAP2)) + th +
 
-    guides(fill = guide_legend(),
-      shape = guide_legend(),
-      colour = guide_legend(override.aes = list(size = legendIconSize))) +
-
     stat_density2d(aes(alpha = ..level.., fill = ..level..), size = 1, bins = bins, geom = 'polygon') +
 
     scale_fill_gradient(low = lowcol, high = highcol, name = 'Density') +
@@ -127,6 +109,8 @@ contourplot <- function(
     scale_alpha(range = c(alpha[1], alpha[2]), guide = FALSE) +
 
     geom_density2d(colour = contour)
+
+  plot <- plot + guides(colour = guide_legend(override.aes = list(size = legendIconSize)))
 
   # add elements to the plot for xy labeling and axis limits
   plot <- plot + xlab(xlab) + ylab(ylab)

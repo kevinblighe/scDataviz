@@ -1,43 +1,36 @@
 plotClusters <- function(
   sce,
-  ncol = 3,
-  nrow = 2,
-
-  col,
+  reducedDim = 'UMAP',
+  dimColnames = c('UMAP1','UMAP2'),
+  clusterColname = 'Cluster',
   pointSize = 0.5,
-
   legendPosition = 'none',
   legendLabSize = 12,
   legendIconSize = 5.0,
   xlim = NULL,
   ylim = NULL,
-
   label = TRUE,
-  labSize = 3.0,
+  labSize = 5.0,
   labhjust = 1.5,
   labvjust = 0,
   drawConnectors = TRUE,
   widthConnectors = 0.5,
   colConnectors = 'grey50',
-
-  xlab = 'UMAP1',
+  xlab = dimColnames[1],
   xlabAngle = 0,
   xlabhjust = 0.5,
   xlabvjust = 0.5,
-
-  ylab = 'UMAP2',
+  ylab = dimColnames[2],
   ylabAngle = 0,
   ylabhjust = 0.5,
   ylabvjust = 0.5,
   axisLabSize = 16,
-
-  title = NULL,
-  subtitle = NULL,
-  caption = NULL,
+  title = 'k-nearest neighbor (k-NN) clusters',
+  subtitle = '',
+  caption = paste0('Total cells, ', nrow(as.data.frame(reducedDim(sce, reducedDim)))),
   titleLabSize = 16,
   subtitleLabSize = 12,
   captionLabSize = 12,
-
   hline = NULL,
   hlineType = 'longdash',
   hlineCol = 'black',
@@ -46,7 +39,6 @@ plotClusters <- function(
   vlineType = 'longdash',
   vlineCol = 'black',
   vlineWidth = 0.4,
-
   gridlines.major = TRUE,
   gridlines.minor = TRUE,
   borderWidth = 0.8,
@@ -79,44 +71,41 @@ plotClusters <- function(
       legend.key.size=unit(0.5, 'cm'),
       legend.text=element_text(size=legendLabSize))
 
-  plotobj <- as.data.frame(reducedDim(sce, "UMAP"))
+  plotobj <- as.data.frame(reducedDim(sce, reducedDim))
 
-  plotobj <- data.frame(plotobj, as.data.frame(t(assay(sce, 'scaled'))))
+  plotobj <- data.frame(plotobj, Cluster = metadata(sce)[[clusterColname]])
 
-  plotobj <- melt(plotobj, id.vars = c('UMAP1','UMAP2','Cluster'))
+  colnames(plotobj) <- c('dim1','dim2','Cluster')
 
-  colnames(plotobj) <- c('UMAP1','UMAP2','Marker','Expression')
+  plotobj$Cluster <- factor(plotobj$Cluster)
 
   # set labels
   if (label == TRUE) {
-    ggdata$plotobj <- paste0('Cluster', ggdata$Cluster)
-    ggdata$plotobj[duplicated(ggdata$lab)] <- NA
+    plotobj$lab <- paste0('Cluster', plotobj$Cluster)
+    plotobj$lab[duplicated(plotobj$lab)] <- NA
   }
 
   if (is.null(xlim)) {
     xlim <- c(
-      min(plotobj[,'UMAP1'], na.rm = TRUE) - 1,
-      max(plotobj[,'UMAP1'], na.rm = TRUE) + 1)
+      min(plotobj[,'dim1'], na.rm = TRUE) - 1,
+      max(plotobj[,'dim1'], na.rm = TRUE) + 1)
   }
 
   if (is.null(ylim)) {
     ylim <- c(
-      min(plotobj[,'UMAP2'], na.rm = TRUE) - 1,
-      max(plotobj[,'UMAP2'], na.rm = TRUE) + 1)
+      min(plotobj[,'dim2'], na.rm = TRUE) - 1,
+      max(plotobj[,'dim2'], na.rm = TRUE) + 1)
   }
 
-  # order by expression level to ensure that highly expressed are coloured last
-  plotobj <- plotobj[order(plotobj$Expression, decreasing = FALSE),]
-
   # initialise the plot object
-  plot <- ggplot(plotobj, aes(x = UMAP1, y = UMAP2)) + th +
+  plot <- ggplot(plotobj, aes(x = dim1, y = dim2)) + th +
 
     guides(
       fill = guide_legend(),
       shape = guide_legend(),
       alpha = FALSE)
 
-  plot <- plot + geom_point(aes(colour = Expression), size = pointSize)
+  plot <- plot + geom_point(aes(colour = Cluster), size = pointSize)
 
   if (length(col) == 2) {
   } else if (length(col) == 3) {
@@ -168,39 +157,19 @@ plotClusters <- function(
     plot <- plot + theme(panel.grid.minor = element_blank())
   }
 
-
-  if (!is.null(celllab)) {
-    if (drawConnectors == TRUE && is.null(celllab)) {
+  if (label == TRUE) {
+    if (drawConnectors == TRUE) {
       plot <- plot + geom_text_repel(
-        data = plotobj,
+        data = subset(plotobj, !is.na(plotobj[,'lab'])),
           aes(label = lab),
           size = labSize,
           segment.color = colConnectors,
           segment.size = widthConnectors,
           hjust = labhjust,
           vjust = labvjust)
-    } else if (drawConnectors == TRUE && !is.null(celllab)) {
-      plot <- plot + geom_text_repel(
-        data=subset(plotobj,
-          !is.na(plotobj[,'lab'])),
-          aes(label = lab),
-          size = labSize,
-          segment.color = colConnectors,
-          segment.size = widthConnectors,
-          hjust = labhjust,
-          vjust = labvjust)
-    } else if (drawConnectors == FALSE && !is.null(celllab)) {
+    } else if (drawConnectors == FALSE) {
       plot <- plot + geom_text(
-        data=subset(plotobj,
-          !is.na(plotobj[,'lab'])),
-          aes(label = lab),
-          size = labSize,
-          check_overlap = TRUE,
-          hjust = labhjust,
-          vjust = labvjust)
-    } else if (drawConnectors == FALSE && is.null(celllab)) {
-      plot <- plot + geom_text(
-        data = plotobj,
+        data = subset(plotobj, !is.na(plotobj[,'lab'])),
           aes(label = lab),
           size = labSize,
           check_overlap = TRUE,

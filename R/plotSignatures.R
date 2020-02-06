@@ -1,26 +1,21 @@
 plotSignatures <- function(
-  data,
+  sce,
+  clusterVector = metadata(sce)[['Cluster']],
+  funcSummarise = function(x) median(x, na.rm = TRUE),
   col = colorRampPalette(rev(brewer.pal(9, 'RdBu')))(100),
   cexlab = 1.0,
   cexlegend = 1.0,
   labDegree = 90)
 {
-  df <- data$expression
-  df <- aggregate(data.matrix(data$expression), data$nnc, mean)
-  df <- df[,-1]
-  df <- df[,order(colnames(df))]
-
-  # center the medoids
-  df <- apply(df, 2, scale, scale = FALSE)
-
-  # set max to +1
-  df <- t(df) / max(abs(range(df)))
-
-  # stretch out to -1 / +1 scale
-  df <- scales::rescale(df, c(-1,1))
+  data <- as.data.frame(t(assay(sce, 'scaled')))
+  data <- aggregate(data, list(clusterVector), funcSummarise)
+  data <- data[,-1]
+  data <- apply(data, 2, scale, scale = FALSE)
+  data <- t(data) / max(abs(range(data)))
+  data <- rescale(data, c(-1,1))
 
   corrplot(
-    data.matrix(t(df)),
+    data.matrix(t(data)),
     method = "circle",
     order = "original",
     addgrid.col = "grey60",

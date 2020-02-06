@@ -1,5 +1,8 @@
 markerEnrichment <- function(
-  data,
+  sce,
+  metacluster,
+  clusterVector = metadata(sce)[['Cluster']],
+  funcSummarise = function(x) median(x, na.rm = TRUE),
   lowerPercentile = 5,
   upperPercentile = 5)
 { 
@@ -8,27 +11,34 @@ markerEnrichment <- function(
   iPercentage <- c()
   NegativeMarkers <- c()
   PositiveMarkers <- c()
-  res <- data.frame()
 
-  df <- data$expression
-  df <- aggregate(data.matrix(data$expression), data$nnc, mean)
-  df <- df[,-1]
-  df <- apply(df, 2, scale, scale = FALSE)
-  df <- t(df) / max(abs(range(df)))
-  df <- scales::rescale(df, c(-1,1))
+  metadata = metadata(sce)
 
-  clus <- data$nnc[,1]
+  data <- as.data.frame(t(assay(sce, 'scaled')))
+  data <- aggregate(data, list(clusterVector), funcSummarise)
+  data <- data[,-1]
+  data <- apply(data, 2, scale, scale = FALSE)
+  data <- t(data) / max(abs(range(data)))
+  data <- rescale(data, c(-1,1))
 
-  #Count percentage of cells and determine which markers are expressed or not
-  nclus <- length(unique(clus))
+  nclus <- length(unique(clusterVector))
+
+  res <- data.frame(row.names = 0:(nclus-1))
+  metares <- data.frame(row.names = 0:(nclus-1))
+
   for (j in 0:(nclus-1)) {
-    iCellsPerCluster <- length(clus[clus == j])
-    iTotalCells <- length(clus)
+    iCellsPerCluster <- length(clusterVector[clusterVector == j])
+    iTotalCells <- length(clusterVector)
     iPercentage <- (iCellsPerCluster/iTotalCells) * 100
-    NegativeMarkers <- names(which(df[,j] < (min(df[,j]) + (((max(df[,j]) - min(df[,j])) / 100) * lowerPercentile))))
-    PositiveMarkers <- names(which(df[,j] > (max(df[,j]) - (((max(df[,j]) - min(df[,j])) / 100) * upperPercentile))))
-    res <- rbind(
-      res,
+
+    NegativeMarkers <- names(which(data[,j] < (min(data[,j]) + (((max(data[,j]) - min(data[,j])) / 100) * lowerPercentile))))
+    PositiveMarkers <- names(which(data[,j] > (max(data[,j]) - (((max(data[,j]) - min(data[,j])) / 100) * upperPercentile))))
+
+    metaclusAbundance <- table(metadata[which(clusterVector == j),metacluster])
+    metaclusAbundance <- (metaclusAbundance / iCellsPerCluster) * 100
+    studyvar <- table(metadata[which(clusterVector == j),metacluster])
+
+    res <- rbind(res,
       c(j,
         iCellsPerCluster,
         iTotalCells,
@@ -42,7 +52,14 @@ markerEnrichment <- function(
     res$PercentCells <- as.numeric(as.character(res$PercentCells))
     res$PosMarkers <- as.character(res$PosMarkers)
     res$NegMarkers <- as.character(res$NegMarkers)
+
+    metares <- rbind(metares,
+      c(metaclusAbundance, studyvar))
+    colnames(metares) <- c(paste0('PerCent_', names(metaclusAbundance)), paste0('nCell_', names(studyvar)))
   }
 
-  return(res)
+  res$PosMarkers[res$PosMarkers == '+'] <- NA
+  res$NegMarkers[res$NegMarkers == '-'] <- NA
+
+  return(cbind(res, metares))
 }

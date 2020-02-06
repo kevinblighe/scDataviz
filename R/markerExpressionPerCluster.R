@@ -1,56 +1,211 @@
 markerExpressionPerCluster <- function(
-  data,
-  cluster = c(0:length(unique(data$nnc[,1]))),
-  ncol = 2,
-  markernames = NULL)
+  sce,
+  clusters = sample(metadata(sce)[['Cluster']], 9),
+  clusterVector = metadata(sce)[['Cluster']],
+  markers = sample(rownames(sce), 10),
+  ncol = 3,
+  nrow = 3,
+  legendPosition = 'none',
+  legendLabSize = 12,
+  legendIconSize = 5.0,
+  legendKeyHeight = 2.5,
+  xlim = NULL,
+  ylim = NULL,
+  yfixed = FALSE,
+  celllab = NULL,
+  labSize = 3.0,
+  labhjust = 1.5,
+  labvjust = 0,
+  drawConnectors = TRUE,
+  widthConnectors = 0.5,
+  colConnectors = 'grey50',
+  xlab = 'Marker',
+  xlabAngle = 90,
+  xlabhjust = 0.5,
+  xlabvjust = 0.5,
+  ylab = 'Expression',
+  ylabAngle = 0,
+  ylabhjust = 0.5,
+  ylabvjust = 0.5,
+  axisLabSize = 16,
+  stripLabSize = 16,
+  title = 'Marker expression per k-NN cluster',
+  subtitle = '',
+  caption = '',
+  titleLabSize = 16,
+  subtitleLabSize = 12,
+  captionLabSize = 12,
+  hline = NULL,
+  hlineType = 'longdash',
+  hlineCol = 'black',
+  hlineWidth = 0.4,
+  vline = NULL,
+  vlineType = 'longdash',
+  vlineCol = 'black',
+  vlineWidth = 0.4,
+  gridlines.major = TRUE,
+  gridlines.minor = TRUE,
+  borderWidth = 0.8,
+  borderColour = 'black')
 {
-  mat <- data$expression
-  ggdata <- melt(data.frame(data$nnc, mat))
-  colnames(ggdata) <- c('Cluster', 'Marker', 'Expression')
-  ggdata$Marker <- factor(ggdata$Marker, levels = make.names(colnames(mat)))
+  # create a base theme that will later be modified
+  th <- theme_bw(base_size=24) +
 
-  if (!is.null(markernames)) {
-    levels(ggdata$Marker) <- markernames
+    theme(
+      legend.background = element_rect(),
+
+      title = element_text(size = legendLabSize),
+
+      plot.title=element_text(angle=0, size=titleLabSize,
+        face='bold', vjust=1),
+      plot.subtitle=element_text(angle = 0, size = subtitleLabSize,
+        face = 'plain', vjust = 1),
+      plot.caption=element_text(angle = 0, size = captionLabSize,
+        face = 'plain', vjust = 1),
+
+      axis.text.x=element_text(angle = xlabAngle, size = axisLabSize,
+        hjust = xlabhjust, vjust = xlabvjust),
+      axis.text.y=element_text(angle = ylabAngle, size = axisLabSize,
+        hjust = ylabhjust, vjust = ylabvjust),
+      axis.title = element_text(size = axisLabSize),
+
+      legend.title  =element_blank(),
+      legend.position = legendPosition,
+      legend.key = element_blank(),
+      legend.key.size = unit(0.5, 'cm'),
+      legend.text = element_text(size = legendLabSize),
+      legend.key.height = unit(legendKeyHeight, 'cm'),
+
+      strip.text.x = element_text(size = stripLabSize, face = 'bold', margin = margin(b = 5, t = 5)))
+
+  plotobj <- data.frame(Cluster = clusterVector,
+    as.data.frame(t(assay(sce, 'scaled')))[,which(rownames(sce) %in% markers)])
+
+  plotobj <- plotobj[which(plotobj$Cluster %in% clusters),]
+
+  plotobj <- melt(plotobj, id.vars = 'Cluster')
+
+  colnames(plotobj) <- c('Cluster','Marker','Expression')
+
+  plotobj$Cluster <- paste0('Cluster ', plotobj$Cluster)
+
+  # set plot labels (e.g. cell names)
+  if (!is.null(celllab)) {
+    plotobj$lab <- rownames(plotobj)
+    plotobj <- as.data.frame(plotobj, stringsAsFactors = FALSE)
+
+    names.new <- rep(NA, length(plotobj$lab))
+    indices <- which(plotobj$lab %in% celllab)
+    names.new[indices] <- plotobj$lab[indices]
+    plotobj$lab <- names.new
   }
 
-  ggdata$Cluster <- factor(ggdata$Cluster, levels = cluster)
-  ggdata <- ggdata[!is.na(ggdata$Cluster),]
+  # initialise the plot object
+  plot <- ggplot(plotobj, aes(x = Marker, y = Expression)) + th +
 
-  gg <- ggplot(data = ggdata, aes(x = Marker, y = Expression)) +
+    guides(
+      fill = guide_legend(),
+      shape = guide_legend(),
+      alpha = FALSE)
 
-    geom_boxplot(position=position_dodge(width=0.1), outlier.shape = ".", outlier.colour="black", outlier.size = 0.1, aes(fill = Marker)) +
+  plot <- plot + geom_boxplot(
+    position = position_dodge(width = 0.1),
+    outlier.shape = '.',
+    outlier.colour = 'black',
+    outlier.size = 0.1,
+    aes(fill = Marker))
 
-    facet_wrap(~ Cluster, ncol = ncol, scales = 'free_y') +
+  if (yfixed == TRUE) {
+    plot <- plot + facet_wrap( ~ Cluster, nrow = nrow, ncol = ncol)
+  } else {
+    plot <- plot + facet_wrap( ~ Cluster, nrow = nrow, ncol = ncol, scales = 'free_y')
+  }
 
-    #Set the size of the plotting window
-    theme_bw(base_size=24) +
+  # add elements to the plot for xy labeling and axis limits
+  plot <- plot + xlab(xlab) + ylab(ylab)
+  if (!is.null(xlim)) {
+    plot <- plot + xlim(xlim[1], xlim[2])
+  }
+  if (!is.null(ylim)) {
+    plot <- plot + ylim(ylim[1], ylim[2])
+  }
 
-    #Modify various aspects of the plot text and legend
-    theme(
-      legend.position="none",
-      legend.background=element_rect(),
-      plot.title=element_text(angle=0, size=18, face="bold", vjust=1),
+  # add elements to the plot for title, subtitle, caption
+  plot <- plot + labs(title = title, 
+    subtitle = subtitle, caption = caption)
 
-      axis.text.x=element_text(angle=45, size=12, face="bold", hjust=1.10),
-      axis.text.y=element_text(angle=0, size=12, face="bold", vjust=0.5),
-      axis.title=element_text(size=18, face="bold"),
+  # add elements to the plot for vlines and hlines
+  if (!is.null(vline)) {
+    plot <- plot + geom_vline(xintercept = vline,
+      linetype = vlineType,
+      colour = vlineCol,
+      size = vlineWidth)
+  }
+  if (!is.null(hline)) {
+    plot <- plot + geom_hline(yintercept = hline,
+      linetype = hlineType,
+      colour = hlineCol,
+      size = hlineWidth)
+  }
 
-      #Legend
-      legend.key=element_blank(),     #removes the border
-      legend.key.size=unit(1, "cm"),      #Sets overall area/size of the legend
-      legend.text=element_text(size=12),  #Text size
-      title=element_text(size=12),      #Title text size
+  # border around plot
+  plot <- plot +
+    theme(panel.border = element_rect(
+      colour = borderColour,
+      fill = NA,
+      size = borderWidth))
 
-      strip.text.x = element_text(size=18, face="bold", margin = margin(b = 0, t = 0))) +
+  # gridlines
+  if (gridlines.major == TRUE) {
+    plot <- plot + theme(panel.grid.major = element_line())
+  } else {
+    plot <- plot + theme(panel.grid.major = element_blank())
+  }
+  if (gridlines.minor == TRUE) {
+    plot <- plot + theme(panel.grid.minor = element_line())
+  } else {
+    plot <- plot + theme(panel.grid.minor = element_blank())
+  }
 
-    #Change the size of the icons/symbols in the legend
-    guides(colour=guide_legend(override.aes=list(size=2.5))) +
+  if (!is.null(celllab)) {
+    if (drawConnectors == TRUE && is.null(celllab)) {
+      plot <- plot + geom_text_repel(
+        data = plotobj,
+          aes(label = lab),
+          size = labSize,
+          segment.color = colConnectors,
+          segment.size = widthConnectors,
+          hjust = labhjust,
+          vjust = labvjust)
+    } else if (drawConnectors == TRUE && !is.null(celllab)) {
+      plot <- plot + geom_text_repel(
+        data=subset(plotobj,
+          !is.na(plotobj[,'lab'])),
+          aes(label = lab),
+          size = labSize,
+          segment.color = colConnectors,
+          segment.size = widthConnectors,
+          hjust = labhjust,
+          vjust = labvjust)
+    } else if (drawConnectors == FALSE && !is.null(celllab)) {
+      plot <- plot + geom_text(
+        data=subset(plotobj,
+          !is.na(plotobj[,'lab'])),
+          aes(label = lab),
+          size = labSize,
+          check_overlap = TRUE,
+          hjust = labhjust,
+          vjust = labvjust)
+    } else if (drawConnectors == FALSE && is.null(celllab)) {
+      plot <- plot + geom_text(
+        data = plotobj,
+          aes(label = lab),
+          size = labSize,
+          check_overlap = TRUE,
+          hjust = labhjust,
+          vjust = labvjust)
+    }
+  }
 
-    #Set x- and y-axes labels
-    xlab("") +
-    ylab("Expression") +
-
-    ggtitle('Cluster marker expression')
-
-  return(gg)
+  return(plot)
 }

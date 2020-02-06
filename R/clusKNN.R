@@ -1,48 +1,72 @@
 clusKNN <- function(
-  data,
-  k.param = 10,
-  resolution = 0.001,
-  algorithm = 2)
+  sce,
+  reducedDim = 'UMAP',
+  dimColnames = c('UMAP1','UMAP2'),
+  clusterAssignName = 'Cluster',
+  distance.matrix = FALSE,
+  k.param = 20,
+  compute.SNN = TRUE,
+  prune.SNN = 1/15,
+  nn.method = "rann",
+  annoy.metric = "euclidean",
+  nn.eps = 0,
+  verbose = TRUE,
+  force.recalc = FALSE,
+  modularity.fxn = 1,
+  initial.membership = NULL,
+  weights = NULL,
+  node.sizes = NULL,
+  resolution = 0.8,
+  method = "matrix",
+  algorithm = 1,
+  n.start = 10,
+  n.iter = 10,
+  random.seed = 0,
+  group.singletons = TRUE,
+  temp.file.location = NULL,
+  edge.file.name = NULL)
 {
-  require(Seurat)
+  layout <- reducedDim(sce, reducedDim)[,dimColnames]
 
-  data$nn <- FindNeighbors(
-    data$layout,
-    distance.matrix = FALSE,
+  layout$nn <- FindNeighbors(
+    layout,
+    distance.matrix = distance.matrix,
     k.param = k.param,
-    compute.SNN = TRUE,
-    prune.SNN = 1/15,
-    nn.eps = 0,
-    verbose = TRUE,
-    force.recalc = FALSE)
-  # @param modularity.fxn Modularity function (1 = standard; 2 = alternative).
-  # @param initial.membership,weights,node.sizes Parameters to pass to the Python leidenalg function.
-  # @param resolution Value of the resolution parameter, use a value above (below) 1.0 if you want to obtain a larger (smaller) number of communities.
-  # @param algorithm Algorithm for modularity optimization (1 = original Louvain algorithm; 2 = Louvain algorithm with multilevel refinement; 3 = SLM algorithm; 4 = Leiden algorithm). Leiden requires the leidenalg python.
-  # @param n.start Number of random starts.
-  # @param n.iter Maximal number of iterations per random start.
-  # @param random.seed Seed of the random number generator.
-  # @param temp.file.location Directory where intermediate files will be written. Specify the ABSOLUTE path.
-  # @param edge.file.name Edge file to use as input for modularity optimizer jar.
-  # @param verbose Print output
-  data$nnc <- FindClusters(
-    data$nn$snn,
-    modularity.fxn = 1,
-    initial.membership = NULL,
-    weights = NULL,
-    node.sizes = NULL,
+    compute.SNN = compute.SNN,
+    prune.SNN = prune.SNN,
+    nn.method = nn.method,
+    annoy.metric = annoy.metric,
+    nn.eps = nn.eps,
+    verbose = verbose,
+    force.recalc = force.recalc)
+
+  layout$nnc <- FindClusters(
+    layout$nn$snn,
+    modularity.fxn = modularity.fxn,
+    initial.membership = initial.membership,
+    weights = node.sizes,
+    node.sizes = node.sizes,
     resolution = resolution,
-    algorithm = algorithm, #1 = original Louvain algorithm; 2 = Louvain algorithm with multilevel refinement; 3 = SLM algorithm
-    n.start = 10,
-    n.iter = 10,
-    random.seed = 0,
-    temp.file.location = NULL,
-    edge.file.name = NULL,
-    verbose = TRUE)
+    method = method,
+    algorithm = algorithm,
+    n.start = n.start,
+    n.iter = n.iter,
+    random.seed = random.seed,
+    group.singletons = group.singletons,
+    temp.file.location = temp.file.location,
+    edge.file.name = edge.file.name,
+    verbose = verbose)
 
-  data$colour <- colorRampPalette(brewer.pal(9,"Spectral"))(length(unique(data$nnc[,1])))[data$nnc[,1]]
-  data$lab <- as.character(data$nnc[,1])
-  data$lab[duplicated(data$lab)] <- ""
+  if (length(which(colnames(metadata(sce)) == clusterAssignName)) > 0 ) {
+    metadata(sce) <- metadata(sce)[,-which(colnames(metadata(sce)) == clusterAssignName)]
+  }
 
-  return(data)
+  metadata(sce) <- data.frame(
+    metadata(sce),
+    as.numeric(as.character(layout$nnc[,1])))
+
+  colnames(metadata(sce))[ncol(metadata(sce))] <- clusterAssignName
+
+  return(sce)
 }
+

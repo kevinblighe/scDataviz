@@ -37,8 +37,8 @@ processFCS <- function(
   if (!is.null(colsRetain)) {
     samples <- lapply(
       samples,
-      function(x) if (length(which(colnames(x) %in% colsDiscard)) > 0) {
-        x[,which(colnames(x) %in% colsDiscard)]} else {return(x)})
+      function(x) if (length(which(colnames(x) %in% colsRetain)) > 0) {
+        x[,which(colnames(x) %in% colsRetain)]} else {return(x)})
   }
 
   # rename markers

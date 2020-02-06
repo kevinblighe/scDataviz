@@ -1,20 +1,20 @@
 markerExpression <- function(
   sce,
-  markers = NULL,
+  reducedDim = 'UMAP',
+  dimColnames = c('UMAP1','UMAP2'),
+  markers = sample(rownames(sce), 6),
   ncol = 3,
   nrow = 2,
-
   col = c('darkblue', 'yellow'),
+  colMidpoint = 0,
   alpha = c(0.0, 1),
   pointSize = 0.5,
-
   legendPosition = 'right',
   legendLabSize = 12,
   legendIconSize = 5.0,
-  legendKeyHeight = 4.0,
+  legendKeyHeight = 2.5,
   xlim = NULL,
   ylim = NULL,
-
   celllab = NULL,
   labSize = 3.0,
   labhjust = 1.5,
@@ -22,25 +22,22 @@ markerExpression <- function(
   drawConnectors = TRUE,
   widthConnectors = 0.5,
   colConnectors = 'grey50',
-
-  xlab = 'UMAP1',
+  xlab = dimColnames[1],
   xlabAngle = 0,
   xlabhjust = 0.5,
   xlabvjust = 0.5,
-
-  ylab = 'UMAP2',
+  ylab = dimColnames[2],
   ylabAngle = 0,
   ylabhjust = 0.5,
   ylabvjust = 0.5,
   axisLabSize = 16,
-
-  title = NULL,
-  subtitle = NULL,
-  caption = NULL,
+  stripLabSize = 16,
+  title = 'Individual marker expression',
+  subtitle = '',
+  caption = paste0('Total cells, ', nrow(as.data.frame(reducedDim(sce, reducedDim)))),
   titleLabSize = 16,
   subtitleLabSize = 12,
   captionLabSize = 12,
-
   hline = NULL,
   hlineType = 'longdash',
   hlineCol = 'black',
@@ -49,7 +46,6 @@ markerExpression <- function(
   vlineType = 'longdash',
   vlineCol = 'black',
   vlineWidth = 0.4,
-
   gridlines.major = TRUE,
   gridlines.minor = TRUE,
   borderWidth = 0.8,
@@ -59,9 +55,9 @@ markerExpression <- function(
   th <- theme_bw(base_size=24) +
 
     theme(
-      legend.background=element_rect(),
+      legend.background = element_rect(),
 
-      title=element_text(size=legendLabSize),
+      title = element_text(size = legendLabSize),
 
       plot.title=element_text(angle=0, size=titleLabSize,
         face='bold', vjust=1),
@@ -74,26 +70,26 @@ markerExpression <- function(
         hjust = xlabhjust, vjust = xlabvjust),
       axis.text.y=element_text(angle = ylabAngle, size = axisLabSize,
         hjust = ylabhjust, vjust = ylabvjust),
-      axis.title=element_text(size=axisLabSize),
+      axis.title = element_text(size = axisLabSize),
 
-      legend.title=element_blank(),
-      legend.position=legendPosition,
-      legend.key=element_blank(),
-      legend.key.size=unit(0.5, 'cm'),
-      legend.text=element_text(size=legendLabSize),
-      legend.key.height = unit(legendKeyHeight, 'cm'))
+      legend.title  =element_blank(),
+      legend.position = legendPosition,
+      legend.key = element_blank(),
+      legend.key.size = unit(0.5, 'cm'),
+      legend.text = element_text(size = legendLabSize),
+      legend.key.height = unit(legendKeyHeight, 'cm'),
 
-  plotobj <- as.data.frame(reducedDim(sce, "UMAP"))
+      strip.text.x = element_text(size = stripLabSize, face = 'bold', margin = margin(b = 5, t = 5)))
+
+  plotobj <- as.data.frame(reducedDim(sce, reducedDim)[,dimColnames])
 
   plotobj <- data.frame(plotobj, as.data.frame(t(assay(sce, 'scaled'))))
 
-  plotobj <- melt(plotobj, id.vars = c('UMAP1','UMAP2'))
+  plotobj <- melt(plotobj, id.vars = dimColnames)
 
-  colnames(plotobj) <- c('UMAP1','UMAP2','Marker','Expression')
+  colnames(plotobj) <- c('dim1','dim2','Marker','Expression')
 
-  if (!is.null(markers)) {
-    plotobj <- plotobj[which(plotobj$Marker %in% markers),]
-  }
+  plotobj <- plotobj[which(plotobj$Marker %in% markers),]
 
   # set plot labels (e.g. cell names)
   if (!is.null(celllab)) {
@@ -108,21 +104,21 @@ markerExpression <- function(
 
   if (is.null(xlim)) {
     xlim <- c(
-      min(plotobj[,'UMAP1'], na.rm = TRUE) - 1,
-      max(plotobj[,'UMAP1'], na.rm = TRUE) + 1)
+      min(plotobj[,'dim1'], na.rm = TRUE) - 1,
+      max(plotobj[,'dim1'], na.rm = TRUE) + 1)
   }
 
   if (is.null(ylim)) {
     ylim <- c(
-      min(plotobj[,'UMAP2'], na.rm = TRUE) - 1,
-      max(plotobj[,'UMAP2'], na.rm = TRUE) + 1)
+      min(plotobj[,'dim2'], na.rm = TRUE) - 1,
+      max(plotobj[,'dim2'], na.rm = TRUE) + 1)
   }
 
   # order by expression level to ensure that highly expressed are coloured last
   plotobj <- plotobj[order(plotobj$Expression, decreasing = FALSE),]
 
   # initialise the plot object
-  plot <- ggplot(plotobj, aes(x = UMAP1, y = UMAP2, alpha = Expression)) + th +
+  plot <- ggplot(plotobj, aes(x = dim1, y = dim2, alpha = Expression)) + th +
 
     guides(
       fill = guide_legend(),
@@ -134,18 +130,19 @@ markerExpression <- function(
   if (length(col) == 2) {
     plot <- plot +
        scale_colour_gradient(
-       #scale_colour_continuous(
          low = col[1],
-         high = col[2])
+         high = col[2],
+         name = 'Expression')
   } else if (length(col) == 3) {
     plot <- plot +
       scale_colour_gradient2(
         low = col[1],
         mid = col[2],
         high = col[3],
-        midpoint = (max(plotobj$Expression) - min(plotobj$Expression)) / 2,
+        midpoint = colMidpoint,
         limits = c(min(plotobj$Expression), max(plotobj$Expression)),
-        space='Lab')
+        space = 'Lab',
+        name = 'Expression')
   }
 
   plot <- plot + #scale_alpha(range = c(alpha[1], alpha[2]), guide = FALSE) +
@@ -196,7 +193,6 @@ markerExpression <- function(
   } else {
     plot <- plot + theme(panel.grid.minor = element_blank())
   }
-
 
   if (!is.null(celllab)) {
     if (drawConnectors == TRUE && is.null(celllab)) {

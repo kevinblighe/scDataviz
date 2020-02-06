@@ -1,26 +1,33 @@
 ﻿Package: scToolkit
 Type: Package
-Title: scToolkit: single cell downstream analyses
-Version: 0.99.0
+Title: scToolkit: single cell dataviz and downstream analyses
+Version: 0.99.2
 Authors@R: c(
     person("Kevin", "Blighe", role=c("aut", "cre"), email="kevin@clinicalbioinformatics.co.uk"),
-    person("Steven", "Hargreaves", role=c("aut")),
-    person("Jessica", "Timms", role="aut"))
-Description: scToolkit: single cell downstream analyses
+    person("Jessica", "Timms", role="aut"),
+    person("Steven", "Hargreaves", role="aut"),
+    person("Shahram", "Kordasti", role="aut"))
+Description: scToolkit: single cell dataviz and downstream analyses
 License: GPL-3
 Depends:
-  cowplot,
   flowCore,
+  SingleCellExperiment,
+  PCAtools,
+  umap,
   ggplot2,
   ggrepel,
-  PCAtools,
+  cowplot,
+  reshape2,
+  scales,
   Seurat,
-  umap
+  RColorBrewer,
+  corrplot
 Imports:
 Suggests:
   testthat,
   BiocGenerics,
   knitr,
+  R.utils
 URL: https://github.com/kevinblighe/scToolkit
 biocViews: RNASeq, GeneExpression, Transcription, FlowCytometry, MassSpectrometry
 VignetteBuilder:
