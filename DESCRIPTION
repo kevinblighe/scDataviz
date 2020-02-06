@@ -1,12 +1,9 @@
 ﻿Package: scToolkit
 Type: Package
 Title: scToolkit: single cell dataviz and downstream analyses
-Version: 0.99.2
+Version: 0.99.4
 Authors@R: c(
-    person("Kevin", "Blighe", role=c("aut", "cre"), email="kevin@clinicalbioinformatics.co.uk"),
-    person("Jessica", "Timms", role="aut"),
-    person("Steven", "Hargreaves", role="aut"),
-    person("Shahram", "Kordasti", role="aut"))
+    person("Kevin", "Blighe", role=c("aut", "cre"), email="kevin@clinicalbioinformatics.co.uk"))
 Description: scToolkit: single cell dataviz and downstream analyses
 License: GPL-3
 Depends:
@@ -27,6 +24,7 @@ Suggests:
   testthat,
   BiocGenerics,
   knitr,
+  kableExtra,
   R.utils
 URL: https://github.com/kevinblighe/scToolkit
 biocViews: RNASeq, GeneExpression, Transcription, FlowCytometry, MassSpectrometry

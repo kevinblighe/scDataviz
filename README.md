@@ -1,6 +1,6 @@
 scToolkit: single cell dataviz and downstream analyses
 ================
-Kevin Blighe, Jessica Timms, Steven Hargreaves, Shahram Kordasti
+Kevin Blighe
 2020-02-06
 
 Introduction
@@ -476,7 +476,7 @@ Lun et al. (2019)
 
 Wickham (2016)
 
-Blighe, K, J Timms, S Hargreaves, and S Kordasti. 2020. “scToolkit: single cell dataviz and downstream analyses.” <https://github.com/kevinblighe>.
+Blighe, K. 2020. “scToolkit: single cell dataviz and downstream analyses.” <https://github.com/kevinblighe>.
 
 Lun, A, D Risso, K Korthauer, and K Rue-Albrecht. 2019. “SingleCellExperiment: S4 Classes for Single Cell Data.” R package version 1.8.0, https://bioconductor.org/packages/SingleCellExperiment/.
 

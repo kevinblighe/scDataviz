@@ -1,6 +1,6 @@
 ---
 title: "scToolkit: single cell dataviz and downstream analyses"
-author: "Kevin Blighe, Jessica Timms, Steven Hargreaves, Shahram Kordasti"
+author: "Kevin Blighe"
 date: "`r Sys.Date()`"
 package: "`r packageVersion('SingleCellExperiment')`"
 output:
@@ -18,13 +18,14 @@ vignette: >
 
 # Introduction
 
-In the 'single cell' World, which includes flow cytometry, mass cytometry, single-cell RNA-seq (scRNA-seq), and others, there is a need to improve data visualisation of results and to bring analysis capabilities to researchers even from non-technical backgrounds who have some experience in coding. *scToolkit* [@scToolkit] attempts to fit into this space, while also catering for advanced users. Due to the way that it's designed, *scToolkit* also has a 'plug and play' feel, whereby the base storage unit, which is based on *SingleCellExperiment* [@Lun], immediately lends flexibility and compatibility with studies that go beyond *scToolkit*. Additionally, the graphics are generated via the *ggplot* [@Wickham] engine, which means that users can 'add on' features to these to their pleasing.
+In the single cell World, which includes flow cytometry, mass cytometry, single-cell RNA-seq (scRNA-seq), and others, there is a need to improve data visualisation and to bring analysis capabilities to researchers even from non-technical backgrounds. *scToolkit* [@scToolkit] attempts to fit into this space, while also catering for advanced users. Additonally, due to the way that *scToolkit* is designed, which is based on *SingleCellExperiment* [@Lun], it has a 'plug and play' feel, and immediately lends itself as flexibile and compatibile with studies that go beyond *scToolkit*. Finally, the graphics in *scToolkit* are generated via the *ggplot* [@Wickham] engine, which means that users can 'add on' features to these with ease.
 
 ...
 
 ```{r, echo = FALSE, message = FALSE}
 
   library(knitr)
+  library(kableExtra)
   opts_chunk$set(tidy = FALSE, message = FALSE, warning = FALSE)
 
   require(flowCore)
@@ -160,7 +161,7 @@ We can also perform UMAP on a select number of PC eigenvectors ('dimensions'). *
 
   sce <- performUMAP(sce, reducedDim = 'PCA', dims = c(1:horn$n))
 
-``
+```
 
 ```{r eval = FALSE, echo = FALSE}
 
@@ -183,8 +184,6 @@ We can also perform UMAP on a select number of PC eigenvectors ('dimensions'). *
 ```
 
 ## Show marker expression across the layout
-
-...
 
 
 ```{r ex3, fig.height = 12, fig.width = 20, fig.cap = "markerExpression"}
@@ -258,7 +257,7 @@ We can also perform UMAP on a select number of PC eigenvectors ('dimensions'). *
 ## Find ideal clusters in the UMAP layout via k-nearest neighbuors
 
 
-```{r ex5, fig.height = 8, fig.width = 16, fig.cap = "clusKNN"}
+```{r ex5, message = FALSE, fig.height = 8, fig.width = 16, fig.cap = "clusKNN"}
 
   sce <- clusKNN(sce,
     k.param = 20,
@@ -331,9 +330,9 @@ We can also perform UMAP on a select number of PC eigenvectors ('dimensions'). *
 
 ## Determine enriched markers in each cluster and plot the expression signature
 
-`r knitr::kable(markerEnrichment(sce, metacluster = 'group'), auto = TRUE)`
+`r knitr::kable(markerEnrichment(sce, metacluster = 'group'), auto = TRUE) %>% kable_styling(full_width = F)`
 
-`r knitr::kable(markerEnrichment(sce, metacluster = 'treatment'), auto = TRUE)`   
+`r knitr::kable(markerEnrichment(sce, metacluster = 'treatment'), auto = TRUE) %>% kable_styling(full_width = F)`
 
 
 ```{r ex7, fig.height = 10, fig.width = 16, fig.cap = "plotSignatures"}
@@ -350,6 +349,13 @@ We can also perform UMAP on a select number of PC eigenvectors ('dimensions'). *
 
 # Acknowledgments
 
+* Jessica Timms
+
+* James Opzoomer
+
+* Steven Hargreaves
+
+* Shahram Kordasti
 
 # Session info
 
