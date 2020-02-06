@@ -4,7 +4,7 @@
 
 \title{markerEnrichment}
 
-\description{Find enriched markers per identified cluster, andn calculate cluster abundances across these for metadata traits.}
+\description{Find enriched markers per identified cluster and calculate cluster abundances across these for metadata traits.}
 
 \usage{
   markerEnrichment(sce,

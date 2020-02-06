@@ -1,0 +1,330 @@
+---
+title: "scDataviz: single cell dataviz and downstream analyses"
+author: "Kevin Blighe"
+date: "`r Sys.Date()`"
+package: "`r packageVersion('scDataviz')`"
+output:
+  html_document:
+    toc: true
+    toc_depth: 3
+    number_sections: true
+    theme: united
+    highlight: tango
+fig_width: 7
+bibliography: library.bib
+vignette: >
+    %\VignetteIndexEntry{scDataviz: single cell dataviz and downstream analyses}
+    %\VignetteEngine{knitr::rmarkdown}
+    %\VignetteEncoding{UTF-8}
+    %\usepackage[utf8]{inputenc}
+---
+
+# Introduction
+
+In the single cell World, which includes flow cytometry, mass cytometry, single-cell RNA-seq (scRNA-seq), and others, there is a need to improve data visualisation and to bring analysis capabilities to researchers even from non-technical backgrounds. *scDataviz* [@scDataviz] attempts to fit into this space, while also catering for advanced users. Additonally, due to the way that *scDataviz* is designed, which is based on *SingleCellExperiment* [@Lun], it has a 'plug and play' feel, and immediately lends itself as flexibile and compatibile with studies that go beyond *scDataviz*. Finally, the graphics in *scDataviz* are generated via the *ggplot* [@Wickham] engine, which means that users can 'add on' features to these with ease.
+
+...
+
+```{r, echo = FALSE, message = FALSE}
+
+  library(knitr)
+  library(kableExtra)
+  opts_chunk$set(tidy = FALSE, message = FALSE, warning = FALSE)
+
+```
+
+# Installation
+
+
+## 1. Install from GitHub
+
+```{r getPackageGitHub, eval = FALSE}
+
+  devtools::install_github('kevinblighe/scDataviz')
+
+```
+
+## 2. Load the package into R session
+
+```{r Load}
+
+  library(scDataviz)
+
+```
+
+
+# Quick start
+
+Here, we use sample data stored as FCS files.
+
+```{r readFCS}
+
+  filelist <- list.files(
+    path = "FCS/",
+    pattern = "*.fcs|*.FCS",
+    full.names = TRUE)
+  filelist
+
+  metadata <- data.frame(
+    group = c(rep('Healthy', 7), rep('Disease', 11)),
+    treatment = gsub('\\.fcs$', '', gsub('FCS\\/\\/[A-Z0-9]*\\ ', '', filelist)),
+    row.names = filelist,
+    stringsAsFactors = FALSE)
+  metadata
+
+  sce <- processFCS(
+    files = filelist,
+    metadata = metadata,
+    transformation = TRUE,
+    downsample = 0.85,
+    newColnames = paste0('CD', 1:65))
+
+```
+
+One can also create a new object *SingleCellExperiment* object manually using any type of data, including any data-matrix from scRNA-seq produced elsewhere. Import functions for data deriving from popular programs will come, e.g., *Seurat*.
+
+
+## Perform principal component analysis (PCA)
+
+```{r ex1, fig.height = 7, fig.width = 8, fig.cap = "Perform principal component analysis"}
+
+  p <- pca(assay(sce, 'scaled'), metadata = metadata(sce))
+  biplot(p, lab = NULL, pointSize = 0.5, colby = 'treatment', legendPosition = 'right')
+
+```
+
+We can add the rotated component loadings as a new reduced dimensional component to our dataset. Let's just add the first 20 PCs.
+
+```{r addPCAdim}
+
+  reducedDim(sce, 'PCA') <- p$rotated[,1:20]
+
+```
+
+For more functionality via *PCAtools*, check the vignette: [PCAtools: everything Principal Component Analysis](https://bioconductor.org/packages/release/bioc/vignettes/PCAtools/inst/doc/PCAtools.html)
+
+## Perform UMAP
+
+UMAP can be performed on the entire dataset, if your computer's memory will permit. Currently it is fixed to work with the 'scaled' assay component of the *SingleCellExperiment* object.
+
+```{r performUMAP}
+
+  sce <- performUMAP(sce)
+
+```
+
+UMAP can also be stratified based on a column in your metadata, e.g., (treated versus untreated samples); however, to do this, I recommend creating separate *SingleCellExperiment* objects from the very start, i.e., from the the data input stage, and processing the data separately for each group.
+
+We can also perform UMAP on a select number of PC eigenvectors. *PCAtools* can be used to infer ideal number of dimensions to use via the elbow method and Horn's parallel analysis.
+
+```{r elbowHorn}
+
+  #elbow <- findElbowPoint(p$variance)
+  elbow
+
+  #horn <- parallelPCA(assay(sce, 'scaled'))
+  horn$n
+
+```
+
+```{r performUMAP_PCA}
+
+  sce <- performUMAP(sce, reducedDim = 'PCA', dims = c(1:horn$n))
+
+```
+
+At this point, we have done a lot - let's save the dataset.
+
+```{r save, warnings = FALSE, message = FALSE}
+
+  dir.create('save'
+  saveRDS(sce, 'save/VignetteData.RDS', compress = TRUE)
+
+```
+
+## Create a contour plot of the UMAP layout
+
+```{r ex2, fig.height = 8, fig.width = 16, fig.cap = "Create a contour plot of the UMAP layout"}
+
+  ggout1 <- contourplot(sce, reducedDim = 'UMAP', subtitle = 'UMAP performed on expression values')
+  ggout2 <- contourplot(sce, reducedDim = 'UMAP_PCA', subtitle = 'UMAP performed on PC eigenvectors')
+
+  plot_grid(ggout1, ggout2,
+    labels = c('A','B'),
+    ncol = 2, align = "l", label_size = 24)
+
+```
+
+## Show marker expression across the layout
+
+```{r ex3, fig.height = 12, fig.width = 20, fig.cap = "Show marker expression across the layout"}
+
+  markers <- sample(rownames(sce), 6)
+  markers
+
+  ggout1 <- markerExpression(sce,
+    markers = markers,
+    subtitle = 'UMAP performed on expression values',
+    nrow = 1, ncol = 6,
+    legendKeyHeight = 1.0)
+
+  ggout2 <-  markerExpression(sce,
+    markers = markers,
+    reducedDim = 'UMAP_PCA',
+    subtitle = 'UMAP performed on PC eigenvectors',
+    nrow = 1, ncol = 6,
+    legendKeyHeight = 1.0)
+
+  plot_grid(ggout1, ggout2,
+    labels = c('A','B'),
+    nrow = 2, align = "l", label_size = 24)
+
+```
+
+## Shade cells by metadata
+
+First, let's take a look inside the metadata that we have.
+
+```{r metadataplot}
+
+  head(metadata(sce))
+
+  levels(metadata(sce)$group)
+
+  levels(metadata(sce)$treatment)
+
+```
+
+```{r ex4, fig.height = 12, fig.width = 14, fig.cap = "Shade cells by metadata"}
+
+  ggout1 <- metadataplot(sce,
+    colby = 'group',
+    colkey = c(Healthy = 'royalblue', Disease = 'red2'),
+    title = 'Disease status',
+    subtitle = 'UMAP performed on expression values')
+
+  ggout2 <- metadataplot(sce,
+    reducedDim = 'UMAP_PCA',
+    colby = 'group',
+    colkey = c(Healthy = 'royalblue', Disease = 'red2'),
+    title = 'Disease status',
+    subtitle = 'UMAP performed on PC eigenvectors')
+
+  ggout3 <- metadataplot(sce,
+    colby = 'treatment',
+    title = 'Treatment type',
+    subtitle = 'UMAP performed on expression values')
+
+  ggout4 <- metadataplot(sce,
+    reducedDim = 'UMAP_PCA',
+    colby = 'treatment',
+    title = 'Treatment type',
+    subtitle = 'UMAP performed on PC eigenvectors')
+
+  plot_grid(ggout1, ggout3, ggout2, ggout4,
+    labels = c('A','B','C','D'),
+    nrow = 2, ncol = 2, align = "l", label_size = 24)
+
+```
+
+## Find ideal clusters in the UMAP layout via k-nearest neighbours
+
+```{r ex5, message = FALSE, fig.height = 8, fig.width = 16, fig.cap = "Find ideal clusters in the UMAP layout via k-nearest neighbours"}
+
+  sce <- clusKNN(sce,
+    k.param = 20,
+    prune.SNN = 1/15,
+    resolution = 0.01,
+    algorithm = 2)
+
+  sce <- clusKNN(sce,
+    reducedDim = 'UMAP_PCA',
+    clusterAssignName = 'Cluster_PCA',
+    k.param = 20,
+    prune.SNN = 1/15,
+    resolution = 0.01,
+    algorithm = 2)
+
+  ggout1 <- plotClusters(sce,
+    clusterColname = 'Cluster',
+    subtitle = 'UMAP performed on expression values',
+    caption = paste0('Note: clusters / communities identified via',
+      '\nLouvain algorithm with multilevel refinement'))
+
+  ggout2 <- plotClusters(sce,
+    clusterColname = 'Cluster_PCA',
+    reducedDim = 'UMAP_PCA',
+    subtitle = 'UMAP performed on PC eigenvectors',
+    caption = paste0('Note: clusters / communities identified via',
+      '\nLouvain algorithm with multilevel refinement'))
+
+  plot_grid(ggout1, ggout2,
+    labels = c('A','B'),
+    ncol = 2, align = "l", label_size = 24)
+
+```
+
+## Plot marker expression per identified cluster
+
+```{r ex6a, fig.height = 8, fig.width = 16, fig.cap = "Plot marker expression per identified cluster1"}
+
+  markerExpressionPerCluster(sce,
+    caption = 'Cluster assignments based on UMAP performed on expression values')
+
+```
+
+```{r ex6b, fig.height = 8, fig.width = 18, fig.cap = "Plot marker expression per identified cluster2"}
+
+  markerExpressionPerCluster(sce,
+    clusters = unique(metadata(sce)[['Cluster_PCA']]),
+    clusterVector = metadata(sce)[['Cluster_PCA']],
+    markers = sample(rownames(sce), 15),
+    axisLabSize = 14,
+    nrow = 2, ncol = 4,
+    caption = 'Cluster assignments based on UMAP performed on PC eigenvectors')
+
+```
+
+
+## Determine enriched markers in each cluster and plot the expression signature
+
+`r knitr::kable(markerEnrichment(sce, metacluster = 'group'), auto = TRUE) %>% kable_styling(full_width = F)
+
+`r knitr::kable(markerEnrichment(sce, metacluster = 'treatment'), auto = TRUE) %>% kable_styling(full_width = F)`
+
+
+The expression signature is a quick way to visualise which markers are more or less expressed in each identified cluster of cells.
+
+```{r ex7, fig.height = 10, fig.width = 16, fig.cap = "Determine enriched markers in each cluster and plot the expression signature"}
+
+  plotSignatures(sce)
+
+```
+
+
+# Acknowledgments
+
+* Jessica Timms
+
+* James Opzoomer
+
+* Steven Hargreaves
+
+* Shahram Kordasti
+
+# Session info
+
+```{r}
+
+sessionInfo()
+
+```
+
+# References
+
+﻿@scDataviz
+
+@Lun
+
+@Wickham
+

@@ -1,8 +1,8 @@
 ---
-title: "scToolkit: single cell dataviz and downstream analyses"
+title: "scDataviz: single cell dataviz and downstream analyses"
 author: "Kevin Blighe"
 date: "`r Sys.Date()`"
-package: "`r packageVersion('SingleCellExperiment')`"
+package: "`r packageVersion('scDataviz')`"
 output:
   github_document:
     toc: false
@@ -10,7 +10,7 @@ output:
 fig_width: 7
 bibliography: library.bib
 vignette: >
-    %\VignetteIndexEntry{scToolkit: single cell dataviz and downstream analyses}
+    %\VignetteIndexEntry{scDataviz: single cell dataviz and downstream analyses}
     %\VignetteEngine{knitr::rmarkdown}
     %\VignetteEncoding{UTF-8}
     %\usepackage[utf8]{inputenc}
@@ -18,7 +18,7 @@ vignette: >
 
 # Introduction
 
-In the single cell World, which includes flow cytometry, mass cytometry, single-cell RNA-seq (scRNA-seq), and others, there is a need to improve data visualisation and to bring analysis capabilities to researchers even from non-technical backgrounds. *scToolkit* [@scToolkit] attempts to fit into this space, while also catering for advanced users. Additonally, due to the way that *scToolkit* is designed, which is based on *SingleCellExperiment* [@Lun], it has a 'plug and play' feel, and immediately lends itself as flexibile and compatibile with studies that go beyond *scToolkit*. Finally, the graphics in *scToolkit* are generated via the *ggplot* [@Wickham] engine, which means that users can 'add on' features to these with ease.
+In the single cell World, which includes flow cytometry, mass cytometry, single-cell RNA-seq (scRNA-seq), and others, there is a need to improve data visualisation and to bring analysis capabilities to researchers even from non-technical backgrounds. *scDataviz* [@scDataviz] attempts to fit into this space, while also catering for advanced users. Additonally, due to the way that *scDataviz* is designed, which is based on *SingleCellExperiment* [@Lun], it has a 'plug and play' feel, and immediately lends itself as flexibile and compatibile with studies that go beyond *scDataviz*. Finally, the graphics in *scDataviz* are generated via the *ggplot* [@Wickham] engine, which means that users can 'add on' features to these with ease.
 
 ...
 
@@ -27,19 +27,6 @@ In the single cell World, which includes flow cytometry, mass cytometry, single-
   library(knitr)
   library(kableExtra)
   opts_chunk$set(tidy = FALSE, message = FALSE, warning = FALSE)
-
-  require(flowCore)
-  require(SingleCellExperiment)
-  require(PCAtools)
-  require(umap)
-  require(ggplot2)
-  require(ggrepel)
-  require(cowplot)
-  require(reshape2)
-  require(scales)
-  require(Seurat)
-  require(RColorBrewer)
-  require(corrplot)
 
 ```
 
@@ -50,20 +37,15 @@ In the single cell World, which includes flow cytometry, mass cytometry, single-
 
 ```{r getPackageGitHub, eval = FALSE}
 
-  devtools::install_github('kevinblighe/scToolkit')
+  devtools::install_github('kevinblighe/scDataviz')
 
 ```
 
 ## 2. Load the package into R session
 
-```{r Load, eval = TRUE, echo = FALSE, message = FALSE}
+```{r Load}
 
-  #library(scToolkit)
-
-  load('save/flow.rdata')
-
-  library(R.utils)
-  sourceDirectory('R')
+  library(scDataviz)
 
 ```
 
@@ -72,7 +54,7 @@ In the single cell World, which includes flow cytometry, mass cytometry, single-
 
 Here, we use sample data stored as FCS files.
 
-```{r eval = FALSE, echo = TRUE}
+```{r readFCS}
 
   filelist <- list.files(
     path = "FCS/",
@@ -96,58 +78,43 @@ Here, we use sample data stored as FCS files.
 
 ```
 
-One can also create a new object manually using any type of data, including any data-matrix from scRNA-seq produced elsewhere.
+One can also create a new object *SingleCellExperiment* object manually using any type of data, including any data-matrix from scRNA-seq produced elsewhere. Import functions for data deriving from popular programs will come, e.g., *Seurat*.
 
-```{r eval = FALSE, echo = TRUE}
 
-  # not run
+## Perform principal component analysis (PCA)
 
-  mat1 <- jitter(matrix(
-    MASS::rnegbin(rexp(4000000, rate=.1), theta = 4.5),
-    ncol = 20))
-  colnames(mat1) <- paste0('CD', 1:ncol(mat1))
-  mat2 <- jitter(matrix(
-    MASS::rnegbin(rexp(4000000, rate=.1), theta = 2.5),
-    ncol = 20))
-  colnames(mat2) <- paste0('CD', 1:ncol(mat2))
-
-  metadata <- data.frame(
-    group = c('PB1', 'PB2'),
-    row.names = c('mat1', 'mat2'),
-    stringsAsFactors = FALSE)
-
-  #...
-
-```
-
-## Perform principal component analysis
-
-```{r ex1, fig.height = 7, fig.width = 8, fig.cap = "biplot"}
+```{r ex1, fig.height = 7, fig.width = 8, fig.cap = "Perform principal component analysis"}
 
   p <- pca(assay(sce, 'scaled'), metadata = metadata(sce))
   biplot(p, lab = NULL, pointSize = 0.5, colby = 'treatment', legendPosition = 'right')
+
+```
+
+We can add the rotated component loadings as a new reduced dimensional component to our dataset. Let's just add the first 20 PCs.
+
+```{r addPCAdim}
 
   reducedDim(sce, 'PCA') <- p$rotated[,1:20]
 
 ```
 
-For more functionality via *PCAtools*, check the vignette: (PCAtools: everything Principal Component Analysis)[https://bioconductor.org/packages/release/bioc/vignettes/PCAtools/inst/doc/PCAtools.html]
+For more functionality via *PCAtools*, check the vignette: [PCAtools: everything Principal Component Analysis](https://bioconductor.org/packages/release/bioc/vignettes/PCAtools/inst/doc/PCAtools.html)
 
 ## Perform UMAP
 
-UMAP can be performed on the entire dataset, if your computer's memory will permit:
+UMAP can be performed on the entire dataset, if your computer's memory will permit. Currently it is fixed to work with the 'scaled' assay component of the *SingleCellExperiment* object.
 
-```{r eval = FALSE, echo = TRUE}
+```{r performUMAP}
 
   sce <- performUMAP(sce)
 
 ```
 
-UMAP can also be stratified based on a column in your metadata, e.g., (treated versus untreated samples); however, to do this, we simply recommend creating separate SingleCellExperiment objects from the very start, i.e., the data input stage, and processing the data separately for each group.
+UMAP can also be stratified based on a column in your metadata, e.g., (treated versus untreated samples); however, to do this, I recommend creating separate *SingleCellExperiment* objects from the very start, i.e., from the the data input stage, and processing the data separately for each group.
 
-We can also perform UMAP on a select number of PC eigenvectors ('dimensions'). *PCAtools* can be used to infer ideal number of dimensions to use via the elbow method and Horn's parallel analysis.
+We can also perform UMAP on a select number of PC eigenvectors. *PCAtools* can be used to infer ideal number of dimensions to use via the elbow method and Horn's parallel analysis.
 
-```{r}
+```{r elbowHorn}
 
   #elbow <- findElbowPoint(p$variance)
   elbow
@@ -157,22 +124,24 @@ We can also perform UMAP on a select number of PC eigenvectors ('dimensions'). *
 
 ```
 
-```{r eval = FALSE, echo = TRUE}
+```{r performUMAP_PCA}
 
   sce <- performUMAP(sce, reducedDim = 'PCA', dims = c(1:horn$n))
 
 ```
 
-```{r eval = FALSE, echo = FALSE}
+At this point, we have done a lot - let's save the dataset.
 
-  #save.image('save/flow.rdata')
+```{r save, warnings = FALSE, message = FALSE}
+
+  dir.create('save'
+  saveRDS(sce, 'save/VignetteData.RDS', compress = TRUE)
 
 ```
 
-
 ## Create a contour plot of the UMAP layout
 
-```{r ex2, fig.height = 8, fig.width = 16, fig.cap = "contourplot"}
+```{r ex2, fig.height = 8, fig.width = 16, fig.cap = "Create a contour plot of the UMAP layout"}
 
   ggout1 <- contourplot(sce, reducedDim = 'UMAP', subtitle = 'UMAP performed on expression values')
   ggout2 <- contourplot(sce, reducedDim = 'UMAP_PCA', subtitle = 'UMAP performed on PC eigenvectors')
@@ -185,8 +154,7 @@ We can also perform UMAP on a select number of PC eigenvectors ('dimensions'). *
 
 ## Show marker expression across the layout
 
-
-```{r ex3, fig.height = 12, fig.width = 20, fig.cap = "markerExpression"}
+```{r ex3, fig.height = 12, fig.width = 20, fig.cap = "Show marker expression across the layout"}
 
   markers <- sample(rownames(sce), 6)
   markers
@@ -212,7 +180,9 @@ We can also perform UMAP on a select number of PC eigenvectors ('dimensions'). *
 
 ## Shade cells by metadata
 
-```{r}
+First, let's take a look inside the metadata that we have.
+
+```{r metadataplot}
 
   head(metadata(sce))
 
@@ -222,7 +192,7 @@ We can also perform UMAP on a select number of PC eigenvectors ('dimensions'). *
 
 ```
 
-```{r ex4, fig.height = 12, fig.width = 14, fig.cap = "metadataplot"}
+```{r ex4, fig.height = 12, fig.width = 14, fig.cap = "Shade cells by metadata"}
 
   ggout1 <- metadataplot(sce,
     colby = 'group',
@@ -254,10 +224,9 @@ We can also perform UMAP on a select number of PC eigenvectors ('dimensions'). *
 
 ```
 
-## Find ideal clusters in the UMAP layout via k-nearest neighbuors
+## Find ideal clusters in the UMAP layout via k-nearest neighbours
 
-
-```{r ex5, message = FALSE, fig.height = 8, fig.width = 16, fig.cap = "clusKNN"}
+```{r ex5, message = FALSE, fig.height = 8, fig.width = 16, fig.cap = "Find ideal clusters in the UMAP layout via k-nearest neighbours"}
 
   sce <- clusKNN(sce,
     k.param = 20,
@@ -292,16 +261,16 @@ We can also perform UMAP on a select number of PC eigenvectors ('dimensions'). *
 
 ```
 
-## plot marker expression per identified cluster
+## Plot marker expression per identified cluster
 
-```{r ex6a, fig.height = 9, fig.width = 16, fig.cap = "markerExpressionPerCluster 1"}
+```{r ex6a, fig.height = 8, fig.width = 16, fig.cap = "Plot marker expression per identified cluster1"}
 
   markerExpressionPerCluster(sce,
     caption = 'Cluster assignments based on UMAP performed on expression values')
 
 ```
 
-```{r ex6b, fig.height = 9, fig.width = 18, fig.cap = "markerExpressionPerCluster 2"}
+```{r ex6b, fig.height = 8, fig.width = 18, fig.cap = "Plot marker expression per identified cluster2"}
 
   markerExpressionPerCluster(sce,
     clusters = unique(metadata(sce)[['Cluster_PCA']]),
@@ -313,38 +282,21 @@ We can also perform UMAP on a select number of PC eigenvectors ('dimensions'). *
 
 ```
 
-## Differential expression comparison between clusters
-
-```{r}
-
-  c1 <- rownames(subset(metadata(sce), group == 'Disease'))
-  c2 <- rownames(subset(metadata(sce), group == 'Healthy'))
-
-  #res <- diffExpression(sce,
-  #  cells1 = c1,
-  #  cells2 = c2)
-
-  #res
-
-```
 
 ## Determine enriched markers in each cluster and plot the expression signature
 
-`r knitr::kable(markerEnrichment(sce, metacluster = 'group'), auto = TRUE) %>% kable_styling(full_width = F)`
+`r knitr::kable(markerEnrichment(sce, metacluster = 'group'), auto = TRUE) %>% kable_styling(full_width = F)
 
 `r knitr::kable(markerEnrichment(sce, metacluster = 'treatment'), auto = TRUE) %>% kable_styling(full_width = F)`
 
 
-```{r ex7, fig.height = 10, fig.width = 16, fig.cap = "plotSignatures"}
+The expression signature is a quick way to visualise which markers are more or less expressed in each identified cluster of cells.
+
+```{r ex7, fig.height = 10, fig.width = 16, fig.cap = "Determine enriched markers in each cluster and plot the expression signature"}
 
   plotSignatures(sce)
 
 ```
-
-# Advanced features
-
-...
-
 
 
 # Acknowledgments
@@ -367,7 +319,7 @@ sessionInfo()
 
 # References
 
-﻿@scToolkit
+﻿@scDataviz
 
 @Lun
 

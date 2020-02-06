@@ -1,10 +1,10 @@
-﻿Package: scToolkit
+﻿Package: scDataviz
 Type: Package
-Title: scToolkit: single cell dataviz and downstream analyses
+Title: scDataviz: single cell dataviz and downstream analyses
 Version: 0.99.4
 Authors@R: c(
     person("Kevin", "Blighe", role=c("aut", "cre"), email="kevin@clinicalbioinformatics.co.uk"))
-Description: scToolkit: single cell dataviz and downstream analyses
+Description: scDataviz: single cell dataviz and downstream analyses
 License: GPL-3
 Depends:
   flowCore,
@@ -26,7 +26,7 @@ Suggests:
   knitr,
   kableExtra,
   R.utils
-URL: https://github.com/kevinblighe/scToolkit
+URL: https://github.com/kevinblighe/scDataviz
 biocViews: RNASeq, GeneExpression, Transcription, FlowCytometry, MassSpectrometry
 VignetteBuilder:
   knitr
