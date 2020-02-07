@@ -27,18 +27,18 @@
   drawConnectors = TRUE,
   widthConnectors = 0.5,
   colConnectors = 'grey50',
-  xlab = 'UMAP1',
+  xlab = dimColnames[1],
   xlabAngle = 0,
   xlabhjust = 0.5,
   xlabvjust = 0.5,
-  ylab = 'UMAP2',
+  ylab = dimColnames[2],
   ylabAngle = 0,
   ylabhjust = 0.5,
   ylabvjust = 0.5,
   axisLabSize = 16,
   title = 'Cellular density and contours',
   subtitle = '',
-  caption = paste0('Total cells, ', nrow(as.data.frame(reducedDim(sce, "UMAP"))), '; Bins, ', bins),
+  caption = paste0('Total cells, ', nrow(as.data.frame(reducedDim(sce, reducedDim)))),
   titleLabSize = 16,
   subtitleLabSize = 12,
   captionLabSize = 12,
@@ -60,6 +60,8 @@
   \item{sce}{A SingleCellExperiment object. REQUIRED.},
   \item{reducedDim}{A reduced dimensional component stored within 'sce',
     e.g., PCA or UMAP. DEFAULT = 'UMAP'. OPTIONAL.}
+  \item{dimColnames}{The column names of the dimensions to use. DEFAULT
+    = c('UMAP1','UMAP2'). OPTIONAL.}
   \item{lowcol}{Shade for low-density contours. DEFAULT = 'darkblue'. OPTIONAL.}
   \item{highcol}{Shade for high-density contours. DEFAULT = 'darkred'. OPTIONAL.}
   \item{alpha}{Control the gradient of colour transparency, with 1 being opaque.
@@ -80,18 +82,17 @@
   \item{labSize}{Size of labels. DEFAULT = 3.0. OPTIONAL.}
   \item{labhjust}{Horizontal adjustment of label. DEFAULT = 1.5. OPTIONAL.}
   \item{labvjust}{Vertical adjustment of label. DEFAULT = 0. OPTIONAL.}
-
   \item{drawConnectors}{Logical, indicating whether or not to connect plot
-  labels to their corresponding points by line connectors. DEFAULT = TRUE.
-  OPTIONAL.}
+    labels to their corresponding points by line connectors. DEFAULT = TRUE.
+    OPTIONAL.}
   \item{widthConnectors}{Line width of connectors. DEFAULT = 0.5. OPTIONAL.}
   \item{colConnectors}{Line colour of connectors. DEFAULT = 'grey50'. OPTIONAL.}
-  \item{xlab}{Label for x-axis. DEFAULT = 'UMAP1'. OPTIONAL.}
+  \item{xlab}{Label for x-axis. DEFAULT = dimColnames[1]. OPTIONAL.}
   \item{xlabAngle}{Rotation angle of x-axis labels. DEFAULT = 0. OPTIONAL.}
   \item{xlabhjust}{Horizontal adjustment of x-axis labels. DEFAULT = 0.5. OPTIONAL.}
   \item{xlabvjust}{Vertical adjustment of x-axis labels. DEFAULT = 0.5.
   OPTIONAL.}
-  \item{ylab}{Label for y-axis. DEFAULT = 'UMAP2'. OPTIONAL.}
+  \item{ylab}{Label for y-axis. DEFAULT = dimColnames[2]. OPTIONAL.}
   \item{ylabAngle}{Rotation angle of y-axis labels. DEFAULT = 0. OPTIONAL.}
   \item{ylabhjust}{Horizontal adjustment of y-axis labels. DEFAULT = 0.5.
   OPTIONAL.}
@@ -100,9 +101,8 @@
   \item{axisLabSize}{Size of x- and y-axis labels. DEFAULT = 16. OPTIONAL.}
   \item{title}{Plot title. DEFAULT = 'Cellular density and contours'. OPTIONAL.}
   \item{subtitle}{Plot subtitle. DEFAULT = ''. OPTIONAL.}
-  \item{caption}{Plot caption. DEFAULT =
-    paste0('Total cells, ', nrow(as.data.frame(reducedDim(sce, "UMAP"))),
-    '; Bins, ', bins). OPTIONAL.}
+  \item{caption}{Plot caption. DEFAULT = paste0('Total cells, ',
+    nrow(as.data.frame(reducedDim(sce, reducedDim)))). OPTIONAL.}
   \item{titleLabSize}{Size of plot title. DEFAULT = 16. OPTIONAL.}
   \item{subtitleLabSize}{Size of plot subtitle. DEFAULT = 12. OPTIONAL.}
   \item{captionLabSize}{Size of plot caption. DEFAULT = 12. OPTIONAL.}

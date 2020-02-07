@@ -1,6 +1,7 @@
 contourplot <- function(
   sce,
   reducedDim = 'UMAP',
+  dimColnames = c('UMAP1','UMAP2'),
   lowcol = 'darkblue',
   highcol = 'darkred',
   alpha = c(0.0, 0.5),
@@ -19,18 +20,18 @@ contourplot <- function(
   drawConnectors = TRUE,
   widthConnectors = 0.5,
   colConnectors = 'grey50',
-  xlab = 'UMAP1',
+  xlab = dimColnames[1],
   xlabAngle = 0,
   xlabhjust = 0.5,
   xlabvjust = 0.5,
-  ylab = 'UMAP2',
+  ylab = dimColnames[2],
   ylabAngle = 0,
   ylabhjust = 0.5,
   ylabvjust = 0.5,
   axisLabSize = 16,
   title = 'Cellular density and contours',
   subtitle = '',
-  caption = paste0('Total cells, ', nrow(as.data.frame(reducedDim(sce, "UMAP"))), '; Bins, ', bins),
+  caption = paste0('Total cells, ', nrow(as.data.frame(reducedDim(sce, reducedDim))), '; Bins, ', bins),
   titleLabSize = 16,
   subtitleLabSize = 12,
   captionLabSize = 12,
@@ -74,7 +75,8 @@ contourplot <- function(
       legend.text=element_text(size = legendLabSize),
       legend.key.height = unit(legendKeyHeight, 'cm'))
 
-  plotobj <- as.data.frame(reducedDim(sce, reducedDim))
+  plotobj <- as.data.frame(reducedDim(sce, reducedDim)[,dimColnames])
+  colnames(plotobj) <- c('dim1','dim2')
 
   # set plot labels (e.g. cell names)
   if (!is.null(celllab)) {
@@ -89,18 +91,18 @@ contourplot <- function(
 
   if (is.null(xlim)) {
     xlim <- c(
-      min(plotobj[,'UMAP1'], na.rm = TRUE) - 1,
-      max(plotobj[,'UMAP1'], na.rm = TRUE) + 1)
+      min(plotobj[,'dim1'], na.rm = TRUE) - 1,
+      max(plotobj[,'dim1'], na.rm = TRUE) + 1)
   }
 
   if (is.null(ylim)) {
     ylim <- c(
-      min(plotobj[,'UMAP2'], na.rm = TRUE) - 1,
-      max(plotobj[,'UMAP2'], na.rm = TRUE) + 1)
+      min(plotobj[,'dim2'], na.rm = TRUE) - 1,
+      max(plotobj[,'dim2'], na.rm = TRUE) + 1)
   }
 
   # initialise the plot object
-  plot <- ggplot(plotobj, aes(UMAP1, UMAP2)) + th +
+  plot <- ggplot(plotobj, aes(dim1, dim2)) + th +
 
     stat_density2d(aes(alpha = ..level.., fill = ..level..), size = 1, bins = bins, geom = 'polygon') +
 

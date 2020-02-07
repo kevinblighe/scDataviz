@@ -96,6 +96,7 @@ One can also create a new *SingleCellExperiment* object manually using any type 
 
 ```{r ex1, fig.height = 7, fig.width = 8, fig.cap = "Perform principal component analysis"}
 
+  library(PCAtools)
   p <- pca(assay(sce, 'scaled'), metadata = metadata(sce))
   biplot(p, lab = NULL, pointSize = 0.5, colby = 'treatment', legendPosition = 'right')
 
@@ -127,10 +128,10 @@ We can also perform UMAP on a select number of PC eigenvectors. *PCAtools* can b
 
 ```{r elbowHorn}
 
-  #elbow <- findElbowPoint(p$variance)
+  elbow <- findElbowPoint(p$variance)
   elbow
 
-  #horn <- parallelPCA(assay(sce, 'scaled'))
+  horn <- parallelPCA(assay(sce, 'scaled'))
   horn$n
 
 ```
@@ -320,10 +321,6 @@ The expression signature is a quick way to visualise which markers are more or l
 # Acknowledgments
 
 * Jessica Timms
-
-* James Opzoomer
-
-* Steven Hargreaves
 
 * Shahram Kordasti
 
