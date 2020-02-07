@@ -1,7 +1,7 @@
-﻿Package: scDataviz
+Package: scDataviz
 Type: Package
 Title: scDataviz: single cell dataviz and downstream analyses
-Version: 0.99.4
+Version: 0.99.6
 Authors@R: c(
     person("Kevin", "Blighe", role=c("aut", "cre"), email="kevin@clinicalbioinformatics.co.uk"))
 Description: scDataviz: single cell dataviz and downstream analyses
@@ -25,7 +25,6 @@ Suggests:
   BiocGenerics,
   knitr,
   kableExtra,
-  R.utils
 URL: https://github.com/kevinblighe/scDataviz
 biocViews: RNASeq, GeneExpression, Transcription, FlowCytometry, MassSpectrometry
 VignetteBuilder:

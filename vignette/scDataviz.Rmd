@@ -53,16 +53,27 @@ In the single cell World, which includes flow cytometry, mass cytometry, single-
 ```
 
 
-# Quick start
+# Tutorial 1: flow cytometry FCS data
 
-Here, we use sample data stored as FCS files.
+Here, we will start with sample data stored as FCS files. Specifically, we will utilise some of the data used in [Deep phenotyping detects a pathological CD4+ T-cell complosome signature in systemic sclerosis](https://www.nature.com/articles/s41423-019-0360-8).
 
-```{r readFCS}
+In order to downlaod this data, we can use `git clone` from your command prompt:
+
+```{r, engine = 'bash', eval = FALSE}
+
+  git clone https://github.com/kevinblighe/Arbore2020_Tcell_Complosome ;
+
+```
+
+Now, read in the data and normalise it
+
+```{r readFCS, eval = FALSE}
 
   filelist <- list.files(
-    path = "FCS/",
+    path = "Arbore2020_Tcell_Complosome/FCS/",
     pattern = "*.fcs|*.FCS",
     full.names = TRUE)
+  filelist <- gsub('Arbore2020_Tcell_Complosome/', '', filelist)
   filelist
 
   metadata <- data.frame(
@@ -81,7 +92,7 @@ Here, we use sample data stored as FCS files.
 
 ```
 
-One can also create a new object *SingleCellExperiment* object manually using any type of data, including any data-matrix from scRNA-seq produced elsewhere. Import functions for data deriving from popular programs will come, e.g., *Seurat*.
+One can also create a new *SingleCellExperiment* object manually using any type of data, including any data-matrix from scRNA-seq produced elsewhere. Import functions for data deriving from popular programs will come, e.g., *Seurat*.
 
 
 ## Perform principal component analysis (PCA)
@@ -107,7 +118,7 @@ For more functionality via *PCAtools*, check the vignette: [PCAtools: everything
 
 UMAP can be performed on the entire dataset, if your computer's memory will permit. Currently it is fixed to work with the 'scaled' assay component of the *SingleCellExperiment* object.
 
-```{r performUMAP}
+```{r performUMAP, eval = FALSE}
 
   sce <- performUMAP(sce)
 
@@ -127,7 +138,7 @@ We can also perform UMAP on a select number of PC eigenvectors. *PCAtools* can b
 
 ```
 
-```{r performUMAP_PCA}
+```{r performUMAP_PCA, eval = FALSE}
 
   sce <- performUMAP(sce, reducedDim = 'PCA', dims = c(1:horn$n))
 
@@ -135,10 +146,17 @@ We can also perform UMAP on a select number of PC eigenvectors. *PCAtools* can b
 
 At this point, we have done a lot - let's save the dataset.
 
-```{r save, warnings = FALSE, message = FALSE}
+```{r save, eval = FALSE}
 
   dir.create('save'
-  saveRDS(sce, 'save/VignetteData.RDS', compress = TRUE)
+  saveRDS(sce, 'save/FlowData.RDS', compress = TRUE)
+
+```
+
+```{r load, eval = TRUE, echo = FALSE}
+
+  sce <- readRDS('save/FlowData.RDS')
+  require(scDataviz)
 
 ```
 
