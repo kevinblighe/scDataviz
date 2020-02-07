@@ -11,7 +11,7 @@
   clusters = sample(metadata(sce)[['Cluster']], 9),
   clusterVector = metadata(sce)[['Cluster']],
   markers = sample(rownames(sce), 10),
-  ncol = 3,
+  ncol = 5,
   nrow = 2,
   legendPosition = 'none',
   legendLabSize = 12,
@@ -27,19 +27,19 @@
   drawConnectors = TRUE,
   widthConnectors = 0.5,
   colConnectors = 'grey50',
-  xlab = 'UMAP1',
-  xlabAngle = 0,
+  xlab = 'Marker',
+  xlabAngle = 90,
   xlabhjust = 0.5,
   xlabvjust = 0.5,
-  ylab = 'UMAP2',
+  ylab = 'Expression',
   ylabAngle = 0,
   ylabhjust = 0.5,
   ylabvjust = 0.5,
   axisLabSize = 16,
   stripLabSize = 16,
-  title = 'Individual marker expression',
-  subtitle = NULL,
-  caption = paste0('Total cells, ', nrow(as.data.frame(reducedDim(sce, reducedDim)))),
+  title = 'Marker expression per cluster',
+  subtitle = '',
+  caption = '',
   titleLabSize = 16,
   subtitleLabSize = 12,
   captionLabSize = 12,
@@ -67,9 +67,8 @@
   \item{markers}{Vector containing marker names to plot. If no markers are
     specified, then all will be plot. Default = sample(rownames(sce), 10).
     OPTIONAL.}
-  \item{ncol}{Number of columns for faceting. DEFAULT = 3. OPTIONAL.}
+  \item{ncol}{Number of columns for faceting. DEFAULT = 5. OPTIONAL.}
   \item{nrow}{Number of rows for faceting. DEFAULT = 2. OPTIONAL.}
-
   \item{legendPosition}{Position of legend ('top', 'bottom', 'left', 'right',
   'none'). DEFAULT = 'none'. OPTIONAL.}
   \item{legendLabSize}{Size of plot legend text. DEFAULT = 12. OPTIONAL.}
@@ -104,10 +103,9 @@
   OPTIONAL.}
   \item{axisLabSize}{Size of x- and y-axis labels. DEFAULT = 16. OPTIONAL.}
   \item{stripLabSize}{Size of the strip (marker) labels. DEFAULT = 16. OPTIONAL.}
-  \item{title}{Plot title. DEFAULT = 'Marker expression per k-NN cluster'.
-    OPTIONAL.}
+  \item{title}{Plot title. DEFAULT = 'Marker expression per cluster'. OPTIONAL.}
   \item{subtitle}{Plot subtitle. DEFAULT = ''. OPTIONAL.}
-  \item{caption}{Plot caption. DEFAULT = NULL. OPTIONAL.}
+  \item{caption}{Plot caption. DEFAULT = ''. OPTIONAL.}
   \item{titleLabSize}{Size of plot title. DEFAULT = 16. OPTIONAL.}
   \item{subtitleLabSize}{Size of plot subtitle. DEFAULT = 12. OPTIONAL.}
   \item{captionLabSize}{Size of plot caption. DEFAULT = 12. OPTIONAL.}

@@ -53,8 +53,7 @@
   gridlines.major = TRUE,
   gridlines.minor = TRUE,
   borderWidth = 0.8,
-  borderColour = 'black',
-  returnPlot = TRUE)
+  borderColour = 'black')
 }
 
 \arguments{
@@ -131,8 +130,6 @@
   OPTIONAL.}
   \item{borderColour}{Colour of the border on the x and y axes. DEFAULT =
   'black'. OPTIONAL.}
-  \item{returnPlot}{Logical, indicating whether or not to return the plot
-  object. DEFAULT = TRUE. OPTIONAL.}
 }
 
 \value{

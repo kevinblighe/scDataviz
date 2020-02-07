@@ -10,19 +10,14 @@
   metadataplot(sce,
   reducedDim = 'UMAP',
   dimColnames = c('UMAP1','UMAP2'),
-
   colby = NULL,
   colkey = NULL,
-
-
   pointSize = 0.5,
   legendPosition = 'right',
   legendLabSize = 12,
   legendIconSize = 5.0,
-  legendKeyHeight = 2.5,
   xlim = NULL,
   ylim = NULL,
-
   celllab = NULL,
   labSize = 3.0,
   labhjust = 1.5,
@@ -30,18 +25,17 @@
   drawConnectors = TRUE,
   widthConnectors = 0.5,
   colConnectors = 'grey50',
-  xlab = 'UMAP1',
+  xlab = dimColnames[1],
   xlabAngle = 0,
   xlabhjust = 0.5,
   xlabvjust = 0.5,
-  ylab = 'UMAP2',
+  ylab = dimColnames[2],
   ylabAngle = 0,
   ylabhjust = 0.5,
   ylabvjust = 0.5,
   axisLabSize = 16,
-  stripLabSize = 16,
-  title = 'Individual marker expression',
-  subtitle = NULL,
+  title = 'Metadata plot',
+  subtitle = '',
   caption = paste0('Total cells, ', nrow(as.data.frame(reducedDim(sce, reducedDim)))),
   titleLabSize = 16,
   subtitleLabSize = 12,
@@ -77,7 +71,6 @@
   \item{legendLabSize}{Size of plot legend text. DEFAULT = 12. OPTIONAL.}
   \item{legendIconSize}{Size of plot legend icons / symbols. DEFAULT = 5.0.
   OPTIONAL.}
-  \item{legendKeyHeight}{Height of the legend key. DEFAULT = 2.5. OPTIONAL.}
   \item{xlim}{Limits of the x-axis. DEFAULT = NULL. OPTIONAL.}
   \item{ylim}{Limits of the y-axis. DEFAULT = NULL. OPTIONAL.}
   \item{celllab}{A vector containing any cells that the user wishes to label
@@ -102,7 +95,6 @@
   \item{ylabvjust}{Vertical adjustment of y-axis labels. DEFAULT = 0.5.
   OPTIONAL.}
   \item{axisLabSize}{Size of x- and y-axis labels. DEFAULT = 16. OPTIONAL.}
-  \item{stripLabSize}{Size of the strip (marker) labels. DEFAULT = 16. OPTIONAL.}
   \item{title}{Plot title. DEFAULT = 'Metadata plot'. OPTIONAL.}
   \item{subtitle}{Plot subtitle. DEFAULT = ''. OPTIONAL.}
   \item{caption}{Plot caption. DEFAULT =

@@ -73,12 +73,12 @@ Now, read in the data and normalise it
     path = "Arbore2020_Tcell_Complosome/FCS/",
     pattern = "*.fcs|*.FCS",
     full.names = TRUE)
-  filelist <- gsub('Arbore2020_Tcell_Complosome/', '', filelist)
   filelist
 
   metadata <- data.frame(
     group = c(rep('Healthy', 7), rep('Disease', 11)),
-    treatment = gsub('\\.fcs$', '', gsub('FCS\\/\\/[A-Z0-9]*\\ ', '', filelist)),
+    treatment = gsub('\\.fcs$', '',
+      gsub('Arbore2020_Tcell_Complosome\\/FCS\\/\\/[A-Z0-9]*\\ ', '', filelist)),
     row.names = filelist,
     stringsAsFactors = FALSE)
   metadata

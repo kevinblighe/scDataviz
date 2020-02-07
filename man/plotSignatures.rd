@@ -7,7 +7,7 @@
 \description{Find enriched markers per identified cluster and visualise these as a custom corrplot.}
 
 \usage{
-  markerEnrichment(sce,
+  plotSignatures(sce,
   clusterVector = metadata(sce)[['Cluster']],
   funcSummarise = function(x) median(x, na.rm = TRUE),
   col = colorRampPalette(rev(brewer.pal(9, 'RdBu')))(100),

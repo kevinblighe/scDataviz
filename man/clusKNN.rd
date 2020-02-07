@@ -19,7 +19,7 @@
   annoy.metric = "euclidean",
   nn.eps = 0,
   verbose = TRUE,
-  force.recalc = FALSE
+  force.recalc = FALSE,
   modularity.fxn = 1,
   initial.membership = NULL,
   weights = NULL,

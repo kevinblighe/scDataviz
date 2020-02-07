@@ -16,7 +16,7 @@
   legendLabSize = 12,
   legendIconSize = 5.0,
   xlim = NULL,
-  ylim = NULL
+  ylim = NULL,
   label = TRUE,
   labSize = 5.0,
   labhjust = 1.5,
@@ -34,7 +34,7 @@
   ylabvjust = 0.5,
   axisLabSize = 16,
   title = 'k-nearest neighbor (k-NN) clusters',
-  subtitle = NULL,
+  subtitle = '',
   caption = paste0('Total cells, ', nrow(as.data.frame(reducedDim(sce, reducedDim)))),
   titleLabSize = 16,
   subtitleLabSize = 12,

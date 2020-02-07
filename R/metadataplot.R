@@ -43,8 +43,7 @@ metadataplot <- function(
   gridlines.major = TRUE,
   gridlines.minor = TRUE,
   borderWidth = 0.8,
-  borderColour = 'black',
-  returnPlot = TRUE)
+  borderColour = 'black')
 {
   # create a base theme that will later be modified
   th <- theme_bw(base_size=24) +
