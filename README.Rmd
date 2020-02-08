@@ -480,7 +480,7 @@ Let's check the reduced dimensions and then plot some randomly selected marker e
 
 We can also derive clusters using the same k-NN approach as before. Here, we are dealing with scRNA-seq data; so, let's relax the `resolution` threshold somewhat, which will permit more clusters to be identified.
 
-```{r ex9, message = FALSE, fig.height = 8, fig.width = 8, fig.cap = "Find ideal clusters in the UMAP layout via k-nearest neighbours"}
+```{r ex9, message = FALSE, fig.height = 8, fig.width = 8, fig.cap = "SeuratToSCE: find ideal clusters in the UMAP layout via k-nearest neighbours"}
 
   pbmc.sce <- clusKNN(pbmc.sce,
     reducedDim = 'UMAP',
@@ -506,8 +506,11 @@ We can also derive clusters using the same k-NN approach as before. Here, we are
     ncol = 1, align = "l", label_size = 24)
 
 ```
-  
-```
+
+Now determine enriched markers per cluster.
+
+`r knitr::kable(markerEnrichment(pbmc.sce, assay = 'logcounts'), auto = TRUE) %>% kable_styling(full_width = F)`
+
 
 # Acknowledgments
 
@@ -533,4 +536,6 @@ sessionInfo()
 @Wickham
 
 @PCAtools
+
+@satijalab
 

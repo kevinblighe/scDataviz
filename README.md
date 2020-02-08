@@ -247,7 +247,7 @@ Here, we randomly select some markers and then plot their expression profiles ac
   markers
 ```
 
-    ## [1] "CD23" "CD31" "CD55" "CD30" "CD36" "CD13"
+    ## [1] "CD39" "CD21" "CD16" "CD9"  "CD3"  "CD58"
 
 ``` r
   ggout1 <- markerExpression(sce,
@@ -386,7 +386,7 @@ This function utilises the k nearest neighbours (k-NN) approach from Seurat, whi
     ## Running Louvain algorithm with multilevel refinement...
     ## Maximum modularity in 10 random starts: 0.9985
     ## Number of communities: 13
-    ## Elapsed time: 23 seconds
+    ## Elapsed time: 22 seconds
 
 ``` r
   sce <- clusKNN(sce,
@@ -406,7 +406,7 @@ This function utilises the k nearest neighbours (k-NN) approach from Seurat, whi
     ## Running Louvain algorithm with multilevel refinement...
     ## Maximum modularity in 10 random starts: 0.9974
     ## Number of communities: 8
-    ## Elapsed time: 25 seconds
+    ## Elapsed time: 27 seconds
 
 ``` r
   ggout1 <- plotClusters(sce,
@@ -1486,7 +1486,7 @@ The expression signature is a quick way to visualise which markers are more or l
 Tutorial 2: Import from Seurat
 ==============================
 
-Due to the fact that *scDataviz* is based on *SingleCellExperiment*, it has increased interoperability with other packages, including the popular *Seurat* \[\]. Taking the data produced from the (Seurat Tutorial)\[<https://satijalab.org/seurat/v3.1/pbmc3k_tutorial.html>\] on Peripheral Blood Mononuclear Cells (PBMCs), we can do this as follows:
+Due to the fact that *scDataviz* is based on *SingleCellExperiment*, it has increased interoperability with other packages, including the popular *Seurat* (Stuart et al. 2018). Taking the data produced from the [Seurat Tutorial](https://satijalab.org/seurat/v3.1/pbmc3k_tutorial.html) on Peripheral Blood Mononuclear Cells (PBMCs), we can do this as follows:
 
 ``` r
   require(Seurat)
@@ -1546,10 +1546,11 @@ Let's check the reduced dimensions and then plot some randomly selected marker e
   markers
 ```
 
-    ##  [1] "VENTX"        "PAICS"        "TESK2"        "TAF9B"        "RP11-279O9.4"
-    ##  [6] "MEG3"         "FAM185A"      "SCAF4"        "CRYGS"        "SMYD4"       
-    ## [11] "ADH5"         "ZHX1"         "MMS22L"       "LINC00309"    "RPS6KA4"     
-    ## [16] "B3GNT1"       "RTN4IP1"      "CACNB1"
+    ##  [1] "DCTN4"         "RP11-442H21.2" "GGCT"          "EHD3"         
+    ##  [5] "USP3"          "TTC5"          "TMPO-AS1"      "ATG12"        
+    ##  [9] "KIF5B"         "BICD2"         "LINC00843"     "TMTC4"        
+    ## [13] "PDZD8"         "DNTTIP1"       "COPS5"         "TOMM20"       
+    ## [17] "TCERG1"        "WDR75"
 
 ``` r
   ggout <- markerExpression(pbmc.sce,
@@ -1615,10 +1616,406 @@ We can also derive clusters using the same k-NN approach as before. Here, we are
     ncol = 1, align = "l", label_size = 24)
 ```
 
-![Find ideal clusters in the UMAP layout via k-nearest neighbours](README_files/figure-markdown_github/ex9-1.png)
+![SeuratToSCE: find ideal clusters in the UMAP layout via k-nearest neighbours](README_files/figure-markdown_github/ex9-1.png)
 
-\`\`\`
+Now determine enriched markers per cluster.
 
+<table class="table" style="width: auto !important; margin-left: auto; margin-right: auto;">
+<thead>
+<tr>
+<th style="text-align:right;">
+Cluster
+</th>
+<th style="text-align:right;">
+nCells
+</th>
+<th style="text-align:right;">
+TotalCells
+</th>
+<th style="text-align:right;">
+PercentCells
+</th>
+<th style="text-align:left;">
+NegMarkers
+</th>
+<th style="text-align:left;">
+PosMarkers
+</th>
+<th style="text-align:right;">
+PerCent\_13
+</th>
+<th style="text-align:right;">
+nCell\_13
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+316
+</td>
+<td style="text-align:right;">
+2700
+</td>
+<td style="text-align:right;">
+11.7037037
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:right;">
+100
+</td>
+<td style="text-align:right;">
+316
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+271
+</td>
+<td style="text-align:right;">
+2700
+</td>
+<td style="text-align:right;">
+10.0370370
+</td>
+<td style="text-align:left;">
+HLA-DRA-
+</td>
+<td style="text-align:left;">
+LTB+CD3D+IL32+
+</td>
+<td style="text-align:right;">
+100
+</td>
+<td style="text-align:right;">
+271
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2
+</td>
+<td style="text-align:right;">
+254
+</td>
+<td style="text-align:right;">
+2700
+</td>
+<td style="text-align:right;">
+9.4074074
+</td>
+<td style="text-align:left;">
+HLA-DRA-LYZ-
+</td>
+<td style="text-align:left;">
+BTG2+CYTIP+FYB+NDFIP1+GIMAP5+LEPROTL1+CD3E+CD3D+LDHB+CCR7+NOSIP+PIK3IP1+ST13+
+</td>
+<td style="text-align:right;">
+100
+</td>
+<td style="text-align:right;">
+254
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+3
+</td>
+<td style="text-align:right;">
+246
+</td>
+<td style="text-align:right;">
+2700
+</td>
+<td style="text-align:right;">
+9.1111111
+</td>
+<td style="text-align:left;">
+LTB-
+</td>
+<td style="text-align:left;">
+S100A9+LYZ+
+</td>
+<td style="text-align:right;">
+100
+</td>
+<td style="text-align:right;">
+246
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+4
+</td>
+<td style="text-align:right;">
+231
+</td>
+<td style="text-align:right;">
+2700
+</td>
+<td style="text-align:right;">
+8.5555556
+</td>
+<td style="text-align:left;">
+HLA-DRA-LYZ-COTL1-
+</td>
+<td style="text-align:left;">
+CCL5+NKG7+
+</td>
+<td style="text-align:right;">
+100
+</td>
+<td style="text-align:right;">
+231
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+5
+</td>
+<td style="text-align:right;">
+213
+</td>
+<td style="text-align:right;">
+2700
+</td>
+<td style="text-align:right;">
+7.8888889
+</td>
+<td style="text-align:left;">
+HLA-DRA-LYZ-
+</td>
+<td style="text-align:left;">
+LTB+CD3E+IL32+
+</td>
+<td style="text-align:right;">
+100
+</td>
+<td style="text-align:right;">
+213
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+6
+</td>
+<td style="text-align:right;">
+212
+</td>
+<td style="text-align:right;">
+2700
+</td>
+<td style="text-align:right;">
+7.8518519
+</td>
+<td style="text-align:left;">
+CXCR4-PTPRCAP-LDHB-
+</td>
+<td style="text-align:left;">
+LST1+AIF1+
+</td>
+<td style="text-align:right;">
+100
+</td>
+<td style="text-align:right;">
+212
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+7
+</td>
+<td style="text-align:right;">
+211
+</td>
+<td style="text-align:right;">
+2700
+</td>
+<td style="text-align:right;">
+7.8148148
+</td>
+<td style="text-align:left;">
+HLA-DRA-
+</td>
+<td style="text-align:left;">
+CD3E+CD3D+LDHB+CCR7+NOSIP+
+</td>
+<td style="text-align:right;">
+100
+</td>
+<td style="text-align:right;">
+211
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+8
+</td>
+<td style="text-align:right;">
+190
+</td>
+<td style="text-align:right;">
+2700
+</td>
+<td style="text-align:right;">
+7.0370370
+</td>
+<td style="text-align:left;">
+LTB-HLA-DRA-LYZ-COTL1-
+</td>
+<td style="text-align:left;">
+GNLY+NKG7+
+</td>
+<td style="text-align:right;">
+100
+</td>
+<td style="text-align:right;">
+190
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+9
+</td>
+<td style="text-align:right;">
+187
+</td>
+<td style="text-align:right;">
+2700
+</td>
+<td style="text-align:right;">
+6.9259259
+</td>
+<td style="text-align:left;">
+S100A4-GAPDH-
+</td>
+<td style="text-align:left;">
+HLA-DRA+CD79B+
+</td>
+<td style="text-align:right;">
+100
+</td>
+<td style="text-align:right;">
+187
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+10
+</td>
+<td style="text-align:right;">
+160
+</td>
+<td style="text-align:right;">
+2700
+</td>
+<td style="text-align:right;">
+5.9259259
+</td>
+<td style="text-align:left;">
+NPM1-LTB-TSC22D3-ITM2B-UBB-DDX5-RPSAP58-FXYD5-GLTSCR2-
+</td>
+<td style="text-align:left;">
+S100A9+S100A8+
+</td>
+<td style="text-align:right;">
+100
+</td>
+<td style="text-align:right;">
+160
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+11
+</td>
+<td style="text-align:right;">
+158
+</td>
+<td style="text-align:right;">
+2700
+</td>
+<td style="text-align:right;">
+5.8518519
+</td>
+<td style="text-align:left;">
+S100A4-
+</td>
+<td style="text-align:left;">
+HLA-DRA+CD79A+
+</td>
+<td style="text-align:right;">
+100
+</td>
+<td style="text-align:right;">
+158
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+12
+</td>
+<td style="text-align:right;">
+35
+</td>
+<td style="text-align:right;">
+2700
+</td>
+<td style="text-align:right;">
+1.2962963
+</td>
+<td style="text-align:left;">
+YBX1-ARPC2-ARPC1B-ARPC3-
+</td>
+<td style="text-align:left;">
+CD3D+
+</td>
+<td style="text-align:right;">
+100
+</td>
+<td style="text-align:right;">
+35
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+13
+</td>
+<td style="text-align:right;">
+16
+</td>
+<td style="text-align:right;">
+2700
+</td>
+<td style="text-align:right;">
+0.5925926
+</td>
+<td style="text-align:left;">
+PTPRCAP-
+</td>
+<td style="text-align:left;">
+HLA-DRA+HLA-DPB1+LYZ+CST3+
+</td>
+<td style="text-align:right;">
+100
+</td>
+<td style="text-align:right;">
+16
+</td>
+</tr>
+</tbody>
+</table>
 Acknowledgments
 ===============
 
@@ -1656,7 +2053,7 @@ sessionInfo()
     ## other attached packages:
     ##  [1] Seurat_3.1.1                PCAtools_1.2.0             
     ##  [3] cowplot_1.0.0               lattice_0.20-38            
-    ##  [5] reshape2_1.4.3              scDataviz_0.99.16          
+    ##  [5] reshape2_1.4.3              scDataviz_0.99.18          
     ##  [7] ggrepel_0.8.1               ggplot2_3.2.1              
     ##  [9] SingleCellExperiment_1.8.0  SummarizedExperiment_1.16.0
     ## [11] DelayedArray_0.12.0         BiocParallel_1.20.0        
@@ -1717,10 +2114,14 @@ Wickham (2016)
 
 Blighe and Lun (2018)
 
+Stuart et al. (2018)
+
 Blighe, K. 2020. “scDataviz: single cell dataviz and downstream analyses.” <https://github.com/kevinblighe>.
 
 Blighe, K, and A Lun. 2018. “PCAtools: everything Principal Components Analysis.” <https://github.com/kevinblighe>.
 
 Lun, A, D Risso, K Korthauer, and K Rue-Albrecht. 2019. “SingleCellExperiment: S4 Classes for Single Cell Data.” R package version 1.8.0, https://bioconductor.org/packages/SingleCellExperiment/.
+
+Stuart, Tim, Andrew Butler, Paul Hoffman, Christoph Hafemeister, Efthymia Papalexi, William M Mauck III, Marlon Stoeckius, Peter Smibert, and Rahul Satija. 2018. “Comprehensive Integration of Single Cell Data.” *bioRxiv*. doi:[10.1101/460147](https://doi.org/10.1101/460147).
 
 Wickham, H. 2016. “ggplot2: Elegant Graphics for Data Analysis.” Springer-Verlag New York, ISBN: 978-3-319-24277-4.
