@@ -397,11 +397,17 @@ This function utilises the k nearest neighbours (k-NN) approach from Seurat, whi
 
 ## Determine enriched markers in each cluster and plot the expression signature
 
+This method also calculates metacluster abundances across a chosen phenotype. The function returns a data-frame, which can then be exported to do other analyses.
+
+### Disease vs Healthy metacluster abundances
 
 `r knitr::kable(markerEnrichment(sce, metacluster = 'group'), auto = TRUE) %>% kable_styling(full_width = F)`
 
+### Treatment type metacluster abundances
+
 `r knitr::kable(markerEnrichment(sce, metacluster = 'treatment'), auto = TRUE) %>% kable_styling(full_width = F)`
 
+### Expression signature
 
 The expression signature is a quick way to visualise which markers are more or less expressed in each identified cluster of cells.
 
@@ -413,6 +419,95 @@ The expression signature is a quick way to visualise which markers are more or l
 
 ```
 
+# Tutorial 2: Import from Seurat
+
+Due to the fact that *scDataviz* is based on *SingleCellExperiment*, it has increased interoperability with other packages, including the popular *Seurat* [@satijalab]. Taking the data produced from the [Seurat Tutorial](https://satijalab.org/seurat/v3.1/pbmc3k_tutorial.html) on Peripheral Blood Mononuclear Cells (PBMCs), we can do this as follows:
+
+```{r SeuratToSCE}
+
+  require(Seurat)
+  require(SingleCellExperiment)
+  require(scDataviz)
+
+  pbmc <- readRDS('pbmc3k_final.rds')
+  pbmc.sce <- as.SingleCellExperiment(pbmc)
+
+  assays(pbmc.sce)
+
+  head(metadata(pbmc.sce))
+
+```
+
+Let's check the reduced dimensions and then plot some randomly selected marker expression profiles across these.
+
+```{r}
+
+  reducedDims(pbmc.sce)
+
+  head(reducedDim(pbmc.sce, 'UMAP'))
+
+  head(reducedDim(pbmc.sce, 'PCA'))[,1:5]
+
+```
+
+```{r ex8, fig.height = 12, fig.width = 16, fig.cap = "SeuratToSCE: show marker expression across the layout"}
+
+  markers <- sample(rownames(pbmc.sce), 18)
+  markers
+
+  ggout <- markerExpression(pbmc.sce,
+    assay = 'logcounts',
+    markers = markers,
+    reducedDim = 'UMAP',
+    dimColnames = c('UMAP_1','UMAP_2'),
+    col = c('white', 'darkred'),
+    subtitle = 'Seurat PBMC data: UMAP layout',
+    nrow = 3, ncol = 6,
+    legendKeyHeight = 1.0,
+    legendLabSize = 18,
+    stripLabSize = 22,
+    axisLabSize = 22,
+    titleLabSize = 22,
+    subtitleLabSize = 18,
+    captionLabSize = 18)
+
+  require(cowplot)
+  plot_grid(ggout,
+    labels = c('A'),
+    nrow = 1, align = "l", label_size = 24)
+
+```
+
+We can also derive clusters using the same k-NN approach as before. Here, we are dealing with scRNA-seq data; so, let's relax the `resolution` threshold somewhat, which will permit more clusters to be identified.
+
+```{r ex9, message = FALSE, fig.height = 8, fig.width = 8, fig.cap = "Find ideal clusters in the UMAP layout via k-nearest neighbours"}
+
+  pbmc.sce <- clusKNN(pbmc.sce,
+    reducedDim = 'UMAP',
+    dimColnames = c('UMAP_1','UMAP_2'),
+    k.param = 20,
+    prune.SNN = 1/15,
+    resolution = 0.5,
+    algorithm = 2)
+
+  ggout <- plotClusters(pbmc.sce,
+    clusterColname = 'Cluster',
+    labSize = 6.0,
+    subtitle = 'UMAP performed on expression values',
+    caption = paste0('Note: clusters / communities identified via',
+      '\nLouvain algorithm with multilevel refinement'),
+    axisLabSize = 20,
+    titleLabSize = 20,
+    subtitleLabSize = 16,
+    captionLabSize = 16)
+
+  plot_grid(ggout,
+    labels = c('A'),
+    ncol = 1, align = "l", label_size = 24)
+
+```
+  
+```
 
 # Acknowledgments
 

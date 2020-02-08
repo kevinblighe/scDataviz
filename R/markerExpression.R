@@ -86,7 +86,7 @@ markerExpression <- function(
 
   plotobj <- as.data.frame(reducedDim(sce, reducedDim)[,dimColnames])
 
-  plotobj <- data.frame(plotobj, as.data.frame(t(assay(sce, assay))))
+  plotobj <- data.frame(plotobj, as.data.frame(t(as.matrix(assay(sce, assay)))))
 
   plotobj <- melt(plotobj, id.vars = dimColnames)
 

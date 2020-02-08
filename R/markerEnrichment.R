@@ -15,7 +15,7 @@ markerEnrichment <- function(
 
   metadata = metadata(sce)
 
-  data <- as.data.frame(t(assay(sce, assay)))
+  data <- as.data.frame(t(as.matrix(assay(sce, assay))))
   data <- aggregate(data, list(clusterVector), funcSummarise)
   data <- data[,-1]
   data <- apply(data, 2, scale, scale = FALSE)

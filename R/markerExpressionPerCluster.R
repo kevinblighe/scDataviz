@@ -82,7 +82,7 @@ markerExpressionPerCluster <- function(
       strip.text.x = element_text(size = stripLabSize, face = 'bold', margin = margin(b = 5, t = 5)))
 
   plotobj <- data.frame(Cluster = clusterVector,
-    as.data.frame(t(assay(sce, assay)))[,which(rownames(sce) %in% markers)])
+    as.data.frame(t(as.matrix(assay(sce, assay))))[,which(rownames(sce) %in% markers)])
 
   plotobj <- plotobj[which(plotobj$Cluster %in% clusters),]
 

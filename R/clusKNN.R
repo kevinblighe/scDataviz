@@ -63,9 +63,14 @@ clusKNN <- function(
     metadata(sce) <- metadata(sce)[,-which(colnames(metadata(sce)) == clusterAssignName)]
   }
 
-  metadata(sce) <- data.frame(
-    metadata(sce),
-    as.numeric(as.character(layout$nnc[,1])))
+  if (length(metadata(sce)) > 0) {
+    metadata(sce) <- data.frame(
+      metadata(sce),
+      as.numeric(as.character(layout$nnc[,1])))
+  } else {
+    metadata(sce) <- data.frame(
+      as.numeric(as.character(layout$nnc[,1])))
+  }
 
   colnames(metadata(sce))[ncol(metadata(sce))] <- clusterAssignName
 
