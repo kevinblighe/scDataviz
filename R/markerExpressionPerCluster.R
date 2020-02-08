@@ -1,5 +1,6 @@
 markerExpressionPerCluster <- function(
   sce,
+  assay = 'scaled',
   clusters = sample(metadata(sce)[['Cluster']], 9),
   clusterVector = metadata(sce)[['Cluster']],
   markers = sample(rownames(sce), 10),
@@ -48,6 +49,8 @@ markerExpressionPerCluster <- function(
   borderWidth = 0.8,
   borderColour = 'black')
 {
+  Marker <- Expression <- lab <- NULL
+
   # create a base theme that will later be modified
   th <- theme_bw(base_size=24) +
 
@@ -69,7 +72,7 @@ markerExpressionPerCluster <- function(
         hjust = ylabhjust, vjust = ylabvjust),
       axis.title = element_text(size = axisLabSize),
 
-      legend.title  =element_blank(),
+      legend.title = element_blank(),
       legend.position = legendPosition,
       legend.key = element_blank(),
       legend.key.size = unit(0.5, 'cm'),
@@ -79,7 +82,7 @@ markerExpressionPerCluster <- function(
       strip.text.x = element_text(size = stripLabSize, face = 'bold', margin = margin(b = 5, t = 5)))
 
   plotobj <- data.frame(Cluster = clusterVector,
-    as.data.frame(t(assay(sce, 'scaled')))[,which(rownames(sce) %in% markers)])
+    as.data.frame(t(assay(sce, assay)))[,which(rownames(sce) %in% markers)])
 
   plotobj <- plotobj[which(plotobj$Cluster %in% clusters),]
 

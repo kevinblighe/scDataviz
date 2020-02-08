@@ -8,6 +8,7 @@
 
 \usage{
   markerExpression(sce,
+  assay = 'scaled',
   reducedDim = 'UMAP',
   dimColnames = c('UMAP1','UMAP2'),
   markers = sample(rownames(sce), 6),
@@ -62,6 +63,8 @@
 
 \arguments{
   \item{sce}{A SingleCellExperiment object. REQUIRED.},
+  \item{assay}{Name of the assay slot in sce from which data will be taken.
+    DEFAULT = 'scaled'. OPTIONAL.}
   \item{reducedDim}{A reduced dimensional component stored within 'sce',
     e.g., PCA or UMAP. DEFAULT = 'UMAP'. OPTIONAL.}
   \item{dimColnames}{The column names of the dimensions to use. DEFAULT

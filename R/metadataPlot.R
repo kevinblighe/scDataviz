@@ -1,4 +1,4 @@
-metadataplot <- function(
+metadataPlot <- function(
   sce,
   reducedDim = 'UMAP',
   dimColnames = c('UMAP1','UMAP2'),
@@ -45,6 +45,8 @@ metadataplot <- function(
   borderWidth = 0.8,
   borderColour = 'black')
 {
+  metadata <- dim1 <- dim2 <- lab <- NULL
+
   # create a base theme that will later be modified
   th <- theme_bw(base_size=24) +
 

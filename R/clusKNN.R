@@ -26,6 +26,8 @@ clusKNN <- function(
   temp.file.location = NULL,
   edge.file.name = NULL)
 {
+  metadata <- NULL
+
   layout <- reducedDim(sce, reducedDim)[,dimColnames]
 
   layout$nn <- FindNeighbors(
@@ -69,4 +71,3 @@ clusKNN <- function(
 
   return(sce)
 }
-

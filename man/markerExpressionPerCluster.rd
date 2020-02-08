@@ -8,6 +8,7 @@
 
 \usage{
   markerExpressionPerCluster(sce,
+  assay = 'scaled',
   clusters = sample(metadata(sce)[['Cluster']], 9),
   clusterVector = metadata(sce)[['Cluster']],
   markers = sample(rownames(sce), 10),
@@ -59,6 +60,8 @@
 
 \arguments{
   \item{sce}{A SingleCellExperiment object. REQUIRED.}
+  \item{assay}{Name of the assay slot in sce from which data will be taken.
+    DEFAULT = 'scaled'. OPTIONAL.}
   \item{clusters}{Vector containing clusters to plot. DEFAULT =
     sample(metadata(sce)[['Cluster']], 9). OPTIONAL.}
   \item{clusterVector}{A vector of cell-to-cluster assignments. This can be

@@ -8,6 +8,7 @@
 
 \usage{
   markerEnrichment(sce,
+  assay = 'scaled',
   metacluster,
   clusterVector = metadata(sce)[['Cluster']],
   funcSummarise = function(x) median(x, na.rm = TRUE),
@@ -17,6 +18,8 @@
 
 \arguments{
   \item{sce}{A SingleCellExperiment object. REQUIRED.}
+  \item{assay}{Name of the assay slot in sce from which data will be taken.
+    DEFAULT = 'scaled'. OPTIONAL.}
   \item{metacluster}{A column name from 'metadata(sce)' representing a trait
     over which metacluster abundances will be calculated. REQUIRED.}
   \item{clusterVector}{A vector of cell-to-cluster assignments. This can be

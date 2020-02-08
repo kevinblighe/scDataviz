@@ -1,5 +1,7 @@
 downsampleByVar <- function(x, varianceFactor = 0.1)
 {
+  rowVars <- NULL
+
   vars <- rowVars(x)
   message('-- removing the lower ', varianceFactor * 100,
       '% of cells based on variance')

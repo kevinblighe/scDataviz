@@ -44,6 +44,8 @@ plotClusters <- function(
   borderWidth = 0.8,
   borderColour = 'black')
 {
+  metadata <- dim1 <- dim2 <- Cluster <- lab <- NULL
+
   # create a base theme that will later be modified
   th <- theme_bw(base_size=24) +
 

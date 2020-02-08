@@ -8,6 +8,7 @@
 
 \usage{
   plotSignatures(sce,
+  assay = 'scaled',
   clusterVector = metadata(sce)[['Cluster']],
   funcSummarise = function(x) median(x, na.rm = TRUE),
   col = colorRampPalette(rev(brewer.pal(9, 'RdBu')))(100),
@@ -18,6 +19,8 @@
 
 \arguments{
   \item{sce}{A SingleCellExperiment object. REQUIRED.}
+  \item{assay}{Name of the assay slot in sce from which data will be taken.
+    DEFAULT = 'scaled'. OPTIONAL.}
   \item{clusterVector}{A vector of cell-to-cluster assignments. This can be
     from any source but ought to be taken from the metadata. DEFAULT =
     metadata(sce)[['Cluster']]. OPTIONAL.}

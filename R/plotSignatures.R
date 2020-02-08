@@ -1,5 +1,6 @@
 plotSignatures <- function(
   sce,
+  assay = 'scaled',
   clusterVector = metadata(sce)[['Cluster']],
   funcSummarise = function(x) median(x, na.rm = TRUE),
   col = colorRampPalette(rev(brewer.pal(9, 'RdBu')))(100),
@@ -7,7 +8,7 @@ plotSignatures <- function(
   cexlegend = 1.0,
   labDegree = 90)
 {
-  data <- as.data.frame(t(assay(sce, 'scaled')))
+  data <- as.data.frame(t(assay(sce, assay)))
   data <- aggregate(data, list(clusterVector), funcSummarise)
   data <- data[,-1]
   data <- apply(data, 2, scale, scale = FALSE)

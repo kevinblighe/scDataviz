@@ -1,5 +1,6 @@
 markerExpression <- function(
   sce,
+  assay = 'scaled',
   reducedDim = 'UMAP',
   dimColnames = c('UMAP1','UMAP2'),
   markers = sample(rownames(sce), 6),
@@ -51,6 +52,8 @@ markerExpression <- function(
   borderWidth = 0.8,
   borderColour = 'black')
 {
+  dim1 <- dim2 <- Expression <- lab <- NULL
+
   # create a base theme that will later be modified
   th <- theme_bw(base_size=24) +
 
@@ -83,7 +86,7 @@ markerExpression <- function(
 
   plotobj <- as.data.frame(reducedDim(sce, reducedDim)[,dimColnames])
 
-  plotobj <- data.frame(plotobj, as.data.frame(t(assay(sce, 'scaled'))))
+  plotobj <- data.frame(plotobj, as.data.frame(t(assay(sce, assay))))
 
   plotobj <- melt(plotobj, id.vars = dimColnames)
 

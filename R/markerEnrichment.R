@@ -1,11 +1,12 @@
 markerEnrichment <- function(
   sce,
+  assay = 'scaled',
   metacluster,
   clusterVector = metadata(sce)[['Cluster']],
   funcSummarise = function(x) median(x, na.rm = TRUE),
   lowerPercentile = 5,
   upperPercentile = 5)
-{ 
+{
   iCellsPerCluster <- c()
   iTotalCells <- c()
   iPercentage <- c()
@@ -14,7 +15,7 @@ markerEnrichment <- function(
 
   metadata = metadata(sce)
 
-  data <- as.data.frame(t(assay(sce, 'scaled')))
+  data <- as.data.frame(t(assay(sce, assay)))
   data <- aggregate(data, list(clusterVector), funcSummarise)
   data <- data[,-1]
   data <- apply(data, 2, scale, scale = FALSE)

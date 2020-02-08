@@ -1,5 +1,6 @@
 processFCS <- function(
   files,
+  assayname = 'scaled',
   metadata = NULL,
   filter = TRUE,
   bgNoiseThreshold = 1,
@@ -7,7 +8,8 @@ processFCS <- function(
   transformation = TRUE,
   transFun = function (x) asinh(x),
   asinhFactor = 5,
-  downsample = 0.1,
+  downsample = 100000,
+  downsampleVar = 0.1,
   colsDiscard = c('Time','Event_length','Center','Offset','Width','Residual','tSNE1','tSNE2','BCKG'),
   colsRetain = NULL,
   newColnames = NULL)
@@ -43,7 +45,7 @@ processFCS <- function(
 
   # rename markers
   if(!is.null(newColnames)) {
-    for(i in 1:length(samples)) {
+    for(i in seq_len(length(samples))) {
       colnames(samples[[i]]) <- newColnames
     }
   }
@@ -58,7 +60,7 @@ processFCS <- function(
       function(x) x[apply(x, 1, FUN = function(x) sqrt(sum(x^2))) > euclideanNormThreshold,])
 
     # noise correction
-    for(i in 1:length(samples)) {
+    for(i in seq_len(length(samples))) {
       x <- samples[[i]]
       x[x < bgNoiseThreshold] <- 0
       samples[[i]] <- x
@@ -73,12 +75,12 @@ processFCS <- function(
       function(x) transFun(x / asinhFactor))
   }
 
-  # load function for downsampling
-  if(!is.null(downsample)) {
-    if (downsample > 0) {
+  # load function for downsampling based on variance
+  if(!is.null(downsampleVar)) {
+    if (downsampleVar > 0) {
       samples <- lapply(
         samples,
-        function(x) downsampleByVar(x, varianceFactor = downsample))
+        function(x) downsampleByVar(x, varianceFactor = downsampleVar))
     }
   }
 
@@ -86,9 +88,9 @@ processFCS <- function(
   names <- colnames(metadata)
   metanew <- list()
   if (!is.null(metadata)) {
-    for (i in 1:length(samples)) {
-      tmp <- data.frame(row.names = 1:nrow(samples[[i]]))
-      for (j in 1:ncol(metadata)) {
+    for (i in seq_len(length(samples))) {
+      tmp <- data.frame(row.names = seq_len(nrow(samples[[i]])))
+      for (j in seq_len(ncol(metadata))) {
         tmp <- cbind(tmp, rep(metadata[i,j], nrow(samples[[i]])))
       }
       metanew[[i]] <- tmp
@@ -96,12 +98,30 @@ processFCS <- function(
 
     metadata <- do.call(rbind, metanew)
     colnames(metadata) <- names
-    rownames(metadata) <- paste0('cell', 1:nrow(metadata))
+    rownames(metadata) <- paste0('cell', seq_len(nrow(metadata)))
   }
 
   # combine all samples
   samples <- do.call(rbind, samples)
-  rownames(samples) <- paste0('cell', 1:nrow(samples))
+  rownames(samples) <- paste0('cell', seq_len(nrow(samples)))
+
+  # downsample
+  if (!is.null(downsample)) {
+    if (downsample > nrow(samples)) {
+      warning('Cannot downsample to ', downsample, ' number of variables as',
+        ' there are ', nrow(samples), ' variables currently in the merged ',
+        'dataset.')
+      message('--Skipping downsampling')
+    } else {
+      message('--Downsampling to ', downsample, ' variables.')
+      idx <- sample(1:nrow(samples), downsample)
+      samples <- samples[idx,]
+      metadata <- metadata[idx,]
+
+      rownames(metadata) <- paste0('cell', seq_len(nrow(metadata)))
+      rownames(samples) <- paste0('cell', seq_len(nrow(samples)))
+    }
+  }
 
   # these should be equal
   if (!is.null(metadata)) {
@@ -112,8 +132,10 @@ processFCS <- function(
   }
 
   # return a SingleCellExperiment object
+  ret <- list(t(samples))
+  names(ret)[1] <- assayname
   ret <- SingleCellExperiment(
-    assays = list(scaled = t(samples)))
+    assays = ret)
   metadata(ret) <- metadata
   return(ret)
 }
