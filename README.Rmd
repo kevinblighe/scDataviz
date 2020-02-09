@@ -66,7 +66,7 @@ In order to downlaod this data, we can use `git clone` from your command prompt:
 
 Now, read in the data and normalise it. The `processFCS` command by default removes variables based on low variance and also downsamples [randomly] your data to 100000 variables. The user can change these via the `downsample` and `downsampleVar` parameters.
 
-```{r readFCSa, eval = TRUE}
+```{r readFCS, eval = TRUE}
 
   filelist <- list.files(
     path = "Arbore2020_Tcell_Complosome/FCS/",
@@ -401,11 +401,17 @@ This method also calculates metacluster abundances across a chosen phenotype. Th
 
 ### Disease vs Healthy metacluster abundances
 
+
 `r knitr::kable(markerEnrichment(sce, metacluster = 'group'), auto = TRUE) %>% kable_styling(full_width = F)`
+
+
 
 ### Treatment type metacluster abundances
 
+
 `r knitr::kable(markerEnrichment(sce, metacluster = 'treatment'), auto = TRUE) %>% kable_styling(full_width = F)`
+
+
 
 ### Expression signature
 
@@ -460,7 +466,7 @@ Let's check the reduced dimensions and then plot some randomly selected marker e
     markers = markers,
     reducedDim = 'UMAP',
     dimColnames = c('UMAP_1','UMAP_2'),
-    col = c('white', 'darkred'),
+    col = c('cornsilk1', 'darkred'),
     subtitle = 'Seurat PBMC data: UMAP layout',
     nrow = 3, ncol = 6,
     legendKeyHeight = 1.0,
@@ -510,6 +516,44 @@ We can also derive clusters using the same k-NN approach as before. Here, we are
 Now determine enriched markers per cluster.
 
 `r knitr::kable(markerEnrichment(pbmc.sce, assay = 'logcounts'), auto = TRUE) %>% kable_styling(full_width = F)`
+
+
+# Tutorial 3: Import any numerical data
+
+*scDataviz* will work with any numerical data, too. Here, we show a quick example of how one can import a data-matrix of randomly-generated numbers that follow a negative binomial distribution, comprising 2500 cells and 20 markers:
+
+```{r importRandomData1}
+
+  mat <- jitter(matrix(
+    MASS::rnegbin(rexp(50000, rate=.1), theta = 4.5),
+    ncol = 20))
+  colnames(mat) <- paste0('CD', 1:ncol(mat))
+  rownames(mat) <- paste0('cell', 1:nrow(mat))
+
+  metadata <- data.frame(
+    group = rep('A', nrow(mat)),
+    row.names = rownames(mat),
+    stringsAsFactors = FALSE)
+  head(metadata)
+
+  sce <- importData(mat,
+    assayname = 'normcounts',
+    metadata = metadata)
+  sce
+
+```
+
+This will also work without any assigned metadata.
+
+```{r importRandomData2}
+
+  sce <- importData(mat,
+    assayname = 'normcounts',
+    metadata = NULL)
+  sce
+
+```
+
 
 
 # Acknowledgments

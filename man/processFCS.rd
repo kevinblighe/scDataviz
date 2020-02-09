@@ -26,7 +26,7 @@
 
 \arguments{
   \item{files}{A vector of FCS files. REQUIRED.}
-  \item{assay}{Name of the assay slot in sce from which data will be taken.
+  \item{assayname}{Name of the assay slot in sce in which data will be stored.
     DEFAULT = 'scaled'. OPTIONAL.}
   \item{metadata}{Metadata associated with the FCS files specified in
     'files'. A strict rule is enforced requiring that rownames(metadata)
@@ -75,5 +75,22 @@ Kevin Blighe <kevin@clinicalbioinformatics.co.uk>
 }
 
 \examples{
- # not run
+  # create random data that follows a negative binomial
+  mat1 <- jitter(matrix(
+    rnegbin(rexp(50000, rate=.1), theta = 4.5),
+    ncol = 20))
+  colnames(mat1) <- paste0('CD', 1:ncol(mat1))
+  rownames(mat1) <- paste0('cell', 1:nrow(mat1))
+
+  mat2 <- jitter(matrix(
+    rnegbin(rexp(50000, rate=.1), theta = 4.5),
+    ncol = 20))
+  colnames(mat2) <- paste0('CD', 1:ncol(mat2))
+  rownames(mat2) <- paste0('cell', 1:nrow(mat2))
+
+  metadata <- data.frame(
+    group = c('PB1', 'PB2'),
+    row.names = c('mat1', 'mat2'),
+    stringsAsFactors = FALSE)
+
 }

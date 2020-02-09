@@ -1,7 +1,7 @@
 scDataviz: single cell dataviz and downstream analyses
 ================
 Kevin Blighe
-2020-02-08
+2020-02-09
 
 -   [Introduction](#introduction)
 -   [Installation](#installation)
@@ -20,6 +20,7 @@ Kevin Blighe
         -   [Treatment type metacluster abundances](#treatment-type-metacluster-abundances)
         -   [Expression signature](#expression-signature)
 -   [Tutorial 2: Import from Seurat](#tutorial-2-import-from-seurat)
+-   [Tutorial 3: Import any numerical data](#tutorial-3-import-any-numerical-data)
 -   [Acknowledgments](#acknowledgments)
 -   [Session info](#session-info)
 -   [References](#references)
@@ -247,7 +248,7 @@ Here, we randomly select some markers and then plot their expression profiles ac
   markers
 ```
 
-    ## [1] "CD39" "CD21" "CD16" "CD9"  "CD3"  "CD58"
+    ## [1] "CD1"  "CD21" "CD61" "CD17" "CD13" "CD27"
 
 ``` r
   ggout1 <- markerExpression(sce,
@@ -406,7 +407,7 @@ This function utilises the k nearest neighbours (k-NN) approach from Seurat, whi
     ## Running Louvain algorithm with multilevel refinement...
     ## Maximum modularity in 10 random starts: 0.9974
     ## Number of communities: 8
-    ## Elapsed time: 27 seconds
+    ## Elapsed time: 21 seconds
 
 ``` r
   ggout1 <- plotClusters(sce,
@@ -931,10 +932,6 @@ CD36+
 </tr>
 </tbody>
 </table>
-
-
-
-
 ### Treatment type metacluster abundances
 
 <table class="table" style="width: auto !important; margin-left: auto; margin-right: auto;">
@@ -1475,8 +1472,6 @@ CD36+
 </tr>
 </tbody>
 </table>
-
-
 ### Expression signature
 
 The expression signature is a quick way to visualise which markers are more or less expressed in each identified cluster of cells.
@@ -1552,11 +1547,10 @@ Let's check the reduced dimensions and then plot some randomly selected marker e
   markers
 ```
 
-    ##  [1] "DCTN4"         "RP11-442H21.2" "GGCT"          "EHD3"         
-    ##  [5] "USP3"          "TTC5"          "TMPO-AS1"      "ATG12"        
-    ##  [9] "KIF5B"         "BICD2"         "LINC00843"     "TMTC4"        
-    ## [13] "PDZD8"         "DNTTIP1"       "COPS5"         "TOMM20"       
-    ## [17] "TCERG1"        "WDR75"
+    ##  [1] "DUSP22"       "HOOK2"        "GIPC1"        "MEF2D"        "CKAP4"       
+    ##  [6] "ITPRIPL2"     "PARP8"        "MBLAC1"       "AC008440.5"   "TGIF2"       
+    ## [11] "CTD-2576D5.4" "AC005523.2"   "RP3-486I3.7"  "CASP6"        "PRIMPOL"     
+    ## [16] "CACNA2D4"     "NDUFB9"       "PPP2R5B"
 
 ``` r
   ggout <- markerExpression(pbmc.sce,
@@ -1564,7 +1558,7 @@ Let's check the reduced dimensions and then plot some randomly selected marker e
     markers = markers,
     reducedDim = 'UMAP',
     dimColnames = c('UMAP_1','UMAP_2'),
-    col = c('white', 'darkred'),
+    col = c('cornsilk1', 'darkred'),
     subtitle = 'Seurat PBMC data: UMAP layout',
     nrow = 3, ncol = 6,
     legendKeyHeight = 1.0,
@@ -2022,7 +2016,72 @@ HLA-DRA+HLA-DPB1+LYZ+CST3+
 </tr>
 </tbody>
 </table>
+Tutorial 3: Import any numerical data
+=====================================
 
+*scDataviz* will work with any numerical data, too. Here, we show a quick example of how one can import a data-matrix of randomly-generated numbers that follow a negative binomial distribution, comprising 2500 cells and 20 markers:
+
+``` r
+  mat <- jitter(matrix(
+    MASS::rnegbin(rexp(50000, rate=.1), theta = 4.5),
+    ncol = 20))
+  colnames(mat) <- paste0('CD', 1:ncol(mat))
+  rownames(mat) <- paste0('cell', 1:nrow(mat))
+
+  metadata <- data.frame(
+    group = rep('A', nrow(mat)),
+    row.names = rownames(mat),
+    stringsAsFactors = FALSE)
+  head(metadata)
+```
+
+    ##       group
+    ## cell1     A
+    ## cell2     A
+    ## cell3     A
+    ## cell4     A
+    ## cell5     A
+    ## cell6     A
+
+``` r
+  sce <- importData(mat,
+    assayname = 'normcounts',
+    metadata = metadata)
+  sce
+```
+
+    ## class: SingleCellExperiment 
+    ## dim: 20 2500 
+    ## metadata(1): group
+    ## assays(1): normcounts
+    ## rownames(20): CD1 CD2 ... CD19 CD20
+    ## rowData names(0):
+    ## colnames(2500): cell1 cell2 ... cell2499 cell2500
+    ## colData names(0):
+    ## reducedDimNames(0):
+    ## spikeNames(0):
+    ## altExpNames(0):
+
+This will also work without any assigned metadata.
+
+``` r
+  sce <- importData(mat,
+    assayname = 'normcounts',
+    metadata = NULL)
+  sce
+```
+
+    ## class: SingleCellExperiment 
+    ## dim: 20 2500 
+    ## metadata(0):
+    ## assays(1): normcounts
+    ## rownames(20): CD1 CD2 ... CD19 CD20
+    ## rowData names(0):
+    ## colnames(2500): cell1 cell2 ... cell2499 cell2500
+    ## colData names(0):
+    ## reducedDimNames(0):
+    ## spikeNames(0):
+    ## altExpNames(0):
 
 Acknowledgments
 ===============
@@ -2061,7 +2120,7 @@ sessionInfo()
     ## other attached packages:
     ##  [1] Seurat_3.1.1                PCAtools_1.2.0             
     ##  [3] cowplot_1.0.0               lattice_0.20-38            
-    ##  [5] reshape2_1.4.3              scDataviz_0.99.18          
+    ##  [5] reshape2_1.4.3              scDataviz_0.99.20          
     ##  [7] ggrepel_0.8.1               ggplot2_3.2.1              
     ##  [9] SingleCellExperiment_1.8.0  SummarizedExperiment_1.16.0
     ## [11] DelayedArray_0.12.0         BiocParallel_1.20.0        

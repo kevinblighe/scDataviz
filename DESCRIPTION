@@ -1,7 +1,7 @@
 Package: scDataviz
 Type: Package
 Title: scDataviz: single cell dataviz and downstream analyses
-Version: 0.99.18
+Version: 0.99.20
 Authors@R: c(
     person("Kevin", "Blighe", role=c("aut", "cre"), email="kevin@clinicalbioinformatics.co.uk"),
     person("Jessica", "Timms", role="ctb"),
@@ -25,7 +25,8 @@ Imports:
   stats,
   grDevices,
   graphics,
-  utils
+  utils,
+  MASS
 Suggests:
   PCAtools,
   BiocGenerics,
