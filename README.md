@@ -16,9 +16,6 @@ Kevin Blighe
     -   [Find ideal clusters in the UMAP layout via k-nearest neighbours](#find-ideal-clusters-in-the-umap-layout-via-k-nearest-neighbours)
     -   [Plot marker expression per identified cluster](#plot-marker-expression-per-identified-cluster)
     -   [Determine enriched markers in each cluster and plot the expression signature](#determine-enriched-markers-in-each-cluster-and-plot-the-expression-signature)
-        -   [Disease vs Healthy metacluster abundances](#disease-vs-healthy-metacluster-abundances)
-        -   [Treatment type metacluster abundances](#treatment-type-metacluster-abundances)
-        -   [Expression signature](#expression-signature)
 -   [Tutorial 2: Import from Seurat](#tutorial-2-import-from-seurat)
 -   [Tutorial 3: Import any numerical data](#tutorial-3-import-any-numerical-data)
 -   [Acknowledgments](#acknowledgments)
@@ -248,7 +245,7 @@ Here, we randomly select some markers and then plot their expression profiles ac
   markers
 ```
 
-    ## [1] "CD1"  "CD21" "CD61" "CD17" "CD13" "CD27"
+    ## [1] "CD44" "CD1"  "CD51" "CD52" "CD20" "CD25"
 
 ``` r
   ggout1 <- markerExpression(sce,
@@ -387,7 +384,7 @@ This function utilises the k nearest neighbours (k-NN) approach from Seurat, whi
     ## Running Louvain algorithm with multilevel refinement...
     ## Maximum modularity in 10 random starts: 0.9985
     ## Number of communities: 13
-    ## Elapsed time: 22 seconds
+    ## Elapsed time: 23 seconds
 
 ``` r
   sce <- clusKNN(sce,
@@ -407,7 +404,7 @@ This function utilises the k nearest neighbours (k-NN) approach from Seurat, whi
     ## Running Louvain algorithm with multilevel refinement...
     ## Maximum modularity in 10 random starts: 0.9974
     ## Number of communities: 8
-    ## Elapsed time: 21 seconds
+    ## Elapsed time: 22 seconds
 
 ``` r
   ggout1 <- plotClusters(sce,
@@ -932,8 +929,7 @@ CD36+
 </tr>
 </tbody>
 </table>
-
-
+.
 
 ### Treatment type metacluster abundances
 
@@ -1475,7 +1471,7 @@ CD36+
 </tr>
 </tbody>
 </table>
-
+.
 
 ### Expression signature
 
@@ -1552,10 +1548,10 @@ Let's check the reduced dimensions and then plot some randomly selected marker e
   markers
 ```
 
-    ##  [1] "DUSP22"       "HOOK2"        "GIPC1"        "MEF2D"        "CKAP4"       
-    ##  [6] "ITPRIPL2"     "PARP8"        "MBLAC1"       "AC008440.5"   "TGIF2"       
-    ## [11] "CTD-2576D5.4" "AC005523.2"   "RP3-486I3.7"  "CASP6"        "PRIMPOL"     
-    ## [16] "CACNA2D4"     "NDUFB9"       "PPP2R5B"
+    ##  [1] "CDCA4"       "CNN2"        "GUCY1A3"     "HIP1"        "ZNF3"       
+    ##  [6] "FXYD5"       "TMEM208"     "DCPS"        "CYB561D2"    "ANKS1B"     
+    ## [11] "RP1-315G1.3" "PCBP2"       "SEC22C"      "PSMB8"       "ZNF564"     
+    ## [16] "EHBP1"       "SDK2"        "MT-ND1"
 
 ``` r
   ggout <- markerExpression(pbmc.sce,
@@ -2021,8 +2017,7 @@ HLA-DRA+HLA-DPB1+LYZ+CST3+
 </tr>
 </tbody>
 </table>
-
-
+.
 
 Tutorial 3: Import any numerical data
 =====================================
