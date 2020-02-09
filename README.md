@@ -932,6 +932,9 @@ CD36+
 </tr>
 </tbody>
 </table>
+
+
+
 ### Treatment type metacluster abundances
 
 <table class="table" style="width: auto !important; margin-left: auto; margin-right: auto;">
@@ -1472,6 +1475,8 @@ CD36+
 </tr>
 </tbody>
 </table>
+
+
 ### Expression signature
 
 The expression signature is a quick way to visualise which markers are more or less expressed in each identified cluster of cells.
@@ -2016,6 +2021,9 @@ HLA-DRA+HLA-DPB1+LYZ+CST3+
 </tr>
 </tbody>
 </table>
+
+
+
 Tutorial 3: Import any numerical data
 =====================================
 

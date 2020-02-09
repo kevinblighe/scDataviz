@@ -6,7 +6,7 @@ package: "`r packageVersion('scDataviz')`"
 output:
   github_document:
     toc: true
-    toc_depth: 3
+    toc_depth: 2
 fig_width: 7
 always_allow_html: true
 bibliography: library.bib
@@ -404,14 +404,14 @@ This method also calculates metacluster abundances across a chosen phenotype. Th
 
 `r knitr::kable(markerEnrichment(sce, metacluster = 'group'), auto = TRUE) %>% kable_styling(full_width = F)`
 
-
+.
 
 ### Treatment type metacluster abundances
 
 
 `r knitr::kable(markerEnrichment(sce, metacluster = 'treatment'), auto = TRUE) %>% kable_styling(full_width = F)`
 
-
+.
 
 ### Expression signature
 
@@ -517,6 +517,7 @@ Now determine enriched markers per cluster.
 
 `r knitr::kable(markerEnrichment(pbmc.sce, assay = 'logcounts'), auto = TRUE) %>% kable_styling(full_width = F)`
 
+.
 
 # Tutorial 3: Import any numerical data
 
