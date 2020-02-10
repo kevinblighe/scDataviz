@@ -106,7 +106,7 @@ Now, read in the data and normalise it. The `processFCS` command by default remo
 
 ```
 
-One can also create a new *SingleCellExperiment* object manually using any type of data, including any data-matrix from scRNA-seq produced elsewhere. Import functions for data deriving from popular programs will be covered in future tutorials, e.g., *Seurat*.
+One can also create a new *SingleCellExperiment* object manually using any type of data, including any data from scRNA-seq produced elsewhere. Import functions for data deriving from other sources is covered in Tutorials 2 and 3 in this vignette. All functions in *scDataviz* additionally accept data-frames or matrices on their own, de-necessitating the reliance on the *SingleCellexperiment* class.
 
 
 ## Perform principal component analysis (PCA)

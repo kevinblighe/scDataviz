@@ -52,8 +52,8 @@ performUMAP <- function(
 
   } else {
 
-    message('--input data class is ', class(indata),
-      '... (all non-SingleCellExperiment objects will be coerced to matrix')
+    message('--input data class is ', class(indata))
+    message('Note: all non-SingleCellExperiment objects will be coerced to matrix')
     mat <- t(as.matrix(indata))
 
     message('--Performing UMAP...')

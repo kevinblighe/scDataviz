@@ -1,9 +1,10 @@
 markerExpression <- function(
-  sce,
+  indata,
+  layout = NULL,
   assay = 'scaled',
   reducedDim = 'UMAP',
   dimColnames = c('UMAP1','UMAP2'),
-  markers = sample(rownames(sce), 6),
+  markers = sample(rownames(indata), 6),
   ncol = 3,
   nrow = 2,
   col = c('darkblue', 'yellow'),
@@ -22,7 +23,7 @@ markerExpression <- function(
   labvjust = 0,
   drawConnectors = TRUE,
   widthConnectors = 0.5,
-  colConnectors = 'grey50',
+  colConnectors = 'black',
   xlab = dimColnames[1],
   xlabAngle = 0,
   xlabhjust = 0.5,
@@ -35,7 +36,9 @@ markerExpression <- function(
   stripLabSize = 16,
   title = 'Individual marker expression',
   subtitle = '',
-  caption = paste0('Total cells, ', nrow(as.data.frame(reducedDim(sce, reducedDim)))),
+  caption = ifelse(class(indata) == 'SingleCellExperiment',
+    paste0('Total cells, ', nrow(as.data.frame(reducedDim(indata, reducedDim)))),
+    paste0('Total cells, ', nrow(layout))),
   titleLabSize = 16,
   subtitleLabSize = 12,
   captionLabSize = 12,
@@ -84,19 +87,33 @@ markerExpression <- function(
 
       strip.text.x = element_text(size = stripLabSize, face = 'bold', margin = margin(b = 5, t = 5)))
 
-  plotobj <- as.data.frame(reducedDim(sce, reducedDim)[,dimColnames])
+  if (class(indata) == 'SingleCellExperiment') {
+    message('--input data class is SingleCellExperiment')
+    plotobj <- as.data.frame(reducedDim(indata, reducedDim)[,dimColnames])
+    plotobj <- data.frame(plotobj, as.data.frame(t(as.matrix(assay(indata, assay)))))
+    plotobj <- melt(plotobj, id.vars = dimColnames)
+    print(head(plotobj))
+  } else {
+    message('--input data class is ', class(indata))
 
-  plotobj <- data.frame(plotobj, as.data.frame(t(as.matrix(assay(sce, assay)))))
+    if (is.null(layout)) {
+      stop('When the input data is a non-SingleCellExperiment object, ',
+        '\'indata\' must relate to an expression matrix (cells as columns; ',
+        'genes as rows), while \'layout\' must be non-NULL and relate to ',
+        'a 2-dimensional embedding.')
+    }
 
-  plotobj <- melt(plotobj, id.vars = dimColnames)
-
+    plotobj <- as.data.frame(layout[,dimColnames])
+    plotobj <- data.frame(plotobj, as.data.frame(t(as.matrix(indata))))
+    plotobj <- melt(plotobj, id.vars = dimColnames)
+  }
   colnames(plotobj) <- c('dim1','dim2','Marker','Expression')
 
   plotobj <- plotobj[which(plotobj$Marker %in% markers),]
 
   # set plot labels (e.g. cell names)
   if (!is.null(celllab)) {
-    plotobj$lab <- rownames(plotobj)
+    plotobj$lab <- rep(colnames(indata), length(markers))
     plotobj <- as.data.frame(plotobj, stringsAsFactors = FALSE)
 
     names.new <- rep(NA, length(plotobj$lab))

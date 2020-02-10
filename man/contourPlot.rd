@@ -7,60 +7,61 @@
 \description{Draw a contour plot representation of a 2-dimensional embedding.}
 
 \usage{
-  contourPlot(sce,
-  reducedDim = 'UMAP',
-  dimColnames = c('UMAP1','UMAP2'),
-  lowcol = 'darkblue',
-  highcol = 'darkred',
-  alpha = c(0.0, 0.5),
-  contour = 'black',
-  bins = 300,
-  legendPosition = 'right',
-  legendLabSize = 12,
-  legendIconSize = 5.0,
-  legendKeyHeight = 2.5,
-  xlim = NULL,
-  ylim = NULL,
-  celllab = NULL,
-  labSize = 3.0,
-  labhjust = 1.5,
-  labvjust = 0,
-  drawConnectors = TRUE,
-  widthConnectors = 0.5,
-  colConnectors = 'grey50',
-  xlab = dimColnames[1],
-  xlabAngle = 0,
-  xlabhjust = 0.5,
-  xlabvjust = 0.5,
-  ylab = dimColnames[2],
-  ylabAngle = 0,
-  ylabhjust = 0.5,
-  ylabvjust = 0.5,
-  axisLabSize = 16,
-  title = 'Cellular density and contours',
-  subtitle = '',
-  caption = paste0('Total cells, ',
-    nrow(as.data.frame(reducedDim(sce, reducedDim))), '; Bins, ', bins),
-  titleLabSize = 16,
-  subtitleLabSize = 12,
-  captionLabSize = 12,
-  hline = NULL,
-  hlineType = 'longdash',
-  hlineCol = 'black',
-  hlineWidth = 0.4,
-  vline = NULL,
-  vlineType = 'longdash',
-  vlineCol = 'black',
-  vlineWidth = 0.4,
-  gridlines.major = TRUE,
-  gridlines.minor = TRUE,
-  borderWidth = 0.8,
-  borderColour = 'black')
+  contourPlot(
+    indata,
+    reducedDim = 'UMAP',
+    dimColnames = c('UMAP1','UMAP2'),
+    lowcol = 'darkblue',
+    highcol = 'darkred',
+    alpha = c(0.0, 0.5),
+    contour = 'black',
+    bins = 300,
+    legendPosition = 'right',
+    legendLabSize = 12,
+    legendIconSize = 5.0,
+    legendKeyHeight = 2.5,
+    xlim = NULL,
+    ylim = NULL,
+    celllab = NULL,
+    labSize = 3.0,
+    labhjust = 1.5,
+    labvjust = 0,
+    drawConnectors = TRUE,
+    widthConnectors = 0.5,
+    colConnectors = 'black',
+    xlab = dimColnames[1],
+    xlabAngle = 0,
+    xlabhjust = 0.5,
+    xlabvjust = 0.5,
+    ylab = dimColnames[2],
+    ylabAngle = 0,
+    ylabhjust = 0.5,
+    ylabvjust = 0.5,
+    axisLabSize = 16,
+    title = 'Cellular density and contours',
+    subtitle = '',
+    caption = paste0('Total cells, ',
+      nrow(as.data.frame(reducedDim(indata, reducedDim))), '; Bins, ', bins),
+    titleLabSize = 16,
+    subtitleLabSize = 12,
+    captionLabSize = 12,
+    hline = NULL,
+    hlineType = 'longdash',
+    hlineCol = 'black',
+    hlineWidth = 0.4,
+    vline = NULL,
+    vlineType = 'longdash',
+    vlineCol = 'black',
+    vlineWidth = 0.4,
+    gridlines.major = TRUE,
+    gridlines.minor = TRUE,
+    borderWidth = 0.8,
+    borderColour = 'black')
 }
 
 \arguments{
-  \item{sce}{A SingleCellExperiment object. REQUIRED.},
-  \item{reducedDim}{A reduced dimensional component stored within 'sce',
+  \item{indata}{A data-frame/matrix or SingleCellExperiment object. REQUIRED.},
+  \item{reducedDim}{A reduced dimensional component stored within 'indata',
     e.g., PCA or UMAP. DEFAULT = 'UMAP'. OPTIONAL.}
   \item{dimColnames}{The column names of the dimensions to use. DEFAULT
     = c('UMAP1','UMAP2'). OPTIONAL.}
@@ -88,7 +89,7 @@
     labels to their corresponding points by line connectors. DEFAULT = TRUE.
     OPTIONAL.}
   \item{widthConnectors}{Line width of connectors. DEFAULT = 0.5. OPTIONAL.}
-  \item{colConnectors}{Line colour of connectors. DEFAULT = 'grey50'. OPTIONAL.}
+  \item{colConnectors}{Line colour of connectors. DEFAULT = 'black'. OPTIONAL.}
   \item{xlab}{Label for x-axis. DEFAULT = dimColnames[1]. OPTIONAL.}
   \item{xlabAngle}{Rotation angle of x-axis labels. DEFAULT = 0. OPTIONAL.}
   \item{xlabhjust}{Horizontal adjustment of x-axis labels. DEFAULT = 0.5. OPTIONAL.}
@@ -104,7 +105,7 @@
   \item{title}{Plot title. DEFAULT = 'Cellular density and contours'. OPTIONAL.}
   \item{subtitle}{Plot subtitle. DEFAULT = ''. OPTIONAL.}
   \item{caption}{Plot caption. DEFAULT = paste0('Total cells, ',
-    nrow(as.data.frame(reducedDim(sce, reducedDim)))). OPTIONAL.}
+    nrow(as.data.frame(reducedDim(indata, reducedDim)))). OPTIONAL.}
   \item{titleLabSize}{Size of plot title. DEFAULT = 16. OPTIONAL.}
   \item{subtitleLabSize}{Size of plot subtitle. DEFAULT = 12. OPTIONAL.}
   \item{captionLabSize}{Size of plot caption. DEFAULT = 12. OPTIONAL.}
@@ -144,18 +145,10 @@ Kevin Blighe <kevin@clinicalbioinformatics.co.uk>
 
 \examples{
   # create random data that follows a negative binomial
-  mat1 <- jitter(matrix(
-    MASS::rnegbin(rexp(50000, rate=.1), theta = 4.5),
+  mat <- jitter(matrix(
+    rnegbin(rexp(1000, rate=.1), theta = 4.5),
     ncol = 20))
-  colnames(mat1) <- paste0('CD', 1:ncol(mat1))
+  colnames(mat) <- paste0('CD', 1:ncol(mat))
 
-  mat2 <- jitter(matrix(
-    MASS::rnegbin(rexp(50000, rate=.1), theta = 4.5),
-    ncol = 20))
-  colnames(mat2) <- paste0('CD', 1:ncol(mat2))
-
-  metadata <- data.frame(
-    group = c('PB1', 'PB2'),
-    row.names = c('mat1', 'mat2'),
-    stringsAsFactors = FALSE)
+  contourPlot(umap::umap(mat)$layout)
 }

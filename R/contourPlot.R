@@ -1,5 +1,5 @@
 contourPlot <- function(
-  sce,
+  indata,
   reducedDim = 'UMAP',
   dimColnames = c('UMAP1','UMAP2'),
   lowcol = 'darkblue',
@@ -19,7 +19,7 @@ contourPlot <- function(
   labvjust = 0,
   drawConnectors = TRUE,
   widthConnectors = 0.5,
-  colConnectors = 'grey50',
+  colConnectors = 'black',
   xlab = dimColnames[1],
   xlabAngle = 0,
   xlabhjust = 0.5,
@@ -31,7 +31,8 @@ contourPlot <- function(
   axisLabSize = 16,
   title = 'Cellular density and contours',
   subtitle = '',
-  caption = paste0('Total cells, ', nrow(as.data.frame(reducedDim(sce, reducedDim))), '; Bins, ', bins),
+  caption = paste0('Total cells, ',
+    nrow(as.data.frame(reducedDim(indata, reducedDim))), '; Bins, ', bins),
   titleLabSize = 16,
   subtitleLabSize = 12,
   captionLabSize = 12,
@@ -77,7 +78,13 @@ contourPlot <- function(
       legend.text=element_text(size = legendLabSize),
       legend.key.height = unit(legendKeyHeight, 'cm'))
 
-  plotobj <- as.data.frame(reducedDim(sce, reducedDim)[,dimColnames])
+  if (class(indata) == 'SingleCellExperiment') {
+    message('--input data class is SingleCellExperiment')
+    plotobj <- as.data.frame(reducedDim(indata, reducedDim)[,dimColnames])
+  } else {
+    message('--input data class is ', class(indata))
+    plotobj <- as.data.frame(indata[,dimColnames])
+  }
   colnames(plotobj) <- c('dim1','dim2')
 
   # set plot labels (e.g. cell names)
