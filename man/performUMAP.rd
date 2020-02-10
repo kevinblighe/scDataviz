@@ -7,16 +7,17 @@
 \description{Perform UMAP on the scaled assay component of a SingleCellExperiment object, or a specified reduced dimensional component stored within this object.}
 
 \usage{
-  performUMAP(sce,
-  assay = 'scaled',
-  reducedDim = NULL,
-  dims = seq_len(20),
-  newDimName = NULL,
-  useMarkers = NULL)
+  performUMAP(
+    indata,
+    assay = 'scaled',
+    reducedDim = NULL,
+    dims = seq_len(20),
+    newDimName = NULL,
+    useMarkers = NULL)
 }
 
 \arguments{
-  \item{sce}{A SingleCellExperiment object. REQUIRED.}
+  \item{indata}{A data-frame/matrix or SingleCellExperiment object. REQUIRED.}
   \item{assay}{Name of the assay slot in sce from which data will be taken.
     DEFAULT = 'scaled'. OPTIONAL.}
   \item{reducedDim}{A reduced dimensional component stored within 'sce',
@@ -42,18 +43,10 @@ Kevin Blighe <kevin@clinicalbioinformatics.co.uk>
 
 \examples{
   # create random data that follows a negative binomial
-  mat1 <- jitter(matrix(
-    MASS::rnegbin(rexp(50000, rate=.1), theta = 4.5),
+  mat <- jitter(matrix(
+    rnegbin(rexp(1000, rate=.1), theta = 4.5),
     ncol = 20))
-  colnames(mat1) <- paste0('CD', 1:ncol(mat1))
+  colnames(mat) <- paste0('CD', 1:ncol(mat))
 
-  mat2 <- jitter(matrix(
-    MASS::rnegbin(rexp(50000, rate=.1), theta = 4.5),
-    ncol = 20))
-  colnames(mat2) <- paste0('CD', 1:ncol(mat2))
-
-  metadata <- data.frame(
-    group = c('PB1', 'PB2'),
-    row.names = c('mat1', 'mat2'),
-    stringsAsFactors = FALSE)
+  performUMAP(mat)
 }
