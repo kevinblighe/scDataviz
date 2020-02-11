@@ -1,5 +1,6 @@
 metadataPlot <- function(
-  sce,
+  indata,
+  meta = NULL,
   reducedDim = 'UMAP',
   dimColnames = c('UMAP1','UMAP2'),
   colby = NULL,
@@ -16,7 +17,7 @@ metadataPlot <- function(
   labvjust = 0,
   drawConnectors = TRUE,
   widthConnectors = 0.5,
-  colConnectors = 'grey50',
+  colConnectors = 'black',
   xlab = dimColnames[1],
   xlabAngle = 0,
   xlabhjust = 0.5,
@@ -28,7 +29,9 @@ metadataPlot <- function(
   axisLabSize = 16,
   title = 'Metadata plot',
   subtitle = '',
-  caption = paste0('Total cells, ', nrow(as.data.frame(reducedDim(sce, reducedDim)))),
+  caption = ifelse(class(indata) == 'SingleCellExperiment',
+    paste0('Total cells, ', nrow(as.data.frame(reducedDim(indata, reducedDim)))),
+    paste0('Total cells, ', nrow(meta))),
   titleLabSize = 16,
   subtitleLabSize = 12,
   captionLabSize = 12,
@@ -74,11 +77,32 @@ metadataPlot <- function(
       title=element_text(size=legendLabSize),
       legend.title=element_blank())
 
-  plotobj <- as.data.frame(reducedDim(sce, reducedDim)[,dimColnames])
+  if (class(indata) == 'SingleCellExperiment') {
 
-  plotobj <- data.frame(plotobj, metadata(sce))
+    message('--input data class is SingleCellExperiment')
+    plotobj <- as.data.frame(reducedDim(indata, reducedDim)[,dimColnames])
+    plotobj <- data.frame(plotobj, metadata(indata))
+    colnames(plotobj) <- c('dim1','dim2',colnames(metadata(indata)))
 
-  colnames(plotobj) <- c('dim1','dim2',colnames(metadata(sce)))
+  } else {
+
+    message('--input data class is ', class(indata))
+
+    if (is.null(meta)) {
+      stop('When the input data is a non-SingleCellExperiment object, ',
+        '\'indata\' must relate to a 2-dimensional reduction / embedding that',
+        'contains columns specified by \'dimColnames\', while \'meta\'',
+        ' must be non-NULL and comprise a data-frame of metadata that ',
+        'describes \'indata\', and which contains a column name',
+        ' specified by \'colby\'.')
+    } else if (!all(rownames(meta) == rownames(indata))) {
+      stop('\'rownames(meta)\' must be equal to \'rownames(indata)\'')
+    }
+
+    plotobj <- as.data.frame(indata[,dimColnames])
+    plotobj <- data.frame(plotobj, meta)
+    colnames(plotobj) <- c('dim1','dim2', colnames(meta))
+  }
 
   # set plot labels (e.g. cell names)
   if (!is.null(celllab)) {

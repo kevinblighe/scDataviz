@@ -38,14 +38,14 @@ Kevin Blighe <kevin@clinicalbioinformatics.co.uk>
 \examples{
   # create random data that follows a negative binomial
   mat <- jitter(matrix(
-    rnegbin(rexp(50000, rate=.1), theta = 4.5),
+    MASS::rnegbin(rexp(50000, rate=.1), theta = 4.5),
     ncol = 20))
   colnames(mat) <- paste0('CD', 1:ncol(mat))
   rownames(mat) <- paste0('cell', 1:nrow(mat))
 
   metadata <- data.frame(
     group = rep('A', nrow(mat)),
-    row.names = rownames(mat1),
+    row.names = rownames(mat),
     stringsAsFactors = FALSE)
 
   sce <- importData(mat,

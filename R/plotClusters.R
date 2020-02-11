@@ -1,5 +1,6 @@
 plotClusters <- function(
-  sce,
+  indata,
+  clusterVector = NULL,
   reducedDim = 'UMAP',
   dimColnames = c('UMAP1','UMAP2'),
   clusterColname = 'Cluster',
@@ -27,7 +28,9 @@ plotClusters <- function(
   axisLabSize = 16,
   title = 'k-nearest neighbor (k-NN) clusters',
   subtitle = '',
-  caption = paste0('Total cells, ', nrow(as.data.frame(reducedDim(sce, reducedDim)))),
+  caption = ifelse(class(indata) == 'SingleCellExperiment',
+    paste0('Total cells, ', nrow(as.data.frame(reducedDim(indata, reducedDim)))),
+    paste0('Total cells, ', length(clusterVector))),
   titleLabSize = 16,
   subtitleLabSize = 12,
   captionLabSize = 12,
@@ -73,13 +76,32 @@ plotClusters <- function(
       legend.key.size=unit(0.5, 'cm'),
       legend.text=element_text(size=legendLabSize))
 
-  plotobj <- as.data.frame(reducedDim(sce, reducedDim))
+  if (class(indata) == 'SingleCellExperiment') {
 
-  plotobj <- data.frame(plotobj, Cluster = metadata(sce)[[clusterColname]])
+    message('--input data class is SingleCellExperiment')
+    plotobj <- as.data.frame(reducedDim(indata, reducedDim))
+    plotobj <- data.frame(plotobj, Cluster = metadata(indata)[[clusterColname]])
+    colnames(plotobj) <- c('dim1','dim2','Cluster')
+    plotobj$Cluster <- factor(plotobj$Cluster)
 
-  colnames(plotobj) <- c('dim1','dim2','Cluster')
+  } else {
 
-  plotobj$Cluster <- factor(plotobj$Cluster)
+    message('--input data class is ', class(indata))
+
+    if (is.null(clusterVector)) {
+      stop('When the input data is a non-SingleCellExperiment object, ',
+        '\'indata\' must relate to 2-dimensional embedding, while ',
+        '\'clusterVector\' must be non-NULL and relate to a vector ',
+        'of cell-to-cluster assignments whose length matches ',
+        '\'nrow(indata)\'')
+    }
+
+    plotobj <- as.data.frame(indata)
+    plotobj <- data.frame(plotobj, Cluster = clusterVector)
+    colnames(plotobj) <- c('dim1','dim2','Cluster')
+    plotobj$Cluster <- factor(plotobj$Cluster)
+
+  }
 
   # set labels
   if (label == TRUE) {

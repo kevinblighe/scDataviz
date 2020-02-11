@@ -4,62 +4,69 @@
 
 \title{plotClusters}
 
-\description{Highlight cell-to-cluster assignments across a 2-dimensional embedding.}
+\description{Highlight cell-to-cluster assignments across a 2-dimensional reduction / embedding.}
 
 \usage{
-  plotClusters(sce,
-  reducedDim = 'UMAP',
-  dimColnames = c('UMAP1','UMAP2'),
-  clusterColname = 'Cluster',
-  pointSize = 0.5,
-  legendPosition = 'none',
-  legendLabSize = 12,
-  legendIconSize = 5.0,
-  xlim = NULL,
-  ylim = NULL,
-  label = TRUE,
-  labSize = 5.0,
-  labhjust = 1.5,
-  labvjust = 0,
-  drawConnectors = TRUE,
-  widthConnectors = 0.5,
-  colConnectors = 'grey50',
-  xlab = dimColnames[1],
-  xlabAngle = 0,
-  xlabhjust = 0.5,
-  xlabvjust = 0.5,
-  ylab = dimColnames[2],
-  ylabAngle = 0,
-  ylabhjust = 0.5,
-  ylabvjust = 0.5,
-  axisLabSize = 16,
-  title = 'k-nearest neighbor (k-NN) clusters',
-  subtitle = '',
-  caption = paste0('Total cells, ', nrow(as.data.frame(reducedDim(sce, reducedDim)))),
-  titleLabSize = 16,
-  subtitleLabSize = 12,
-  captionLabSize = 12,
-  hline = NULL,
-  hlineType = 'longdash',
-  hlineCol = 'black',
-  hlineWidth = 0.4,
-  vline = NULL,
-  vlineType = 'longdash',
-  vlineCol = 'black',
-  vlineWidth = 0.4,
-  gridlines.major = TRUE,
-  gridlines.minor = TRUE,
-  borderWidth = 0.8,
-  borderColour = 'black')
+  plotClusters(
+    indata,
+    clusterVector = NULL,
+    reducedDim = 'UMAP',
+    dimColnames = c('UMAP1','UMAP2'),
+    clusterColname = 'Cluster',
+    pointSize = 0.5,
+    legendPosition = 'none',
+    legendLabSize = 12,
+    legendIconSize = 5.0,
+    xlim = NULL,
+    ylim = NULL,
+    label = TRUE,
+    labSize = 5.0,
+    labhjust = 1.5,
+    labvjust = 0,
+    drawConnectors = TRUE,
+    widthConnectors = 0.5,
+    colConnectors = 'grey50',
+    xlab = dimColnames[1],
+    xlabAngle = 0,
+    xlabhjust = 0.5,
+    xlabvjust = 0.5,
+    ylab = dimColnames[2],
+    ylabAngle = 0,
+    ylabhjust = 0.5,
+    ylabvjust = 0.5,
+    axisLabSize = 16,
+    title = 'k-nearest neighbor (k-NN) clusters',
+    subtitle = '',
+    caption = ifelse(class(indata) == 'SingleCellExperiment',
+    paste0('Total cells, ', nrow(as.data.frame(reducedDim(indata, reducedDim)))),
+    paste0('Total cells, ', length(clusterVector))),
+    titleLabSize = 16,
+    subtitleLabSize = 12,
+    captionLabSize = 12,
+    hline = NULL,
+    hlineType = 'longdash',
+    hlineCol = 'black',
+    hlineWidth = 0.4,
+    vline = NULL,
+    vlineType = 'longdash',
+    vlineCol = 'black',
+    vlineWidth = 0.4,
+    gridlines.major = TRUE,
+    gridlines.minor = TRUE,
+    borderWidth = 0.8,
+    borderColour = 'black')
 }
 
 \arguments{
-  \item{sce}{A SingleCellExperiment object. REQUIRED.},
-  \item{reducedDim}{A reduced dimensional component stored within 'sce',
+  \item{indata}{A data-frame/matrix or SingleCellExperiment object. REQUIRED.}
+  \item{clusterVector}{If 'indata' is a non-SingleCellExperiment object,
+    'clusterVector' must be non-NULL and relate to a cell-to-cluster
+    assignment whose length matches 'nrow(indata)'. DEFAULT = NULL. OPTIONAL.}
+  \item{reducedDim}{A reduced dimensional component stored within 'indata',
     e.g., PCA or UMAP. DEFAULT = 'UMAP'. OPTIONAL.}
   \item{dimColnames}{The column names of the dimensions to use. DEFAULT
     = c('UMAP1','UMAP2'). OPTIONAL.}
-  \item{clusterColname}{The column name in the metadata of 'sce' that contains
+  \item{clusterColname}{The column name in the metadata of 'indata' that contains
     the cell-to-cluster assignment. DEFAULT = 'Cluster'. OPTIONAL.}
   \item{pointSize}{Size of plotted points. DEFAULT = 0.5. OPTIONAL.}
   \item{legendPosition}{Position of legend ('top', 'bottom', 'left', 'right',
@@ -96,8 +103,9 @@
     OPTIONAL.}
   \item{subtitle}{Plot subtitle. DEFAULT = ''. OPTIONAL.}
   \item{caption}{Plot caption. DEFAULT =
-    paste0('Total cells, ', nrow(as.data.frame(reducedDim(sce, reducedDim)))).
-    OPTIONAL.}
+    ifelse(class(indata) == 'SingleCellExperiment',
+    paste0('Total cells, ', nrow(as.data.frame(reducedDim(indata, reducedDim)))),
+    paste0('Total cells, ', length(clusterVector))). OPTIONAL.}
   \item{titleLabSize}{Size of plot title. DEFAULT = 16. OPTIONAL.}
   \item{subtitleLabSize}{Size of plot subtitle. DEFAULT = 12. OPTIONAL.}
   \item{captionLabSize}{Size of plot caption. DEFAULT = 12. OPTIONAL.}
@@ -137,18 +145,13 @@ Kevin Blighe <kevin@clinicalbioinformatics.co.uk>
 
 \examples{
   # create random data that follows a negative binomial
-  mat1 <- jitter(matrix(
-    MASS::rnegbin(rexp(50000, rate=.1), theta = 4.5),
+  mat <- jitter(matrix(
+    MASS::rnegbin(rexp(1000, rate=.1), theta = 4.5),
     ncol = 20))
-  colnames(mat1) <- paste0('CD', 1:ncol(mat1))
+  colnames(mat) <- paste0('CD', 1:ncol(mat))
+  rownames(mat) <- paste0('cell', 1:nrow(mat))
 
-  mat2 <- jitter(matrix(
-    MASS::rnegbin(rexp(50000, rate=.1), theta = 4.5),
-    ncol = 20))
-  colnames(mat2) <- paste0('CD', 1:ncol(mat2))
-
-  metadata <- data.frame(
-    group = c('PB1', 'PB2'),
-    row.names = c('mat1', 'mat2'),
-    stringsAsFactors = FALSE)
+  u <- umap(mat)
+  clusvec <- clusKNN(u$layout)
+  plotClusters(u$layout, clusvec)
 }

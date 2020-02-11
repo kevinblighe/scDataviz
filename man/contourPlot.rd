@@ -4,7 +4,7 @@
 
 \title{contourPlot}
 
-\description{Draw a contour plot representation of a 2-dimensional embedding.}
+\description{Draw a contour plot, typically relating to co-ordinates of a 2-dimensional reduction / embedding.}
 
 \usage{
   contourPlot(
@@ -40,8 +40,9 @@
     axisLabSize = 16,
     title = 'Cellular density and contours',
     subtitle = '',
-    caption = paste0('Total cells, ',
-      nrow(as.data.frame(reducedDim(indata, reducedDim))), '; Bins, ', bins),
+    caption = ifelse(class(indata) == 'SingleCellExperiment',
+    paste0('Total cells, ', nrow(as.data.frame(reducedDim(indata, reducedDim))), '; Bins, ', bins),
+    paste0('Total cells, ', nrow(indata), '; Bins, ', bins)),
     titleLabSize = 16,
     subtitleLabSize = 12,
     captionLabSize = 12,
@@ -60,7 +61,12 @@
 }
 
 \arguments{
-  \item{indata}{A data-frame/matrix or SingleCellExperiment object. REQUIRED.},
+  \item{indata}{A data-frame or matrix, or SingleCellExperiment object. If a
+    data-frame or matrix, columns named in 'dimColnames' will be extracted
+    from the data and used to generate the contour plot. If a
+    SingleCellExperiment object, a reduction named by 'reducedDim' will be
+    taken from your object and used to generate the contour plot, again using
+    columns whose names are specified in 'dimColnames'. REQUIRED.},
   \item{reducedDim}{A reduced dimensional component stored within 'indata',
     e.g., PCA or UMAP. DEFAULT = 'UMAP'. OPTIONAL.}
   \item{dimColnames}{The column names of the dimensions to use. DEFAULT
@@ -104,8 +110,10 @@
   \item{axisLabSize}{Size of x- and y-axis labels. DEFAULT = 16. OPTIONAL.}
   \item{title}{Plot title. DEFAULT = 'Cellular density and contours'. OPTIONAL.}
   \item{subtitle}{Plot subtitle. DEFAULT = ''. OPTIONAL.}
-  \item{caption}{Plot caption. DEFAULT = paste0('Total cells, ',
-    nrow(as.data.frame(reducedDim(indata, reducedDim)))). OPTIONAL.}
+  \item{caption}{Plot caption. DEFAULT = ifelse(class(indata) ==
+    'SingleCellExperiment', paste0('Total cells, ',
+    nrow(as.data.frame(reducedDim(indata, reducedDim))), '; Bins, ', bins),
+    paste0('Total cells, ', nrow(indata), '; Bins, ', bins)). OPTIONAL.}
   \item{titleLabSize}{Size of plot title. DEFAULT = 16. OPTIONAL.}
   \item{subtitleLabSize}{Size of plot subtitle. DEFAULT = 12. OPTIONAL.}
   \item{captionLabSize}{Size of plot caption. DEFAULT = 12. OPTIONAL.}
@@ -146,9 +154,12 @@ Kevin Blighe <kevin@clinicalbioinformatics.co.uk>
 \examples{
   # create random data that follows a negative binomial
   mat <- jitter(matrix(
-    rnegbin(rexp(1000, rate=.1), theta = 4.5),
+    MASS::rnegbin(rexp(1000, rate=.1), theta = 4.5),
     ncol = 20))
   colnames(mat) <- paste0('CD', 1:ncol(mat))
 
-  contourPlot(umap::umap(mat)$layout)
+  u <- umap::umap(mat)$layout
+  colnames(u) <- c('UMAP1','UMAP2')
+
+  contourPlot(u)
 }

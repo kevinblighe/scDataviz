@@ -4,39 +4,41 @@
 
 \title{clusKNN}
 
-\description{A wrapper function for Seurat's FindNeighbors and FindClusters. The eventual cell-to-cluster assignments will be added as a new column, 'Cluster', to the input object's metadata.}
+\description{A wrapper function for Seurat's FindNeighbors and FindClusters. If the input object is a SingleCellExperiment, the eventual cell-to-cluster assignments will be added as a new column to the input object's metadata. If the input is just a data-frame or matrix of numbers, only the cluster assignment vector is returned.}
 
 \usage{
-  clusKNN(sce,
-  reducedDim = 'UMAP',
-  dimColnames = c('UMAP1','UMAP2'),
-  clusterAssignName = 'Cluster',
-  distance.matrix = FALSE,
-  k.param = 20,
-  compute.SNN = TRUE,
-  prune.SNN = 1/15,
-  nn.method = "rann",
-  annoy.metric = "euclidean",
-  nn.eps = 0,
-  verbose = TRUE,
-  force.recalc = FALSE,
-  modularity.fxn = 1,
-  initial.membership = NULL,
-  weights = NULL,
-  node.sizes = NULL,
-  resolution = 0.8,
-  method = "matrix",
-  algorithm = 1,
-  n.start = 10,
-  n.iter = 10,
-  random.seed = 0,
-  group.singletons = TRUE,
-  temp.file.location = NULL,
-  edge.file.name = NULL)
+  clusKNN(
+    indata,
+    reducedDim = 'UMAP',
+    dimColnames = c('UMAP1','UMAP2'),
+    clusterAssignName = 'Cluster',
+    distance.matrix = FALSE,
+    k.param = 20,
+    compute.SNN = TRUE,
+    prune.SNN = 1/15,
+    nn.method = "rann",
+    annoy.metric = "euclidean",
+    nn.eps = 0,
+    verbose = TRUE,
+    force.recalc = FALSE,
+    modularity.fxn = 1,
+    initial.membership = NULL,
+    weights = NULL,
+    node.sizes = NULL,
+    resolution = 0.8,
+    method = "matrix",
+    algorithm = 1,
+    n.start = 10,
+    n.iter = 10,
+    random.seed = 0,
+    group.singletons = TRUE,
+    temp.file.location = NULL,
+    edge.file.name = NULL,
+    overwrite = FALSE)
 }
 
 \arguments{
-  \item{sce}{A SingleCellExperiment object. REQUIRED.},
+  \item{indata}{A data-frame or matrix, or SingleCellExperiment object. REQUIRED.}
   \item{reducedDim}{A reduced dimensional component stored within 'sce',
     e.g., PCA or UMAP. DEFAULT = 'UMAP'. OPTIONAL.}
   \item{dimColnames}{The column names of the dimensions to use. DEFAULT
@@ -74,6 +76,10 @@
   \item{temp.file.location}{Refer to ?Seurat::FindClusters. DEFAULT = NULL.
     OPTIONAL.}
   \item{edge.file.name}{Refer to ?Seurat::FindClusters. DEFAULT = NULL. OPTIONAL.}
+  \item{overwrite}{When the input object is a SingleCellExperiment, enabling
+    this will result in the overwriting, with the new cluster assignments, of
+    any column in your metadata that has the same name as 'clusterAssignName'.
+    DEFAULT = FALSE. OPTIONAL.}
 }
 
 \value{
@@ -86,18 +92,11 @@ Kevin Blighe <kevin@clinicalbioinformatics.co.uk>
 
 \examples{
   # create random data that follows a negative binomial
-  mat1 <- jitter(matrix(
-    MASS::rnegbin(rexp(50000, rate=.1), theta = 4.5),
+  mat <- jitter(matrix(
+    MASS::rnegbin(rexp(1000, rate=.1), theta = 4.5),
     ncol = 20))
-  colnames(mat1) <- paste0('CD', 1:ncol(mat1))
+  colnames(mat) <- paste0('CD', 1:ncol(mat))
+  rownames(mat) <- paste0('cell', 1:nrow(mat))
 
-  mat2 <- jitter(matrix(
-    MASS::rnegbin(rexp(50000, rate=.1), theta = 4.5),
-    ncol = 20))
-  colnames(mat2) <- paste0('CD', 1:ncol(mat2))
-
-  metadata <- data.frame(
-    group = c('PB1', 'PB2'),
-    row.names = c('mat1', 'mat2'),
-    stringsAsFactors = FALSE)
+  clusKNN(mat)
 }

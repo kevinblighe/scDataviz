@@ -26,9 +26,9 @@ Kevin Blighe <kevin@clinicalbioinformatics.co.uk>
 
 \examples{
   # create random data that follows a negative binomial
-  mat1 <- jitter(matrix(
-    rnegbin(rexp(1000, rate=.1), theta = 4.5),
+  mat <- jitter(matrix(
+    MASS::rnegbin(rexp(1000, rate=.1), theta = 4.5),
     ncol = 20))
 
-  downsampleByVar(x, varianceFactor = 0.1)
+  downsampleByVar(mat, varianceFactor = 0.1)
 }

@@ -1,9 +1,9 @@
 markerExpressionPerCluster <- function(
-  sce,
+  indata,
   assay = 'scaled',
-  clusters = sample(metadata(sce)[['Cluster']], 9),
-  clusterVector = metadata(sce)[['Cluster']],
-  markers = sample(rownames(sce), 10),
+  clusters = sample(unique(metadata(indata)[['Cluster']]), 9),
+  clusterAssign = metadata(indata)[['Cluster']],
+  markers = sample(rownames(indata), 10),
   ncol = 5,
   nrow = 2,
   legendPosition = 'none',
@@ -13,13 +13,6 @@ markerExpressionPerCluster <- function(
   xlim = NULL,
   ylim = NULL,
   yfixed = FALSE,
-  celllab = NULL,
-  labSize = 3.0,
-  labhjust = 1.5,
-  labvjust = 0,
-  drawConnectors = TRUE,
-  widthConnectors = 0.5,
-  colConnectors = 'grey50',
   xlab = 'Marker',
   xlabAngle = 90,
   xlabhjust = 0.5,
@@ -36,16 +29,6 @@ markerExpressionPerCluster <- function(
   titleLabSize = 16,
   subtitleLabSize = 12,
   captionLabSize = 12,
-  hline = NULL,
-  hlineType = 'longdash',
-  hlineCol = 'black',
-  hlineWidth = 0.4,
-  vline = NULL,
-  vlineType = 'longdash',
-  vlineCol = 'black',
-  vlineWidth = 0.4,
-  gridlines.major = TRUE,
-  gridlines.minor = TRUE,
   borderWidth = 0.8,
   borderColour = 'black')
 {
@@ -81,26 +64,27 @@ markerExpressionPerCluster <- function(
 
       strip.text.x = element_text(size = stripLabSize, face = 'bold', margin = margin(b = 5, t = 5)))
 
-  plotobj <- data.frame(Cluster = clusterVector,
-    as.data.frame(t(as.matrix(assay(sce, assay))))[,which(rownames(sce) %in% markers)])
+  if (class(indata) == 'SingleCellExperiment') {
 
-  plotobj <- plotobj[which(plotobj$Cluster %in% clusters),]
+    message('--input data class is SingleCellExperiment')
+    plotobj <- data.frame(Cluster = clusterAssign,
+      as.data.frame(t(as.matrix(assay(indata, assay)[which(rownames(indata) %in% markers),]))))
+    plotobj <- plotobj[which(plotobj$Cluster %in% clusters),]
+    plotobj <- melt(plotobj, id.vars = 'Cluster')
+    colnames(plotobj) <- c('Cluster','Marker','Expression')
+    plotobj$Cluster <- paste0('Cluster ', plotobj$Cluster)
+    plotobj$Cluster <- factor(plotobj$Cluster, levels = unique(paste0('Cluster ', sort(clusters))))
 
-  plotobj <- melt(plotobj, id.vars = 'Cluster')
+  } else {
 
-  colnames(plotobj) <- c('Cluster','Marker','Expression')
+    message('--input data class is ', class(indata))
+    plotobj <- data.frame(Cluster = clusterAssign,
+      as.data.frame(t(as.matrix(indata[which(rownames(indata) %in% markers),]))))
+    plotobj <- plotobj[which(plotobj$Cluster %in% clusters),]
+    plotobj <- melt(plotobj, id.vars = 'Cluster')
+    colnames(plotobj) <- c('Cluster','Marker','Expression')
+    plotobj$Cluster <- factor(plotobj$Cluster, levels = unique(sort(clusters)))
 
-  plotobj$Cluster <- paste0('Cluster ', plotobj$Cluster)
-
-  # set plot labels (e.g. cell names)
-  if (!is.null(celllab)) {
-    plotobj$lab <- rownames(plotobj)
-    plotobj <- as.data.frame(plotobj, stringsAsFactors = FALSE)
-
-    names.new <- rep(NA, length(plotobj$lab))
-    indices <- which(plotobj$lab %in% celllab)
-    names.new[indices] <- plotobj$lab[indices]
-    plotobj$lab <- names.new
   }
 
   # initialise the plot object
@@ -137,78 +121,12 @@ markerExpressionPerCluster <- function(
   plot <- plot + labs(title = title, 
     subtitle = subtitle, caption = caption)
 
-  # add elements to the plot for vlines and hlines
-  if (!is.null(vline)) {
-    plot <- plot + geom_vline(xintercept = vline,
-      linetype = vlineType,
-      colour = vlineCol,
-      size = vlineWidth)
-  }
-  if (!is.null(hline)) {
-    plot <- plot + geom_hline(yintercept = hline,
-      linetype = hlineType,
-      colour = hlineCol,
-      size = hlineWidth)
-  }
-
   # border around plot
   plot <- plot +
     theme(panel.border = element_rect(
       colour = borderColour,
       fill = NA,
       size = borderWidth))
-
-  # gridlines
-  if (gridlines.major == TRUE) {
-    plot <- plot + theme(panel.grid.major = element_line())
-  } else {
-    plot <- plot + theme(panel.grid.major = element_blank())
-  }
-  if (gridlines.minor == TRUE) {
-    plot <- plot + theme(panel.grid.minor = element_line())
-  } else {
-    plot <- plot + theme(panel.grid.minor = element_blank())
-  }
-
-  if (!is.null(celllab)) {
-    if (drawConnectors == TRUE && is.null(celllab)) {
-      plot <- plot + geom_text_repel(
-        data = plotobj,
-          aes(label = lab),
-          size = labSize,
-          segment.color = colConnectors,
-          segment.size = widthConnectors,
-          hjust = labhjust,
-          vjust = labvjust)
-    } else if (drawConnectors == TRUE && !is.null(celllab)) {
-      plot <- plot + geom_text_repel(
-        data=subset(plotobj,
-          !is.na(plotobj[,'lab'])),
-          aes(label = lab),
-          size = labSize,
-          segment.color = colConnectors,
-          segment.size = widthConnectors,
-          hjust = labhjust,
-          vjust = labvjust)
-    } else if (drawConnectors == FALSE && !is.null(celllab)) {
-      plot <- plot + geom_text(
-        data=subset(plotobj,
-          !is.na(plotobj[,'lab'])),
-          aes(label = lab),
-          size = labSize,
-          check_overlap = TRUE,
-          hjust = labhjust,
-          vjust = labvjust)
-    } else if (drawConnectors == FALSE && is.null(celllab)) {
-      plot <- plot + geom_text(
-        data = plotobj,
-          aes(label = lab),
-          size = labSize,
-          check_overlap = TRUE,
-          hjust = labhjust,
-          vjust = labvjust)
-    }
-  }
 
   return(plot)
 }

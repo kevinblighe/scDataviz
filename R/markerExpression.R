@@ -88,19 +88,24 @@ markerExpression <- function(
       strip.text.x = element_text(size = stripLabSize, face = 'bold', margin = margin(b = 5, t = 5)))
 
   if (class(indata) == 'SingleCellExperiment') {
+
     message('--input data class is SingleCellExperiment')
     plotobj <- as.data.frame(reducedDim(indata, reducedDim)[,dimColnames])
     plotobj <- data.frame(plotobj, as.data.frame(t(as.matrix(assay(indata, assay)))))
     plotobj <- melt(plotobj, id.vars = dimColnames)
-    print(head(plotobj))
+
   } else {
+
     message('--input data class is ', class(indata))
 
     if (is.null(layout)) {
       stop('When the input data is a non-SingleCellExperiment object, ',
         '\'indata\' must relate to an expression matrix (cells as columns; ',
         'genes as rows), while \'layout\' must be non-NULL and relate to ',
-        'a 2-dimensional embedding.')
+        'a 2-dimensional embedding containing columns specified by ',
+        '\'dimColnames\'')
+    } else if (!all(rownames(layout) == colnames(indata))) {
+      stop('\'rownames(layout)\' must be equal to \'colnames(indata)\'')
     }
 
     plotobj <- as.data.frame(layout[,dimColnames])

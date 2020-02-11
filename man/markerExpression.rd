@@ -4,7 +4,7 @@
 
 \title{markerExpression}
 
-\description{Highlight the individual marker expression profile across a 2-dimensional embedding.}
+\description{Highlight the individual marker expression profile across a 2-dimensional reduction / embedding.}
 
 \usage{
   markerExpression(
@@ -66,10 +66,14 @@
 }
 
 \arguments{
-  \item{indata}{A data-frame/matrix or SingleCellExperiment object. REQUIRED.}
+  \item{indata}{A data-frame or matrix, or SingleCellExperiment object. If a
+    non-SingleCellExperiment object, this generally should relate to an
+    expression matrix (cells as columns; genes as rows). REQUIRED.}
   \item{layout}{If 'indata' is a non-SingleCellExperiment object, 'layout' must
-    be activated and relate to a 2-dimensional embedding. Only the first 2
-    columns will be used from 'layout'. DEFAULT = NULL. OPTIONAL.}
+    be activated and relate to a 2-dimensional embedding, although,
+    technically, any data-frame or matrix of numbers will be accepted provided
+    that it aligns with the dimensions of 'indata' and provided that it contains
+    columns as specified in 'dimColnames'. DEFAULT = NULL. OPTIONAL.}
   \item{assay}{Name of the assay slot in 'indata' from which data will be taken.
     DEFAULT = 'scaled'. OPTIONAL.}
   \item{reducedDim}{A reduced dimensional component stored within 'indata',
@@ -166,18 +170,15 @@ Kevin Blighe <kevin@clinicalbioinformatics.co.uk>
 
 \examples{
   # create random data that follows a negative binomial
-  mat1 <- jitter(matrix(
-    MASS::rnegbin(rexp(50000, rate=.1), theta = 4.5),
+  mat <- jitter(matrix(
+    MASS::rnegbin(rexp(1000, rate=.1), theta = 4.5),
     ncol = 20))
-  colnames(mat1) <- paste0('CD', 1:ncol(mat1))
+  colnames(mat) <- paste0('CD', 1:ncol(mat))
+  rownames(mat) <- paste0('cell', 1:nrow(mat))
 
-  mat2 <- jitter(matrix(
-    MASS::rnegbin(rexp(50000, rate=.1), theta = 4.5),
-    ncol = 20))
-  colnames(mat2) <- paste0('CD', 1:ncol(mat2))
+  u <- umap::umap(mat)$layout
+  colnames(u) <- c('UMAP1','UMAP2')
+  rownames(u) <- rownames(mat)
 
-  metadata <- data.frame(
-    group = c('PB1', 'PB2'),
-    row.names = c('mat1', 'mat2'),
-    stringsAsFactors = FALSE)
+  markerExpression(t(mat), layout = u)
 }
