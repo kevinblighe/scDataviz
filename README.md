@@ -1,7 +1,7 @@
 scDataviz: single cell dataviz and downstream analyses
 ================
 Kevin Blighe
-2020-02-09
+2020-02-11
 
 -   [Introduction](#introduction)
 -   [Installation](#installation)
@@ -131,7 +131,7 @@ Now, read in the data and normalise it. The `processFCS` command by default remo
     newColnames = paste0('CD', 1:65))
 ```
 
-One can also create a new *SingleCellExperiment* object manually using any type of data, including any data-matrix from scRNA-seq produced elsewhere. Import functions for data deriving from popular programs will be covered in future tutorials, e.g., *Seurat*.
+One can also create a new *SingleCellExperiment* object manually using any type of data, including any data from scRNA-seq produced elsewhere. Import functions for data deriving from other sources is covered in Tutorials 2 and 3 in this vignette. All functions in *scDataviz* additionally accept data-frames or matrices on their own, de-necessitating the reliance on the *SingleCellexperiment* class.
 
 Perform principal component analysis (PCA)
 ------------------------------------------
@@ -245,7 +245,7 @@ Here, we randomly select some markers and then plot their expression profiles ac
   markers
 ```
 
-    ## [1] "CD44" "CD1"  "CD51" "CD52" "CD20" "CD25"
+    ## [1] "CD50" "CD4"  "CD60" "CD26" "CD47" "CD24"
 
 ``` r
   ggout1 <- markerExpression(sce,
@@ -384,7 +384,7 @@ This function utilises the k nearest neighbours (k-NN) approach from Seurat, whi
     ## Running Louvain algorithm with multilevel refinement...
     ## Maximum modularity in 10 random starts: 0.9985
     ## Number of communities: 13
-    ## Elapsed time: 23 seconds
+    ## Elapsed time: 24 seconds
 
 ``` r
   sce <- clusKNN(sce,
@@ -404,7 +404,7 @@ This function utilises the k nearest neighbours (k-NN) approach from Seurat, whi
     ## Running Louvain algorithm with multilevel refinement...
     ## Maximum modularity in 10 random starts: 0.9974
     ## Number of communities: 8
-    ## Elapsed time: 22 seconds
+    ## Elapsed time: 26 seconds
 
 ``` r
   ggout1 <- plotClusters(sce,
@@ -453,10 +453,24 @@ Plot marker expression per identified cluster
 ![Plot marker expression per identified cluster1](README_files/figure-markdown_github/ex6a-1.png)
 
 ``` r
+  clusters <- unique(metadata(sce)[['Cluster_PCA']])
+  clusters
+```
+
+    ## [1] 4 3 0 6 1 5 7 2
+
+``` r
+  markers <- sample(rownames(sce), 8)
+  markers
+```
+
+    ## [1] "CD19" "CD50" "CD42" "CD62" "CD23" "CD10" "CD13" "CD65"
+
+``` r
   markerExpressionPerCluster(sce,
-    clusters = unique(metadata(sce)[['Cluster_PCA']]),
-    clusterVector = metadata(sce)[['Cluster_PCA']],
-    markers = sample(rownames(sce), 8),
+    clusters = clusters,
+    clusterAssign = metadata(sce)[['Cluster_PCA']],
+    markers = markers,
     nrow = 2, ncol = 4,
     caption = 'Cluster assignments based on UMAP performed on PC eigenvectors',
     stripLabSize = 22,
@@ -1548,10 +1562,11 @@ Let's check the reduced dimensions and then plot some randomly selected marker e
   markers
 ```
 
-    ##  [1] "CDCA4"       "CNN2"        "GUCY1A3"     "HIP1"        "ZNF3"       
-    ##  [6] "FXYD5"       "TMEM208"     "DCPS"        "CYB561D2"    "ANKS1B"     
-    ## [11] "RP1-315G1.3" "PCBP2"       "SEC22C"      "PSMB8"       "ZNF564"     
-    ## [16] "EHBP1"       "SDK2"        "MT-ND1"
+    ##  [1] "AVPI1"         "KRR1"          "PPP1R14B"      "CCDC122"      
+    ##  [5] "SLC20A2"       "TIMMDC1"       "PERP"          "ERH"          
+    ##  [9] "SLC43A3"       "RP11-135A24.4" "PPM1L"         "CHCHD10"      
+    ## [13] "RETSAT"        "MTHFD2"        "TNFAIP8L1"     "SAAL1"        
+    ## [17] "ZNF700"        "FOXD2"
 
 ``` r
   ggout <- markerExpression(pbmc.sce,
@@ -2123,7 +2138,7 @@ sessionInfo()
     ## other attached packages:
     ##  [1] Seurat_3.1.1                PCAtools_1.2.0             
     ##  [3] cowplot_1.0.0               lattice_0.20-38            
-    ##  [5] reshape2_1.4.3              scDataviz_0.99.20          
+    ##  [5] reshape2_1.4.3              scDataviz_0.99.26          
     ##  [7] ggrepel_0.8.1               ggplot2_3.2.1              
     ##  [9] SingleCellExperiment_1.8.0  SummarizedExperiment_1.16.0
     ## [11] DelayedArray_0.12.0         BiocParallel_1.20.0        

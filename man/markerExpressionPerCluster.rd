@@ -111,5 +111,5 @@ Kevin Blighe <kevin@clinicalbioinformatics.co.uk>
   rownames(mat) <- paste0('cell', 1:nrow(mat))
 
   clus <- clusKNN(mat)
-  markerExpressionPerClustera(t(mat), clusters = c(0, 1), clusterAssign = clus)
+  markerExpressionPerCluster(t(mat), clusters = c(0, 1), clusterAssign = clus)
 }

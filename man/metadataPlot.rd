@@ -69,16 +69,16 @@
   \item{dimColnames}{The column names of the dimensions to use. DEFAULT
     = c('UMAP1','UMAP2'). OPTIONAL.}
   \item{colby}{If NULL, all points will be coloured differently. If not NULL,
-  value is assumed to be a column name in metadata(sce) relating to some
-  grouping/categorical variable. DEFAULT = NULL. OPTIONAL.}
+    value is assumed to be a column name in metadata(sce) relating to some
+    grouping/categorical variable. DEFAULT = NULL. OPTIONAL.}
   \item{colkey}{Vector of name-value pairs relating to value passed to 'col',
-  e.g., c(A='forestgreen', B='gold'). DEFAULT = NULL. OPTIONAL.}
+    e.g., c(A='forestgreen', B='gold'). DEFAULT = NULL. OPTIONAL.}
   \item{pointSize}{Size of plotted points. DEFAULT = 0.5. OPTIONAL.}
   \item{legendPosition}{Position of legend ('top', 'bottom', 'left', 'right',
-  'none'). DEFAULT = 'right'. OPTIONAL.}
+    'none'). DEFAULT = 'right'. OPTIONAL.}
   \item{legendLabSize}{Size of plot legend text. DEFAULT = 12. OPTIONAL.}
   \item{legendIconSize}{Size of plot legend icons / symbols. DEFAULT = 5.0.
-  OPTIONAL.}
+    OPTIONAL.}
   \item{xlim}{Limits of the x-axis. DEFAULT = NULL. OPTIONAL.}
   \item{ylim}{Limits of the y-axis. DEFAULT = NULL. OPTIONAL.}
   \item{celllab}{A vector containing any cells that the user wishes to label
@@ -87,21 +87,21 @@
   \item{labhjust}{Horizontal adjustment of label. DEFAULT = 1.5. OPTIONAL.}
   \item{labvjust}{Vertical adjustment of label. DEFAULT = 0. OPTIONAL.}
   \item{drawConnectors}{Logical, indicating whether or not to connect plot
-  labels to their corresponding points by line connectors. DEFAULT = TRUE.
-  OPTIONAL.}
+    labels to their corresponding points by line connectors. DEFAULT = TRUE.
+    OPTIONAL.}
   \item{widthConnectors}{Line width of connectors. DEFAULT = 0.5. OPTIONAL.}
   \item{colConnectors}{Line colour of connectors. DEFAULT = 'black'. OPTIONAL.}
   \item{xlab}{Label for x-axis. DEFAULT = dimColnames[1]. OPTIONAL.}
   \item{xlabAngle}{Rotation angle of x-axis labels. DEFAULT = 0. OPTIONAL.}
   \item{xlabhjust}{Horizontal adjustment of x-axis labels. DEFAULT = 0.5. OPTIONAL.}
   \item{xlabvjust}{Vertical adjustment of x-axis labels. DEFAULT = 0.5.
-  OPTIONAL.}
+    OPTIONAL.}
   \item{ylab}{Label for y-axis. DEFAULT = dimColnames[2]. OPTIONAL.}
   \item{ylabAngle}{Rotation angle of y-axis labels. DEFAULT = 0. OPTIONAL.}
   \item{ylabhjust}{Horizontal adjustment of y-axis labels. DEFAULT = 0.5.
-  OPTIONAL.}
+    OPTIONAL.}
   \item{ylabvjust}{Vertical adjustment of y-axis labels. DEFAULT = 0.5.
-  OPTIONAL.}
+    OPTIONAL.}
   \item{axisLabSize}{Size of x- and y-axis labels. DEFAULT = 16. OPTIONAL.}
   \item{title}{Plot title. DEFAULT = 'Metadata plot'. OPTIONAL.}
   \item{subtitle}{Plot subtitle. DEFAULT = ''. OPTIONAL.}
@@ -112,29 +112,29 @@
   \item{subtitleLabSize}{Size of plot subtitle. DEFAULT = 12. OPTIONAL.}
   \item{captionLabSize}{Size of plot caption. DEFAULT = 12. OPTIONAL.}
   \item{hline}{Draw one or more horizontal lines passing through this/these
-  values on y-axis. For single values, only a single numerical value is
-  necessary. For multiple lines, pass these as a vector, e.g., c(60,90).
-  DEFAULT = NULL. OPTIONAL.}
+    values on y-axis. For single values, only a single numerical value is
+    necessary. For multiple lines, pass these as a vector, e.g., c(60,90).
+    DEFAULT = NULL. OPTIONAL.}
   \item{hlineType}{Line type for hline ('blank', 'solid', 'dashed', 'dotted',
-  'dotdash', 'longdash', 'twodash'). DEFAULT = 'longdash'. OPTIONAL.}
+    'dotdash', 'longdash', 'twodash'). DEFAULT = 'longdash'. OPTIONAL.}
   \item{hlineCol}{Colour of hline. DEFAULT = 'black'. OPTIONAL.}
   \item{hlineWidth}{Width of hline. DEFAULT = 0.4. OPTIONAL.}
   \item{vline}{Draw one or more vertical lines passing through this/these
-  values on x-axis. For single values, only a single numerical value is
-  necessary. For multiple lines, pass these as a vector, e.g., c(60,90).
-  DEFAULT = NULL. OPTIONAL.}
+    values on x-axis. For single values, only a single numerical value is
+    necessary. For multiple lines, pass these as a vector, e.g., c(60,90).
+    DEFAULT = NULL. OPTIONAL.}
   \item{vlineType}{Line type for vline ('blank', 'solid', 'dashed', 'dotted',
-  'dotdash', 'longdash', 'twodash'). DEFAULT = 'longdash'. OPTIONAL.}
+    'dotdash', 'longdash', 'twodash'). DEFAULT = 'longdash'. OPTIONAL.}
   \item{vlineCol}{Colour of vline. DEFAULT = 'black'. OPTIONAL.}
   \item{vlineWidth}{Width of vline. DEFAULT = 0.4. OPTIONAL.}
   \item{gridlines.major}{Logical, indicating whether or not to draw major
-  gridlines. DEFAULT = TRUE. OPTIONAL.}
+     gridlines. DEFAULT = TRUE. OPTIONAL.}
   \item{gridlines.minor}{Logical, indicating whether or not to draw minor
-  gridlines. DEFAULT = TRUE. OPTIONAL.}
+   gridlines. DEFAULT = TRUE. OPTIONAL.}
   \item{borderWidth}{Width of the border on the x and y axes. DEFAULT = 0.8.
-  OPTIONAL.}
+    OPTIONAL.}
   \item{borderColour}{Colour of the border on the x and y axes. DEFAULT =
-  'black'. OPTIONAL.}
+    'black'. OPTIONAL.}
 }
 
 \value{
@@ -158,8 +158,8 @@ Kevin Blighe <kevin@clinicalbioinformatics.co.uk>
   rownames(u) <- rownames(mat)
 
   metadata <- data.frame(
-    group = c(rep('PB1', 25), rep('PB2',25),
+    group = c(rep('PB1', 25), rep('PB2', 25)),
     row.names = rownames(u))
 
-  markerExpression(u, meta = metadata, colby = 'group')
+  metadataPlot(u, meta = metadata, colby = 'group')
 }

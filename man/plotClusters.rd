@@ -151,7 +151,7 @@ Kevin Blighe <kevin@clinicalbioinformatics.co.uk>
   colnames(mat) <- paste0('CD', 1:ncol(mat))
   rownames(mat) <- paste0('cell', 1:nrow(mat))
 
-  u <- umap(mat)
+  u <- umap::umap(mat)
   clusvec <- clusKNN(u$layout)
   plotClusters(u$layout, clusvec)
 }

@@ -33,7 +33,7 @@ clusKNN <- function(
     message('--\'', reducedDim, '\' reduced dimensional component will ',
       'be used for clustering, with dims / columns: ', paste(dimColnames,
         collapse = ', '))
-    clusdata <- reducedDim(sce, reducedDim)[,dimColnames]
+    clusdata <- reducedDim(indata, reducedDim)[,dimColnames]
 
     if (length(which(colnames(metadata(indata)) == clusterAssignName)) > 0 && overwrite == FALSE) {
       stop('Column \'', clusterAssignName, '\' already found in metadata.. ',

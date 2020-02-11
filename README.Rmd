@@ -366,7 +366,7 @@ This function utilises the k nearest neighbours (k-NN) approach from Seurat, whi
 
 ## Plot marker expression per identified cluster
 
-```{r ex6a, fig.height = 10, fig.width = 18, fig.cap = "Plot marker expression per identified cluster1"}
+```{r ex6a, fig.height = 9, fig.width = 18, fig.cap = "Plot marker expression per identified cluster1"}
 
   markerExpressionPerCluster(sce,
     caption = 'Cluster assignments based on UMAP performed on expression values',
@@ -378,7 +378,7 @@ This function utilises the k nearest neighbours (k-NN) approach from Seurat, whi
 
 ```
 
-```{r ex6b, fig.height = 10, fig.width = 16, fig.cap = "Plot marker expression per identified cluster2"}
+```{r ex6b, fig.height = 9, fig.width = 16, fig.cap = "Plot marker expression per identified cluster2"}
 
   clusters <- unique(metadata(sce)[['Cluster_PCA']])
   clusters
