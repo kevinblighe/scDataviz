@@ -7,24 +7,32 @@
 \description{Find enriched markers per identified cluster and calculate cluster abundances across these for metadata traits.}
 
 \usage{
-  markerEnrichment(sce,
-  assay = 'scaled',
-  metacluster,
-  clusterVector = metadata(sce)[['Cluster']],
-  funcSummarise = function(x) median(x, na.rm = TRUE),
-  lowerPercentile = 5,
-  upperPercentile = 5)
+  markerEnrichment(
+    indata,
+    meta = NULL,
+    assay = 'scaled',
+    metacluster,
+    clusterAssign = metadata(indata)[['Cluster']],
+    funcSummarise = function(x) median(x, na.rm = TRUE),
+    lowerPercentile = 5,
+    upperPercentile = 5)
 }
 
 \arguments{
-  \item{sce}{A SingleCellExperiment object. REQUIRED.}
-  \item{assay}{Name of the assay slot in sce from which data will be taken.
-    DEFAULT = 'scaled'. OPTIONAL.}
-  \item{metacluster}{A column name from 'metadata(sce)' representing a trait
+  \item{indata}{A data-frame or matrix, or SingleCellExperiment object. REQUIRED.}
+  \item{meta}{If 'indata' is a non-SingleCellExperiment object, 'meta' must be
+    activated and relate to a data-frame of metadata that aligns with the columns
+    of 'indata', and that also contains a column name specified by 'metacluster'.
+    DEFAULT = NULL. OPTIONAL.}
+  \item{assay}{Name of the assay slot in 'indata' from which data will be
+    taken, assuming 'indata' is a SingleCellExperiment object. DEFAULT = 'scaled'.
+    OPTIONAL.}
+  \item{metacluster}{A column name from the provided metadata representing a trait
     over which metacluster abundances will be calculated. REQUIRED.}
-  \item{clusterVector}{A vector of cell-to-cluster assignments. This can be
-    from any source but ought to be taken from the metadata. DEFAULT =
-    metadata(sce)[['Cluster']]. OPTIONAL.}
+  \item{clusterAssign}{A vector of cell-to-cluster assignments. This can be
+    from any source but must align with your cells / variables. There is no
+    check to ensure this when 'indata' is not a SingleCellExperiment object.
+    DEFAULT = metadata(indata)[['Cluster']]. OPTIONAL.}
   \item{funcSummarise}{A mathematical function used to summarise expression
     per marker per cluster. DEFAULT = function(x) median(x, na.rm = TRUE).
     OPTIONAL.}
@@ -44,18 +52,20 @@ Kevin Blighe <kevin@clinicalbioinformatics.co.uk>
 
 \examples{
   # create random data that follows a negative binomial
-  mat1 <- jitter(matrix(
-    MASS::rnegbin(rexp(50000, rate=.1), theta = 4.5),
+  mat <- jitter(matrix(
+    MASS::rnegbin(rexp(1000, rate=.1), theta = 4.5),
     ncol = 20))
-  colnames(mat1) <- paste0('CD', 1:ncol(mat1))
+  colnames(mat) <- paste0('CD', 1:ncol(mat))
+  rownames(mat) <- paste0('cell', 1:nrow(mat))
 
-  mat2 <- jitter(matrix(
-    MASS::rnegbin(rexp(50000, rate=.1), theta = 4.5),
-    ncol = 20))
-  colnames(mat2) <- paste0('CD', 1:ncol(mat2))
+  u <- umap::umap(mat)$layout
+  colnames(u) <- c('UMAP1','UMAP2')
+  rownames(u) <- rownames(mat)
+  clus <- clusKNN(u)
 
   metadata <- data.frame(
-    group = c('PB1', 'PB2'),
-    row.names = c('mat1', 'mat2'),
-    stringsAsFactors = FALSE)
+    group = c(rep('PB1', 25), rep('PB2', 25)),
+    row.names = rownames(u))
+
+  markerEnrichment(t(mat), meta = metadata, metacluster = 'group', clusterAssign = clus)
 }

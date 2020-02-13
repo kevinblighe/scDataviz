@@ -1,7 +1,7 @@
 scDataviz: single cell dataviz and downstream analyses
 ================
 Kevin Blighe
-2020-02-11
+2020-02-13
 
 -   [Introduction](#introduction)
 -   [Installation](#installation)
@@ -245,7 +245,7 @@ Here, we randomly select some markers and then plot their expression profiles ac
   markers
 ```
 
-    ## [1] "CD50" "CD4"  "CD60" "CD26" "CD47" "CD24"
+    ## [1] "CD49" "CD36" "CD27" "CD21" "CD32" "CD41"
 
 ``` r
   ggout1 <- markerExpression(sce,
@@ -384,7 +384,7 @@ This function utilises the k nearest neighbours (k-NN) approach from Seurat, whi
     ## Running Louvain algorithm with multilevel refinement...
     ## Maximum modularity in 10 random starts: 0.9985
     ## Number of communities: 13
-    ## Elapsed time: 24 seconds
+    ## Elapsed time: 22 seconds
 
 ``` r
   sce <- clusKNN(sce,
@@ -404,7 +404,7 @@ This function utilises the k nearest neighbours (k-NN) approach from Seurat, whi
     ## Running Louvain algorithm with multilevel refinement...
     ## Maximum modularity in 10 random starts: 0.9974
     ## Number of communities: 8
-    ## Elapsed time: 26 seconds
+    ## Elapsed time: 21 seconds
 
 ``` r
   ggout1 <- plotClusters(sce,
@@ -464,7 +464,7 @@ Plot marker expression per identified cluster
   markers
 ```
 
-    ## [1] "CD19" "CD50" "CD42" "CD62" "CD23" "CD10" "CD13" "CD65"
+    ## [1] "CD21" "CD6"  "CD49" "CD55" "CD61" "CD3"  "CD57" "CD59"
 
 ``` r
   markerExpressionPerCluster(sce,
@@ -571,10 +571,10 @@ NA
 16.052
 </td>
 <td style="text-align:left;">
-CD47-
+NA
 </td>
 <td style="text-align:left;">
-CD30+
+NA
 </td>
 <td style="text-align:right;">
 13.2693745
@@ -603,10 +603,10 @@ CD30+
 15.534
 </td>
 <td style="text-align:left;">
-CD30-CD51-
+NA
 </td>
 <td style="text-align:left;">
-CD46+
+NA
 </td>
 <td style="text-align:right;">
 31.8012102
@@ -635,10 +635,10 @@ CD46+
 11.737
 </td>
 <td style="text-align:left;">
-CD37-CD46-
+NA
 </td>
 <td style="text-align:left;">
-CD51+
+NA
 </td>
 <td style="text-align:right;">
 0.1789214
@@ -667,10 +667,10 @@ CD51+
 11.390
 </td>
 <td style="text-align:left;">
-CD30-CD46-
+NA
 </td>
 <td style="text-align:left;">
-CD47+
+NA
 </td>
 <td style="text-align:right;">
 77.3397717
@@ -699,10 +699,10 @@ CD47+
 8.712
 </td>
 <td style="text-align:left;">
-CD46-
+NA
 </td>
 <td style="text-align:left;">
-CD47+CD51+
+NA
 </td>
 <td style="text-align:right;">
 46.2695133
@@ -731,10 +731,10 @@ CD47+CD51+
 7.352
 </td>
 <td style="text-align:left;">
-CD47-
+NA
 </td>
 <td style="text-align:left;">
-CD46+
+NA
 </td>
 <td style="text-align:right;">
 0.9521219
@@ -763,10 +763,10 @@ CD46+
 3.410
 </td>
 <td style="text-align:left;">
-CD47-
+NA
 </td>
 <td style="text-align:left;">
-CD31+
+NA
 </td>
 <td style="text-align:right;">
 55.6011730
@@ -795,10 +795,10 @@ CD31+
 2.206
 </td>
 <td style="text-align:left;">
-CD21-CD47-
+NA
 </td>
 <td style="text-align:left;">
-CD30+
+NA
 </td>
 <td style="text-align:right;">
 67.7697189
@@ -827,10 +827,10 @@ CD30+
 2.063
 </td>
 <td style="text-align:left;">
-CD51-CD54-
+NA
 </td>
 <td style="text-align:left;">
-CD30+CD49+
+NA
 </td>
 <td style="text-align:right;">
 97.0916142
@@ -859,10 +859,10 @@ CD30+CD49+
 0.261
 </td>
 <td style="text-align:left;">
-CD47-
+NA
 </td>
 <td style="text-align:left;">
-CD46+
+NA
 </td>
 <td style="text-align:right;">
 98.8505747
@@ -891,10 +891,10 @@ CD46+
 0.087
 </td>
 <td style="text-align:left;">
-CD21-CD25-
+NA
 </td>
 <td style="text-align:left;">
-CD51+
+NA
 </td>
 <td style="text-align:right;">
 0.0000000
@@ -923,10 +923,10 @@ CD51+
 0.024
 </td>
 <td style="text-align:left;">
-CD23-CD32-CD46-
+NA
 </td>
 <td style="text-align:left;">
-CD36+
+NA
 </td>
 <td style="text-align:right;">
 4.1666667
@@ -1041,10 +1041,10 @@ NA
 16.052
 </td>
 <td style="text-align:left;">
-CD47-
+NA
 </td>
 <td style="text-align:left;">
-CD30+
+NA
 </td>
 <td style="text-align:right;">
 0.3800150
@@ -1079,10 +1079,10 @@ CD30+
 15.534
 </td>
 <td style="text-align:left;">
-CD30-CD51-
+NA
 </td>
 <td style="text-align:left;">
-CD46+
+NA
 </td>
 <td style="text-align:right;">
 99.8841251
@@ -1117,10 +1117,10 @@ CD46+
 11.737
 </td>
 <td style="text-align:left;">
-CD37-CD46-
+NA
 </td>
 <td style="text-align:left;">
-CD51+
+NA
 </td>
 <td style="text-align:right;">
 99.2246741
@@ -1155,10 +1155,10 @@ CD51+
 11.390
 </td>
 <td style="text-align:left;">
-CD30-CD46-
+NA
 </td>
 <td style="text-align:left;">
-CD47+
+NA
 </td>
 <td style="text-align:right;">
 99.9385426
@@ -1193,10 +1193,10 @@ CD47+
 8.712
 </td>
 <td style="text-align:left;">
-CD46-
+NA
 </td>
 <td style="text-align:left;">
-CD47+CD51+
+NA
 </td>
 <td style="text-align:right;">
 0.4361800
@@ -1231,10 +1231,10 @@ CD47+CD51+
 7.352
 </td>
 <td style="text-align:left;">
-CD47-
+NA
 </td>
 <td style="text-align:left;">
-CD46+
+NA
 </td>
 <td style="text-align:right;">
 0.2992383
@@ -1269,10 +1269,10 @@ CD46+
 3.410
 </td>
 <td style="text-align:left;">
-CD47-
+NA
 </td>
 <td style="text-align:left;">
-CD31+
+NA
 </td>
 <td style="text-align:right;">
 0.0586510
@@ -1307,10 +1307,10 @@ CD31+
 2.206
 </td>
 <td style="text-align:left;">
-CD21-CD47-
+NA
 </td>
 <td style="text-align:left;">
-CD30+
+NA
 </td>
 <td style="text-align:right;">
 0.0906618
@@ -1345,10 +1345,10 @@ CD30+
 2.063
 </td>
 <td style="text-align:left;">
-CD51-CD54-
+NA
 </td>
 <td style="text-align:left;">
-CD30+CD49+
+NA
 </td>
 <td style="text-align:right;">
 0.0000000
@@ -1383,10 +1383,10 @@ CD30+CD49+
 0.261
 </td>
 <td style="text-align:left;">
-CD47-
+NA
 </td>
 <td style="text-align:left;">
-CD46+
+NA
 </td>
 <td style="text-align:right;">
 52.4904215
@@ -1421,10 +1421,10 @@ CD46+
 0.087
 </td>
 <td style="text-align:left;">
-CD21-CD25-
+NA
 </td>
 <td style="text-align:left;">
-CD51+
+NA
 </td>
 <td style="text-align:right;">
 63.2183908
@@ -1459,10 +1459,10 @@ CD51+
 0.024
 </td>
 <td style="text-align:left;">
-CD23-CD32-CD46-
+NA
 </td>
 <td style="text-align:left;">
-CD36+
+NA
 </td>
 <td style="text-align:right;">
 45.8333333
@@ -1493,8 +1493,8 @@ The expression signature is a quick way to visualise which markers are more or l
 
 ``` r
   plotSignatures(sce,
-    cexlab = 1.5,
-    cexlegend = 1.5)
+    labCex = 1.5,
+    legendCex = 1.5)
 ```
 
 ![Determine enriched markers in each cluster and plot the expression signature](README_files/figure-markdown_github/ex7-1.png)
@@ -1562,11 +1562,9 @@ Let's check the reduced dimensions and then plot some randomly selected marker e
   markers
 ```
 
-    ##  [1] "AVPI1"         "KRR1"          "PPP1R14B"      "CCDC122"      
-    ##  [5] "SLC20A2"       "TIMMDC1"       "PERP"          "ERH"          
-    ##  [9] "SLC43A3"       "RP11-135A24.4" "PPM1L"         "CHCHD10"      
-    ## [13] "RETSAT"        "MTHFD2"        "TNFAIP8L1"     "SAAL1"        
-    ## [17] "ZNF700"        "FOXD2"
+    ##  [1] "CCL3L3"  "ZNF555"  "IRF2BP2" "IDH3B"   "ENHO"    "FAM217B" "CAPRIN1"
+    ##  [8] "NUDT18"  "DEPDC1B" "ZYX"     "TMEM230" "ZNF248"  "NDUFAF4" "PFKM"   
+    ## [15] "CORO1B"  "RPP21"   "ULK1"    "EFCAB7"
 
 ``` r
   ggout <- markerExpression(pbmc.sce,
@@ -1706,10 +1704,10 @@ NA
 10.0370370
 </td>
 <td style="text-align:left;">
-HLA-DRA-
+NA
 </td>
 <td style="text-align:left;">
-LTB+CD3D+IL32+
+NA
 </td>
 <td style="text-align:right;">
 100
@@ -1732,10 +1730,10 @@ LTB+CD3D+IL32+
 9.4074074
 </td>
 <td style="text-align:left;">
-HLA-DRA-LYZ-
+NA
 </td>
 <td style="text-align:left;">
-BTG2+CYTIP+FYB+NDFIP1+GIMAP5+LEPROTL1+CD3E+CD3D+LDHB+CCR7+NOSIP+PIK3IP1+ST13+
+NA
 </td>
 <td style="text-align:right;">
 100
@@ -1758,10 +1756,10 @@ BTG2+CYTIP+FYB+NDFIP1+GIMAP5+LEPROTL1+CD3E+CD3D+LDHB+CCR7+NOSIP+PIK3IP1+ST13+
 9.1111111
 </td>
 <td style="text-align:left;">
-LTB-
+NA
 </td>
 <td style="text-align:left;">
-S100A9+LYZ+
+NA
 </td>
 <td style="text-align:right;">
 100
@@ -1784,10 +1782,10 @@ S100A9+LYZ+
 8.5555556
 </td>
 <td style="text-align:left;">
-HLA-DRA-LYZ-COTL1-
+NA
 </td>
 <td style="text-align:left;">
-CCL5+NKG7+
+NA
 </td>
 <td style="text-align:right;">
 100
@@ -1810,10 +1808,10 @@ CCL5+NKG7+
 7.8888889
 </td>
 <td style="text-align:left;">
-HLA-DRA-LYZ-
+NA
 </td>
 <td style="text-align:left;">
-LTB+CD3E+IL32+
+NA
 </td>
 <td style="text-align:right;">
 100
@@ -1836,10 +1834,10 @@ LTB+CD3E+IL32+
 7.8518519
 </td>
 <td style="text-align:left;">
-CXCR4-PTPRCAP-LDHB-
+NA
 </td>
 <td style="text-align:left;">
-LST1+AIF1+
+NA
 </td>
 <td style="text-align:right;">
 100
@@ -1862,10 +1860,10 @@ LST1+AIF1+
 7.8148148
 </td>
 <td style="text-align:left;">
-HLA-DRA-
+NA
 </td>
 <td style="text-align:left;">
-CD3E+CD3D+LDHB+CCR7+NOSIP+
+NA
 </td>
 <td style="text-align:right;">
 100
@@ -1888,10 +1886,10 @@ CD3E+CD3D+LDHB+CCR7+NOSIP+
 7.0370370
 </td>
 <td style="text-align:left;">
-LTB-HLA-DRA-LYZ-COTL1-
+NA
 </td>
 <td style="text-align:left;">
-GNLY+NKG7+
+NA
 </td>
 <td style="text-align:right;">
 100
@@ -1914,10 +1912,10 @@ GNLY+NKG7+
 6.9259259
 </td>
 <td style="text-align:left;">
-S100A4-GAPDH-
+NA
 </td>
 <td style="text-align:left;">
-HLA-DRA+CD79B+
+NA
 </td>
 <td style="text-align:right;">
 100
@@ -1940,10 +1938,10 @@ HLA-DRA+CD79B+
 5.9259259
 </td>
 <td style="text-align:left;">
-NPM1-LTB-TSC22D3-ITM2B-UBB-DDX5-RPSAP58-FXYD5-GLTSCR2-
+NA
 </td>
 <td style="text-align:left;">
-S100A9+S100A8+
+NA
 </td>
 <td style="text-align:right;">
 100
@@ -1966,10 +1964,10 @@ S100A9+S100A8+
 5.8518519
 </td>
 <td style="text-align:left;">
-S100A4-
+NA
 </td>
 <td style="text-align:left;">
-HLA-DRA+CD79A+
+NA
 </td>
 <td style="text-align:right;">
 100
@@ -1992,10 +1990,10 @@ HLA-DRA+CD79A+
 1.2962963
 </td>
 <td style="text-align:left;">
-YBX1-ARPC2-ARPC1B-ARPC3-
+NA
 </td>
 <td style="text-align:left;">
-CD3D+
+NA
 </td>
 <td style="text-align:right;">
 100
@@ -2018,10 +2016,10 @@ CD3D+
 0.5925926
 </td>
 <td style="text-align:left;">
-PTPRCAP-
+NA
 </td>
 <td style="text-align:left;">
-HLA-DRA+HLA-DPB1+LYZ+CST3+
+NA
 </td>
 <td style="text-align:right;">
 100
@@ -2138,7 +2136,7 @@ sessionInfo()
     ## other attached packages:
     ##  [1] Seurat_3.1.1                PCAtools_1.2.0             
     ##  [3] cowplot_1.0.0               lattice_0.20-38            
-    ##  [5] reshape2_1.4.3              scDataviz_0.99.26          
+    ##  [5] reshape2_1.4.3              scDataviz_0.99.32          
     ##  [7] ggrepel_0.8.1               ggplot2_3.2.1              
     ##  [9] SingleCellExperiment_1.8.0  SummarizedExperiment_1.16.0
     ## [11] DelayedArray_0.12.0         BiocParallel_1.20.0        

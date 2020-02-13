@@ -1,8 +1,9 @@
 markerEnrichment <- function(
-  sce,
+  indata,
+  meta = NULL,
   assay = 'scaled',
   metacluster,
-  clusterVector = metadata(sce)[['Cluster']],
+  clusterAssign = metadata(indata)[['Cluster']],
   funcSummarise = function(x) median(x, na.rm = TRUE),
   lowerPercentile = 5,
   upperPercentile = 5)
@@ -13,31 +14,51 @@ markerEnrichment <- function(
   NegativeMarkers <- c()
   PositiveMarkers <- c()
 
-  metadata = metadata(sce)
+  if (class(indata) == 'SingleCellExperiment') {
 
-  data <- as.data.frame(t(as.matrix(assay(sce, assay))))
-  data <- aggregate(data, list(clusterVector), funcSummarise)
+    message('--input data class is SingleCellExperiment')
+    metadata <- metadata(indata)
+    data <- as.data.frame(t(as.matrix(assay(indata, assay))))
+
+  } else {
+
+    message('--input data class is ', class(indata))
+
+    if (is.null(meta)) {
+      stop('When the input data is a non-SingleCellExperiment object, ',
+        '\'indata\' must relate to an expression matrix (cells as columns; ',
+        'genes as rows), while \'meta\' must be non-NULL and relate to ',
+        'metadata assocaited with this data.')
+    } else if (!all(rownames(meta) == colnames(indata))) {
+      stop('\'rownames(meta)\' must be equal to \'colnames(indata)\'')
+    }
+
+    metadata <- meta
+    data <- as.data.frame(t(as.matrix(indata)))
+  }
+
+  data <- aggregate(data, list(clusterAssign), funcSummarise)
   data <- data[,-1]
   data <- apply(data, 2, scale, scale = FALSE)
-  data <- t(data) / max(abs(range(data)))
+  #data <- t(data) / max(abs(range(data)))
   data <- rescale(data, c(-1,1))
 
-  nclus <- length(unique(clusterVector))
+  nclus <- length(unique(clusterAssign))
 
   res <- data.frame(row.names = 0:(nclus-1))
   metares <- data.frame(row.names = 0:(nclus-1))
 
   for (j in 0:(nclus-1)) {
-    iCellsPerCluster <- length(clusterVector[clusterVector == j])
-    iTotalCells <- length(clusterVector)
+    iCellsPerCluster <- length(clusterAssign[clusterAssign == j])
+    iTotalCells <- length(clusterAssign)
     iPercentage <- (iCellsPerCluster/iTotalCells) * 100
 
-    NegativeMarkers <- names(which(data[,j] < (min(data[,j]) + (((max(data[,j]) - min(data[,j])) / 100) * lowerPercentile))))
-    PositiveMarkers <- names(which(data[,j] > (max(data[,j]) - (((max(data[,j]) - min(data[,j])) / 100) * upperPercentile))))
+    NegativeMarkers <- names(which(data[,j] < (min(data[,j], na.rm = TRUE) + (((max(data[,j], na.rm = TRUE) - min(data[,j], na.rm = TRUE)) / 100) * lowerPercentile))))
+    PositiveMarkers <- names(which(data[,j] > (max(data[,j], na.rm = TRUE) - (((max(data[,j], na.rm = TRUE) - min(data[,j], na.rm = TRUE)) / 100) * upperPercentile))))
 
-    metaclusAbundance <- table(metadata[which(clusterVector == j),metacluster])
+    metaclusAbundance <- table(metadata[which(clusterAssign == j),metacluster])
     metaclusAbundance <- (metaclusAbundance / iCellsPerCluster) * 100
-    studyvar <- table(metadata[which(clusterVector == j),metacluster])
+    studyvar <- table(metadata[which(clusterAssign == j),metacluster])
 
     res <- rbind(res,
       c(j,

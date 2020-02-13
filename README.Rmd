@@ -426,8 +426,8 @@ The expression signature is a quick way to visualise which markers are more or l
 ```{r ex7, fig.height = 8, fig.width = 16, fig.cap = "Determine enriched markers in each cluster and plot the expression signature"}
 
   plotSignatures(sce,
-    cexlab = 1.5,
-    cexlegend = 1.5)
+    labCex = 1.5,
+    legendCex = 1.5)
 
 ```
 

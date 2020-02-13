@@ -74,8 +74,9 @@
     technically, any data-frame or matrix of numbers will be accepted provided
     that it aligns with the dimensions of 'indata' and provided that it contains
     columns as specified in 'dimColnames'. DEFAULT = NULL. OPTIONAL.}
-  \item{assay}{Name of the assay slot in 'indata' from which data will be taken.
-    DEFAULT = 'scaled'. OPTIONAL.}
+  \item{assay}{Name of the assay slot in 'indata' from which data will be
+    taken, assuming 'indata' is a SingleCellExperiment object. DEFAULT = 'scaled'.
+    OPTIONAL.}
   \item{reducedDim}{A reduced dimensional component stored within 'indata',
     e.g., PCA or UMAP. DEFAULT = 'UMAP'. OPTIONAL.}
   \item{dimColnames}{The column names of the dimensions to use. DEFAULT

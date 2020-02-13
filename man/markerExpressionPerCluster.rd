@@ -46,13 +46,15 @@
   \item{indata}{A data-frame or matrix, or SingleCellExperiment object. If a
     non-SingleCellExperiment object, this generally should relate to an
     expression matrix (cells as columns; genes as rows). REQUIRED.}
-  \item{assay}{Name of the assay slot in 'indata' from which data will be taken.
-    DEFAULT = 'scaled'. OPTIONAL.}
+  \item{assay}{Name of the assay slot in 'indata' from which data will be
+    taken, assuming 'indata' is a SingleCellExperiment object. DEFAULT = 'scaled'.
+    OPTIONAL.}
   \item{clusters}{Vector containing clusters to plot. DEFAULT =
     sample(unique(metadata(indata)[['Cluster']]), 9). OPTIONAL.}
   \item{clusterAssign}{A vector of cell-to-cluster assignments. This can be
-    from any source but ought to be taken from the metadata. DEFAULT =
-    metadata(indata)[['Cluster']]. OPTIONAL.}
+    from any source but must align with your cells / variables. There is no
+    check to ensure this when 'indata' is not a SingleCellExperiment object.
+    DEFAULT = metadata(indata)[['Cluster']]. OPTIONAL.}
   \item{markers}{Vector containing marker names to plot. If no markers are
     specified, then all will be plot. Default = sample(rownames(indata), 10).
     OPTIONAL.}
