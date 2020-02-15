@@ -1,6 +1,6 @@
 scDataviz: single cell dataviz and downstream analyses
 ================
-Kevin Blighe
+Kevin Blighe, Shahram Kordasti
 2020-02-15
 
 -   [Introduction](#introduction)
@@ -25,7 +25,7 @@ Kevin Blighe
 Introduction
 ============
 
-In the single cell World, which includes flow cytometry, mass cytometry, single-cell RNA-seq (scRNA-seq), and others, there is a need to improve data visualisation and to bring analysis capabilities to researchers even from non-technical backgrounds. *scDataviz* (Blighe 2020) attempts to fit into this space, while also catering for advanced users. Additonally, due to the way that *scDataviz* is designed, which is based on *SingleCellExperiment* (Lun et al. 2019), it has a 'plug and play' feel, and immediately lends itself as flexibile and compatibile with studies that go beyond *scDataviz*. Finally, the graphics in *scDataviz* are generated via the *ggplot* (Wickham 2016) engine, which means that users can 'add on' features to these with ease.
+In the single cell World, which includes flow cytometry, mass cytometry, single-cell RNA-seq (scRNA-seq), and others, there is a need to improve data visualisation and to bring analysis capabilities to researchers even from non-technical backgrounds. *scDataviz* (Blighe and Kordasti 2020) attempts to fit into this space, while also catering for advanced users. Additonally, due to the way that *scDataviz* is designed, which is based on *SingleCellExperiment* (Lun et al. 2019), it has a 'plug and play' feel, and immediately lends itself as flexibile and compatibile with studies that go beyond *scDataviz*. Finally, the graphics in *scDataviz* are generated via the *ggplot* (Wickham 2016) engine, which means that users can 'add on' features to these with ease.
 
 Installation
 ============
@@ -65,7 +65,7 @@ In order to downlaod this data, we can use `git clone` from your command prompt:
   git clone https://github.com/kevinblighe/scDataviz_data ;
 ```
 
-**NB - this command (above) needs to be run outside R at your shell's command prompt (e..g, BASH)**
+**NB - this command (above) needs to be run outside R at your shell's command prompt (e.g., BASH)**
 
 Now, read in the data and normalise it. The `processFCS` command by default removes variables based on low variance and also downsamples \[randomly\] your data to 100000 variables. The user can change these via the `downsample` and `downsampleVar` parameters.
 
@@ -215,7 +215,7 @@ Here, we randomly select some markers and then plot their expression profiles ac
   markers
 ```
 
-    ## [1] "CD21" "CD38" "CD59" "CD8"  "CD23" "CD43"
+    ## [1] "CD27" "CD20" "CD51" "CD1"  "CD18" "CD40"
 
 ``` r
   ggout1 <- markerExpression(sce,
@@ -354,7 +354,7 @@ This function utilises the k nearest neighbours (k-NN) approach from Seurat, whi
     ## Running Louvain algorithm with multilevel refinement...
     ## Maximum modularity in 10 random starts: 0.9985
     ## Number of communities: 13
-    ## Elapsed time: 26 seconds
+    ## Elapsed time: 24 seconds
 
 ``` r
   sce <- clusKNN(sce,
@@ -374,7 +374,7 @@ This function utilises the k nearest neighbours (k-NN) approach from Seurat, whi
     ## Running Louvain algorithm with multilevel refinement...
     ## Maximum modularity in 10 random starts: 0.9974
     ## Number of communities: 8
-    ## Elapsed time: 22 seconds
+    ## Elapsed time: 24 seconds
 
 ``` r
   ggout1 <- plotClusters(sce,
@@ -434,7 +434,7 @@ Plot marker expression per identified cluster
   markers
 ```
 
-    ## [1] "CD17" "CD41" "CD65" "CD33" "CD5"  "CD47" "CD52" "CD38"
+    ## [1] "CD30" "CD19" "CD38" "CD26" "CD62" "CD8"  "CD57" "CD45"
 
 ``` r
   markerExpressionPerCluster(sce,
@@ -1537,11 +1537,11 @@ Let's check the reduced dimensions and then plot some randomly selected marker e
   markers
 ```
 
-    ##  [1] "LAPTM5"        "CCBL1"         "EMC9"          "CARS2"        
-    ##  [5] "MT-ND4L"       "S100A11"       "LEMD3"         "ZNF548"       
-    ##  [9] "TLR10"         "HOOK3"         "PACRGL"        "SYS1"         
-    ## [13] "CHKB-AS1"      "GPR84"         "ABR"           "HEATR3"       
-    ## [17] "RP11-876N24.4" "TBX19"
+    ##  [1] "PLCL1"         "DIP2A"         "SULT1B1"       "CLEC17A"      
+    ##  [5] "ZMAT3"         "BRCA1"         "CEP192"        "LRFN1"        
+    ##  [9] "USP33"         "REST"          "FASTKD2"       "COPB2"        
+    ## [13] "NUDT3"         "UTP23"         "RP11-337C18.8" "CTD-2165H16.4"
+    ## [17] "LINC00863"     "RP11-867G23.4"
 
 ``` r
   ggout <- markerExpression(pbmc.sce,
@@ -1611,406 +1611,8 @@ We can also derive clusters using the same k-NN approach as before. Here, we are
 
 Now determine enriched markers per cluster.
 
-``` r
-  knitr::kable(markerEnrichment(pbmc.sce, assay = 'logcounts'), auto = TRUE) %>% kable_styling(full_width = F)
-```
+`{r knitr::kable(markerEnrichment(pbmc.sce, assay = 'logcounts'), auto = TRUE) %>% kable_styling(full_width = FALSE)`
 
-<table class="table" style="width: auto !important; margin-left: auto; margin-right: auto;">
-<thead>
-<tr>
-<th style="text-align:right;">
-Cluster
-</th>
-<th style="text-align:right;">
-nCells
-</th>
-<th style="text-align:right;">
-TotalCells
-</th>
-<th style="text-align:right;">
-PercentCells
-</th>
-<th style="text-align:left;">
-NegMarkers
-</th>
-<th style="text-align:left;">
-PosMarkers
-</th>
-<th style="text-align:right;">
-PerCent\_13
-</th>
-<th style="text-align:right;">
-nCell\_13
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:right;">
-0
-</td>
-<td style="text-align:right;">
-316
-</td>
-<td style="text-align:right;">
-2700
-</td>
-<td style="text-align:right;">
-11.7037037
-</td>
-<td style="text-align:left;">
-NA
-</td>
-<td style="text-align:left;">
-NA
-</td>
-<td style="text-align:right;">
-100
-</td>
-<td style="text-align:right;">
-316
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
-1
-</td>
-<td style="text-align:right;">
-271
-</td>
-<td style="text-align:right;">
-2700
-</td>
-<td style="text-align:right;">
-10.0370370
-</td>
-<td style="text-align:left;">
-HLA-DRA-
-</td>
-<td style="text-align:left;">
-LTB+CD3D+IL32+
-</td>
-<td style="text-align:right;">
-100
-</td>
-<td style="text-align:right;">
-271
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
-2
-</td>
-<td style="text-align:right;">
-254
-</td>
-<td style="text-align:right;">
-2700
-</td>
-<td style="text-align:right;">
-9.4074074
-</td>
-<td style="text-align:left;">
-HLA-DRA-LYZ-
-</td>
-<td style="text-align:left;">
-BTG2+CYTIP+FYB+NDFIP1+GIMAP5+LEPROTL1+CD3E+CD3D+LDHB+CCR7+NOSIP+PIK3IP1+ST13+
-</td>
-<td style="text-align:right;">
-100
-</td>
-<td style="text-align:right;">
-254
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
-3
-</td>
-<td style="text-align:right;">
-246
-</td>
-<td style="text-align:right;">
-2700
-</td>
-<td style="text-align:right;">
-9.1111111
-</td>
-<td style="text-align:left;">
-LTB-
-</td>
-<td style="text-align:left;">
-S100A9+LYZ+
-</td>
-<td style="text-align:right;">
-100
-</td>
-<td style="text-align:right;">
-246
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
-4
-</td>
-<td style="text-align:right;">
-231
-</td>
-<td style="text-align:right;">
-2700
-</td>
-<td style="text-align:right;">
-8.5555556
-</td>
-<td style="text-align:left;">
-HLA-DRA-LYZ-COTL1-
-</td>
-<td style="text-align:left;">
-CCL5+NKG7+
-</td>
-<td style="text-align:right;">
-100
-</td>
-<td style="text-align:right;">
-231
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
-5
-</td>
-<td style="text-align:right;">
-213
-</td>
-<td style="text-align:right;">
-2700
-</td>
-<td style="text-align:right;">
-7.8888889
-</td>
-<td style="text-align:left;">
-HLA-DRA-LYZ-
-</td>
-<td style="text-align:left;">
-LTB+CD3E+IL32+
-</td>
-<td style="text-align:right;">
-100
-</td>
-<td style="text-align:right;">
-213
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
-6
-</td>
-<td style="text-align:right;">
-212
-</td>
-<td style="text-align:right;">
-2700
-</td>
-<td style="text-align:right;">
-7.8518519
-</td>
-<td style="text-align:left;">
-CXCR4-PTPRCAP-LDHB-
-</td>
-<td style="text-align:left;">
-LST1+AIF1+
-</td>
-<td style="text-align:right;">
-100
-</td>
-<td style="text-align:right;">
-212
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
-7
-</td>
-<td style="text-align:right;">
-211
-</td>
-<td style="text-align:right;">
-2700
-</td>
-<td style="text-align:right;">
-7.8148148
-</td>
-<td style="text-align:left;">
-HLA-DRA-
-</td>
-<td style="text-align:left;">
-CD3E+CD3D+LDHB+CCR7+NOSIP+
-</td>
-<td style="text-align:right;">
-100
-</td>
-<td style="text-align:right;">
-211
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
-8
-</td>
-<td style="text-align:right;">
-190
-</td>
-<td style="text-align:right;">
-2700
-</td>
-<td style="text-align:right;">
-7.0370370
-</td>
-<td style="text-align:left;">
-LTB-HLA-DRA-LYZ-COTL1-
-</td>
-<td style="text-align:left;">
-GNLY+NKG7+
-</td>
-<td style="text-align:right;">
-100
-</td>
-<td style="text-align:right;">
-190
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
-9
-</td>
-<td style="text-align:right;">
-187
-</td>
-<td style="text-align:right;">
-2700
-</td>
-<td style="text-align:right;">
-6.9259259
-</td>
-<td style="text-align:left;">
-S100A4-GAPDH-
-</td>
-<td style="text-align:left;">
-HLA-DRA+CD79B+
-</td>
-<td style="text-align:right;">
-100
-</td>
-<td style="text-align:right;">
-187
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
-10
-</td>
-<td style="text-align:right;">
-160
-</td>
-<td style="text-align:right;">
-2700
-</td>
-<td style="text-align:right;">
-5.9259259
-</td>
-<td style="text-align:left;">
-NPM1-LTB-TSC22D3-ITM2B-UBB-DDX5-RPSAP58-FXYD5-GLTSCR2-
-</td>
-<td style="text-align:left;">
-S100A9+S100A8+
-</td>
-<td style="text-align:right;">
-100
-</td>
-<td style="text-align:right;">
-160
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
-11
-</td>
-<td style="text-align:right;">
-158
-</td>
-<td style="text-align:right;">
-2700
-</td>
-<td style="text-align:right;">
-5.8518519
-</td>
-<td style="text-align:left;">
-S100A4-
-</td>
-<td style="text-align:left;">
-HLA-DRA+CD79A+
-</td>
-<td style="text-align:right;">
-100
-</td>
-<td style="text-align:right;">
-158
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
-12
-</td>
-<td style="text-align:right;">
-35
-</td>
-<td style="text-align:right;">
-2700
-</td>
-<td style="text-align:right;">
-1.2962963
-</td>
-<td style="text-align:left;">
-YBX1-ARPC2-ARPC1B-ARPC3-
-</td>
-<td style="text-align:left;">
-CD3D+
-</td>
-<td style="text-align:right;">
-100
-</td>
-<td style="text-align:right;">
-35
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
-13
-</td>
-<td style="text-align:right;">
-16
-</td>
-<td style="text-align:right;">
-2700
-</td>
-<td style="text-align:right;">
-0.5925926
-</td>
-<td style="text-align:left;">
-PTPRCAP-
-</td>
-<td style="text-align:left;">
-HLA-DRA+HLA-DPB1+LYZ+CST3+
-</td>
-<td style="text-align:right;">
-100
-</td>
-<td style="text-align:right;">
-16
-</td>
-</tr>
-</tbody>
-</table>
 .
 
 Tutorial 3: Import any numerical data
@@ -2170,7 +1772,7 @@ sessionInfo()
 References
 ==========
 
-﻿Blighe (2020)
+﻿Blighe and Kordasti (2020)
 
 Lun et al. (2019)
 
@@ -2180,11 +1782,11 @@ Blighe and Lun (2018)
 
 Stuart et al. (2018)
 
-Blighe, K. 2020. “scDataviz: single cell dataviz and downstream analyses.” <https://github.com/kevinblighe/scDataviz.>
+Blighe, K, and S Kordasti. 2020. “scDataviz: single cell dataviz and downstream analyses.” <https://github.com/kevinblighe/scDataviz.>
 
-Blighe, K, and A Lun. 2018. “PCAtools: everything Principal Components Analysis.” <https://github.com/kevinblighe>.
+Blighe, K, and A Lun. 2018. “PCAtools: everything Principal Components Analysis.” <https://github.com/kevinblighe/PCAtools.>
 
-Lun, A, D Risso, K Korthauer, and K Rue-Albrecht. 2019. “SingleCellExperiment: S4 Classes for Single Cell Data.” R package version 1.8.0, https://bioconductor.org/packages/SingleCellExperiment/.
+Lun, A, D Risso, K Korthauer, and K Rue-Albrecht. 2019. “SingleCellExperiment: S4 Classes for Single Cell Data.” R package version 1.8.0, https://bioconductor.org/packages/SingleCellExperiment.
 
 Stuart, Tim, Andrew Butler, Paul Hoffman, Christoph Hafemeister, Efthymia Papalexi, William M Mauck III, Marlon Stoeckius, Peter Smibert, and Rahul Satija. 2018. “Comprehensive Integration of Single Cell Data.” *bioRxiv*. doi:[10.1101/460147](https://doi.org/10.1101/460147).
 

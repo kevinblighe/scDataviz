@@ -1,6 +1,6 @@
 ---
 title: "scDataviz: single cell dataviz and downstream analyses"
-author: "Kevin Blighe"
+author: "Kevin Blighe, Shahram Kordasti"
 date: "`r Sys.Date()`"
 package: "`r packageVersion('scDataviz')`"
 output:
@@ -48,7 +48,7 @@ In the single cell World, which includes flow cytometry, mass cytometry, single-
 
 Note: to install development version:
 
-```{r getPackageDevel, eval=FALSE}
+```{r getPackageDevel, eval = FALSE}
 
     devtools::install_github('kevinblighe/scDataviz')
 
@@ -74,7 +74,7 @@ In order to downlaod this data, we can use `git clone` from your command prompt:
 
 ```
 
-**NB - this command (above) needs to be run outside R at your shell's command prompt (e..g, BASH)**
+**NB - this command (above) needs to be run outside R at your shell's command prompt (e.g., BASH)**
 
 
 Now, read in the data and normalise it. The `processFCS` command by default removes variables based on low variance and also downsamples [randomly] your data to 100000 variables. The user can change these via the `downsample` and `downsampleVar` parameters.
@@ -430,14 +430,14 @@ This method also calculates metacluster abundances across a chosen phenotype. Th
 ### Disease vs Healthy metacluster abundances
 
 
-`r knitr::kable(markerEnrichment(sce, metacluster = 'group'), auto = TRUE) %>% kable_styling(full_width = F)`
+`r knitr::kable(markerEnrichment(sce, metacluster = 'group'), auto = TRUE) %>% kable_styling(full_width = FALSE)`
 
 .
 
 ### Treatment type metacluster abundances
 
 
-`r knitr::kable(markerEnrichment(sce, metacluster = 'treatment'), auto = TRUE) %>% kable_styling(full_width = F)`
+`r knitr::kable(markerEnrichment(sce, metacluster = 'treatment'), auto = TRUE) %>% kable_styling(full_width = FALSE)`
 
 .
 
@@ -457,7 +457,7 @@ The expression signature is a quick way to visualise which markers are more or l
 
 Due to the fact that *scDataviz* is based on *SingleCellExperiment*, it has increased interoperability with other packages, including the popular *Seurat* [@satijalab]. Taking the data produced from the [Seurat Tutorial](https://satijalab.org/seurat/v3.1/pbmc3k_tutorial.html) on Peripheral Blood Mononuclear Cells (PBMCs), we can do this via `as.SingleCellExperiment()`, as follows:
 
-```{r SeuratToSCEa, eval = FALSE}
+```{r SeuratToSCEa, eval = FALSE, message = FALSE}
 
   require(Seurat)
   require(SingleCellExperiment)
@@ -496,7 +496,7 @@ We can then check the contents of the object:
 
 Let's check the reduced dimensions and then plot some randomly selected marker expression profiles across these.
 
-```{r}
+```{r SeuratToSCEd}
 
   reducedDims(pbmc.sce)
 
@@ -565,11 +565,7 @@ We can also derive clusters using the same k-NN approach as before. Here, we are
 
 Now determine enriched markers per cluster.
 
-```{r}
-
-  knitr::kable(markerEnrichment(pbmc.sce, assay = 'logcounts'), auto = TRUE) %>% kable_styling(full_width = F)
-
-```
+`{r knitr::kable(markerEnrichment(pbmc.sce, assay = 'logcounts'), auto = TRUE) %>% kable_styling(full_width = FALSE)`
 
 .
 
