@@ -36,8 +36,9 @@ markerExpression <- function(
   stripLabSize = 16,
   title = 'Individual marker expression',
   subtitle = '',
-  caption = ifelse(class(indata) == 'SingleCellExperiment',
-    paste0('Total cells, ', nrow(as.data.frame(reducedDim(indata, reducedDim)))),
+  caption = ifelse(is(indata, 'SingleCellExperiment'),
+    paste0('Total cells, ',
+      nrow(as.data.frame(reducedDim(indata, reducedDim)))),
     paste0('Total cells, ', nrow(layout))),
   titleLabSize = 16,
   subtitleLabSize = 12,
@@ -85,13 +86,15 @@ markerExpression <- function(
       legend.text = element_text(size = legendLabSize),
       legend.key.height = unit(legendKeyHeight, 'cm'),
 
-      strip.text.x = element_text(size = stripLabSize, face = 'bold', margin = margin(b = 5, t = 5)))
+      strip.text.x = element_text(size = stripLabSize,
+        face = 'bold', margin = margin(b = 5, t = 5)))
 
-  if (class(indata) == 'SingleCellExperiment') {
+  if (is(indata, 'SingleCellExperiment')) {
 
     message('--input data class is SingleCellExperiment')
     plotobj <- as.data.frame(reducedDim(indata, reducedDim)[,dimColnames])
-    plotobj <- data.frame(plotobj, as.data.frame(t(as.matrix(assay(indata, assay)))))
+    plotobj <- data.frame(plotobj,
+      as.data.frame(t(as.matrix(assay(indata, assay)))))
     plotobj <- melt(plotobj, id.vars = dimColnames)
 
   } else {

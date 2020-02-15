@@ -35,12 +35,22 @@ In the single cell World, which includes flow cytometry, mass cytometry, single-
 
 # Installation
 
+## 1. Download the package from Bioconductor
 
-## 1. Install from GitHub
+```{r getPackage, eval=FALSE}
 
-```{r getPackageGitHub, eval = FALSE}
+    if (!requireNamespace('BiocManager', quietly = TRUE))
+        install.packages('BiocManager')
 
-  devtools::install_github('kevinblighe/scDataviz')
+    BiocManager::install('scDataviz')
+
+```
+
+Note: to install development version:
+
+```{r getPackageDevel, eval=FALSE}
+
+    devtools::install_github('kevinblighe/scDataviz')
 
 ```
 
@@ -69,7 +79,7 @@ In order to downlaod this data, we can use `git clone` from your command prompt:
 
 Now, read in the data and normalise it. The `processFCS` command by default removes variables based on low variance and also downsamples [randomly] your data to 100000 variables. The user can change these via the `downsample` and `downsampleVar` parameters.
 
-```{r readFCS, eval = TRUE}
+```{r readFCS, eval = FALSE}
 
   filelist <- list.files(
     path = "scDataviz_data/FCS/",
@@ -104,8 +114,14 @@ Now, read in the data and normalise it. The `processFCS` command by default remo
   download.file('https://raw.githubusercontent.com/kevinblighe/scDataviz_data/master/save/FlowData.RDS',
     'FlowData.RDS',
     method = 'curl')
+
   sce <- readRDS('FlowData.RDS')
+
   require(scDataviz)
+
+  file.remove('FlowData.RDS')
+
+```
 
 ```
 
@@ -439,17 +455,37 @@ The expression signature is a quick way to visualise which markers are more or l
 
 # Tutorial 2: Import from Seurat
 
-Due to the fact that *scDataviz* is based on *SingleCellExperiment*, it has increased interoperability with other packages, including the popular *Seurat* [@satijalab]. Taking the data produced from the [Seurat Tutorial](https://satijalab.org/seurat/v3.1/pbmc3k_tutorial.html) on Peripheral Blood Mononuclear Cells (PBMCs), we can do this as follows:
+Due to the fact that *scDataviz* is based on *SingleCellExperiment*, it has increased interoperability with other packages, including the popular *Seurat* [@satijalab]. Taking the data produced from the [Seurat Tutorial](https://satijalab.org/seurat/v3.1/pbmc3k_tutorial.html) on Peripheral Blood Mononuclear Cells (PBMCs), we can do this via `as.SingleCellExperiment()`, as follows:
 
-```{r SeuratToSCE, eval = FALSE}
+```{r SeuratToSCEa, eval = FALSE}
 
-  # not run
+  require(Seurat)
+  require(SingleCellExperiment)
+
+  pbmc <- readRDS('pbmc3k_final.RDS')
+  pbmc.sce <- as.SingleCellExperiment(pbmc)
+
+```
+
+```{r SeuratToSCEb, eval = TRUE, echo = FALSE}
+
   require(Seurat)
   require(SingleCellExperiment)
   require(scDataviz)
 
-  pbmc <- readRDS('pbmc3k_final.RDS')
-  pbmc.sce <- as.SingleCellExperiment(pbmc)
+  download.file('https://raw.githubusercontent.com/kevinblighe/scDataviz_data/master/save/pbmc3k_final_sce.RDS',
+    'pbmc3k_final_sce.RDS',
+    method = 'curl')
+
+  pbmc.sce <- readRDS('pbmc3k_final_sce.RDS')
+
+  file.remove('pbmc3k_final_sce.RDS')
+
+```
+
+We can then check the contents of the object:
+
+```{r SeuratToSCEc}
 
   assays(pbmc.sce)
 
@@ -457,11 +493,11 @@ Due to the fact that *scDataviz* is based on *SingleCellExperiment*, it has incr
 
 ```
 
+
 Let's check the reduced dimensions and then plot some randomly selected marker expression profiles across these.
 
-```{r, eval = FALSE}
+```{r}
 
-  # not run
   reducedDims(pbmc.sce)
 
   head(reducedDim(pbmc.sce, 'UMAP'))
@@ -470,9 +506,8 @@ Let's check the reduced dimensions and then plot some randomly selected marker e
 
 ```
 
-```{r ex8, eval = FALSE, fig.height = 12, fig.width = 16, fig.cap = "SeuratToSCE: show marker expression across the layout"}
+```{r ex8, fig.height = 12, fig.width = 16, fig.cap = "SeuratToSCE: show marker expression across the layout"}
 
-  # not run
   markers <- sample(rownames(pbmc.sce), 18)
   markers
 
@@ -501,9 +536,8 @@ Let's check the reduced dimensions and then plot some randomly selected marker e
 
 We can also derive clusters using the same k-NN approach as before. Here, we are dealing with scRNA-seq data; so, let's relax the `resolution` threshold somewhat, which will permit more clusters to be identified.
 
-```{r ex9, eval = FALSE, message = FALSE, fig.height = 8, fig.width = 8, fig.cap = "SeuratToSCE: find ideal clusters in the UMAP layout via k-nearest neighbours"}
+```{r ex9, message = FALSE, fig.height = 8, fig.width = 8, fig.cap = "SeuratToSCE: find ideal clusters in the UMAP layout via k-nearest neighbours"}
 
-  # not run
   pbmc.sce <- clusKNN(pbmc.sce,
     reducedDim = 'UMAP',
     dimColnames = c('UMAP_1','UMAP_2'),
@@ -531,9 +565,8 @@ We can also derive clusters using the same k-NN approach as before. Here, we are
 
 Now determine enriched markers per cluster.
 
-```{r, eval = FALSE}
+```{r}
 
-  # not run
   knitr::kable(markerEnrichment(pbmc.sce, assay = 'logcounts'), auto = TRUE) %>% kable_styling(full_width = F)
 
 ```

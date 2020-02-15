@@ -4,7 +4,7 @@
 
 \title{markerExpression}
 
-\description{Highlight the individual marker expression profile across a 2-dimensional reduction / embedding.}
+\description{Highlight the individual marker expression profile across a 2-dimensional reduction / embedding, typically contained within a SingleCellExperiment object. By default, this function plots the expression profile of 6 randomly-selected markers from your data.}
 
 \usage{
   markerExpression(
@@ -45,8 +45,9 @@
     stripLabSize = 16,
     title = 'Individual marker expression',
     subtitle = '',
-    caption = ifelse(class(indata) == 'SingleCellExperiment',
-      paste0('Total cells, ', nrow(as.data.frame(reducedDim(indata, reducedDim)))),
+    caption = ifelse(is(indata, 'SingleCellExperiment'),
+      paste0('Total cells, ',
+        nrow(as.data.frame(reducedDim(indata, reducedDim)))),
       paste0('Total cells, ', nrow(layout))),
     titleLabSize = 16,
     subtitleLabSize = 12,
@@ -67,38 +68,38 @@
 
 \arguments{
   \item{indata}{A data-frame or matrix, or SingleCellExperiment object. If a
-    non-SingleCellExperiment object, this generally should relate to an
-    expression matrix (cells as columns; genes as rows). REQUIRED.}
+    data-frame or matrix, this should relate to expression data (cells as
+    columns; genes as rows). If a SingleCellExperiment object, data will be
+    extracted from an assay component named by 'assay'. REQUIRED.}
   \item{layout}{If 'indata' is a non-SingleCellExperiment object, 'layout' must
-    be activated and relate to a 2-dimensional embedding, although,
-    technically, any data-frame or matrix of numbers will be accepted provided
-    that it aligns with the dimensions of 'indata' and provided that it contains
-    columns as specified in 'dimColnames'. DEFAULT = NULL. OPTIONAL.}
+    be activated and relate to a 2-dimensional reduction / embedding, although,
+    technically, any data-frame or matrix of numbers will be accepted, provided
+    that it aligns with the dimensions of 'indata', and provided that it
+    contains columns as specified in 'dimColnames'. DEFAULT = NULL. OPTIONAL.}
   \item{assay}{Name of the assay slot in 'indata' from which data will be
-    taken, assuming 'indata' is a SingleCellExperiment object. DEFAULT = 'scaled'.
-    OPTIONAL.}
+    taken, assuming 'indata' is a SingleCellExperiment object.
+    DEFAULT = 'scaled'. OPTIONAL.}
   \item{reducedDim}{A reduced dimensional component stored within 'indata',
     e.g., PCA or UMAP. DEFAULT = 'UMAP'. OPTIONAL.}
   \item{dimColnames}{The column names of the dimensions to use. DEFAULT
     = c('UMAP1','UMAP2'). OPTIONAL.}
-  \item{markers}{Vector containing marker names to plot. If no markers are
-    specified, then all will be plot. Default = sample(rownames(indata), 6).
-    OPTIONAL.}
+  \item{markers}{Vector containing marker names to plot.
+    Default = sample(rownames(indata), 6). OPTIONAL.}
   \item{ncol}{Number of columns for faceting. DEFAULT = 3. OPTIONAL.}
   \item{nrow}{Number of rows for faceting. DEFAULT = 2. OPTIONAL.}
   \item{col}{Colours used for generation of fill gradient according to
     expression values. Can be 2 or 3 colours. DEFAULT =
-  c('darkblue', 'yellow'). OPTIONAL.}
-  \item{colMidpoint}{Mid-point (expression value) for the colour range.
-    DEFAULT = 0. OPTIONAL.}
+    c('darkblue', 'yellow'). OPTIONAL.}
+  \item{colMidpoint}{Mid-point (expression value) for the colour range. Only
+    used when 3 colours are specified by 'col'. DEFAULT = 0. OPTIONAL.}
   \item{alpha}{Control the gradient of colour transparency, with 1 being opaque.
     DEFAULT = c(0.0, 1.0). OPTIONAL.}
   \item{pointSize}{Size of plotted points. DEFAULT = 0.5. OPTIONAL.}
   \item{legendPosition}{Position of legend ('top', 'bottom', 'left', 'right',
-  'none'). DEFAULT = 'right'. OPTIONAL.}
+    'none'). DEFAULT = 'right'. OPTIONAL.}
   \item{legendLabSize}{Size of plot legend text. DEFAULT = 12. OPTIONAL.}
   \item{legendIconSize}{Size of plot legend icons / symbols. DEFAULT = 5.0.
-  OPTIONAL.}
+    OPTIONAL.}
   \item{legendKeyHeight}{Height of the legend key. DEFAULT = 2.5. OPTIONAL.}
   \item{xlim}{Limits of the x-axis. DEFAULT = NULL. OPTIONAL.}
   \item{ylim}{Limits of the y-axis. DEFAULT = NULL. OPTIONAL.}
@@ -108,57 +109,57 @@
   \item{labhjust}{Horizontal adjustment of label. DEFAULT = 1.5. OPTIONAL.}
   \item{labvjust}{Vertical adjustment of label. DEFAULT = 0. OPTIONAL.}
   \item{drawConnectors}{Logical, indicating whether or not to connect plot
-  labels to their corresponding points by line connectors. DEFAULT = TRUE.
-  OPTIONAL.}
+    labels to their corresponding points by line connectors. DEFAULT = TRUE.
+    OPTIONAL.}
   \item{widthConnectors}{Line width of connectors. DEFAULT = 0.5. OPTIONAL.}
   \item{colConnectors}{Line colour of connectors. DEFAULT = 'black'. OPTIONAL.}
   \item{xlab}{Label for x-axis. DEFAULT = dimColnames[1]. OPTIONAL.}
   \item{xlabAngle}{Rotation angle of x-axis labels. DEFAULT = 0. OPTIONAL.}
   \item{xlabhjust}{Horizontal adjustment of x-axis labels. DEFAULT = 0.5. OPTIONAL.}
   \item{xlabvjust}{Vertical adjustment of x-axis labels. DEFAULT = 0.5.
-  OPTIONAL.}
+    OPTIONAL.}
   \item{ylab}{Label for y-axis. DEFAULT = dimColnames[2]. OPTIONAL.}
   \item{ylabAngle}{Rotation angle of y-axis labels. DEFAULT = 0. OPTIONAL.}
   \item{ylabhjust}{Horizontal adjustment of y-axis labels. DEFAULT = 0.5.
-  OPTIONAL.}
+    OPTIONAL.}
   \item{ylabvjust}{Vertical adjustment of y-axis labels. DEFAULT = 0.5.
-  OPTIONAL.}
+    OPTIONAL.}
   \item{axisLabSize}{Size of x- and y-axis labels. DEFAULT = 16. OPTIONAL.}
   \item{stripLabSize}{Size of the strip (marker) labels. DEFAULT = 16. OPTIONAL.}
   \item{title}{Plot title. DEFAULT = 'Individual marker expression'. OPTIONAL.}
   \item{subtitle}{Plot subtitle. DEFAULT = ''. OPTIONAL.}
   \item{caption}{Plot caption. DEFAULT =
-    ifelse(class(indata) == 'SingleCellExperiment',
-    paste0('Total cells, ', nrow(as.data.frame(reducedDim(indata, reducedDim)))),
-    paste0('Total cells, ', nrow(layout))).
-    OPTIONAL.}
+    ifelse(is(indata, 'SingleCellExperiment'),
+    paste0('Total cells, ',
+      nrow(as.data.frame(reducedDim(indata, reducedDim)))),
+    paste0('Total cells, ', nrow(layout))). OPTIONAL.}
   \item{titleLabSize}{Size of plot title. DEFAULT = 16. OPTIONAL.}
   \item{subtitleLabSize}{Size of plot subtitle. DEFAULT = 12. OPTIONAL.}
   \item{captionLabSize}{Size of plot caption. DEFAULT = 12. OPTIONAL.}
   \item{hline}{Draw one or more horizontal lines passing through this/these
-  values on y-axis. For single values, only a single numerical value is
-  necessary. For multiple lines, pass these as a vector, e.g., c(60,90).
-  DEFAULT = NULL. OPTIONAL.}
+    values on y-axis. For single values, only a single numerical value is
+    necessary. For multiple lines, pass these as a vector, e.g., c(60,90).
+    DEFAULT = NULL. OPTIONAL.}
   \item{hlineType}{Line type for hline ('blank', 'solid', 'dashed', 'dotted',
-  'dotdash', 'longdash', 'twodash'). DEFAULT = 'longdash'. OPTIONAL.}
+    'dotdash', 'longdash', 'twodash'). DEFAULT = 'longdash'. OPTIONAL.}
   \item{hlineCol}{Colour of hline. DEFAULT = 'black'. OPTIONAL.}
   \item{hlineWidth}{Width of hline. DEFAULT = 0.4. OPTIONAL.}
   \item{vline}{Draw one or more vertical lines passing through this/these
-  values on x-axis. For single values, only a single numerical value is
-  necessary. For multiple lines, pass these as a vector, e.g., c(60,90).
-  DEFAULT = NULL. OPTIONAL.}
+    values on x-axis. For single values, only a single numerical value is
+    necessary. For multiple lines, pass these as a vector, e.g., c(60,90).
+    DEFAULT = NULL. OPTIONAL.}
   \item{vlineType}{Line type for vline ('blank', 'solid', 'dashed', 'dotted',
-  'dotdash', 'longdash', 'twodash'). DEFAULT = 'longdash'. OPTIONAL.}
+    'dotdash', 'longdash', 'twodash'). DEFAULT = 'longdash'. OPTIONAL.}
   \item{vlineCol}{Colour of vline. DEFAULT = 'black'. OPTIONAL.}
   \item{vlineWidth}{Width of vline. DEFAULT = 0.4. OPTIONAL.}
   \item{gridlines.major}{Logical, indicating whether or not to draw major
-  gridlines. DEFAULT = TRUE. OPTIONAL.}
+    gridlines. DEFAULT = TRUE. OPTIONAL.}
   \item{gridlines.minor}{Logical, indicating whether or not to draw minor
-  gridlines. DEFAULT = TRUE. OPTIONAL.}
+    gridlines. DEFAULT = TRUE. OPTIONAL.}
   \item{borderWidth}{Width of the border on the x and y axes. DEFAULT = 0.8.
-  OPTIONAL.}
+    OPTIONAL.}
   \item{borderColour}{Colour of the border on the x and y axes. DEFAULT =
-  'black'. OPTIONAL.}
+    'black'. OPTIONAL.}
 }
 
 \value{

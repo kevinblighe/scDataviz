@@ -36,7 +36,8 @@ importData <- function(
     vars <- vars[keep]
   }
 
-  # if no metadata supplied, then create an empty data-frame with just rownames
+  # if no metadata supplied, then create an empty data-frame
+  # with just rownames
   if (is.null(metadata)) {
     metadata <- data.frame(row.names = rownames(mat))
   }

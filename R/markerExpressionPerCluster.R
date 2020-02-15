@@ -62,28 +62,33 @@ markerExpressionPerCluster <- function(
       legend.text = element_text(size = legendLabSize),
       legend.key.height = unit(legendKeyHeight, 'cm'),
 
-      strip.text.x = element_text(size = stripLabSize, face = 'bold', margin = margin(b = 5, t = 5)))
+      strip.text.x = element_text(size = stripLabSize,
+        face = 'bold', margin = margin(b = 5, t = 5)))
 
-  if (class(indata) == 'SingleCellExperiment') {
+  if (is(indata, 'SingleCellExperiment')) {
 
     message('--input data class is SingleCellExperiment')
+    idx <- which(rownames(indata) %in% markers)
     plotobj <- data.frame(Cluster = clusterAssign,
-      as.data.frame(t(as.matrix(assay(indata, assay)[which(rownames(indata) %in% markers),]))))
+      as.data.frame(t(as.matrix(assay(indata, assay)[idx,]))))
     plotobj <- plotobj[which(plotobj$Cluster %in% clusters),]
     plotobj <- melt(plotobj, id.vars = 'Cluster')
     colnames(plotobj) <- c('Cluster','Marker','Expression')
     plotobj$Cluster <- paste0('Cluster ', plotobj$Cluster)
-    plotobj$Cluster <- factor(plotobj$Cluster, levels = unique(paste0('Cluster ', sort(clusters))))
+    plotobj$Cluster <- factor(plotobj$Cluster,
+      levels = unique(paste0('Cluster ', sort(clusters))))
 
   } else {
 
     message('--input data class is ', class(indata))
+    idx <- which(rownames(indata) %in% markers)
     plotobj <- data.frame(Cluster = clusterAssign,
-      as.data.frame(t(as.matrix(indata[which(rownames(indata) %in% markers),]))))
+      as.data.frame(t(as.matrix(indata[idx,]))))
     plotobj <- plotobj[which(plotobj$Cluster %in% clusters),]
     plotobj <- melt(plotobj, id.vars = 'Cluster')
     colnames(plotobj) <- c('Cluster','Marker','Expression')
-    plotobj$Cluster <- factor(plotobj$Cluster, levels = unique(sort(clusters)))
+    plotobj$Cluster <- factor(plotobj$Cluster,
+      levels = unique(sort(clusters)))
 
   }
 
@@ -105,7 +110,8 @@ markerExpressionPerCluster <- function(
   if (yfixed == TRUE) {
     plot <- plot + facet_wrap( ~ Cluster, nrow = nrow, ncol = ncol)
   } else {
-    plot <- plot + facet_wrap( ~ Cluster, nrow = nrow, ncol = ncol, scales = 'free_y')
+    plot <- plot + facet_wrap( ~ Cluster, nrow = nrow, ncol = ncol,
+      scales = 'free_y')
   }
 
   # add elements to the plot for xy labeling and axis limits

@@ -4,7 +4,7 @@
 
 \title{performUMAP}
 
-\description{Perform UMAP using the basic R implementation of this.}
+\description{Perform UMAP on an input data-frame or matrix, or SingleCellExperiment object, using the basic R implementation of UMAP.}
 
 \usage{
   performUMAP(
@@ -24,18 +24,19 @@
     first two dimensions are stored as a reduced dimension named by
     'reducedDim'. REQUIRED.}
   \item{assay}{Name of the assay slot in 'indata' from which data will be
-    taken, assuming 'indata' is a SingleCellExperiment object. DEFAULT = 'scaled'.
+    taken, assuming 'indata' is a SingleCellExperiment object. DEFAULT =
+    'scaled'. OPTIONAL.}
+  \item{reducedDim}{A dimensional reduction / embedding stored within
+    'indata', e.g., PCA. If activated, UMAP will be performed on this object in
+    place of the assay component specified by 'assay'. DEFAULT = NULL. OPTIONAL.}
+  \item{dims}{If 'reducedDim' is activated, the number of dimensions to use.
+    DEFAULT = seq_len(20). OPTIONAL.}
+  \item{newDimName}{Name for the new dimensional embedding that will be produced.
+    If nothing is selected for neither this nor 'reducedDim', then the new name
+    will be 'UMAP'. If nothing is selected for this, but, e.g., 'PCA' is selected
+    for 'reducedDim', then the new name will be 'UMAP_PCA'. DEFAULT = NULL.
     OPTIONAL.}
-  \item{reducedDim}{A reduced dimensional component stored within 'sce',
-    e.g., PCA. If activated, UMAP will be performed on this object.
-    and not the scaled assay component of 'sce'. DEFAULT = NULL. OPTIONAL.}
-  \item{dims}{If 'reducedDim' isa activated, the number of dimensions to
-    use. DEFAULT = seq_len(20). OPTIONAL.}
-  \item{newDimName}{Name for the new dimensional component. If nothing is
-    selected for this or 'reducedDim', then the new name will be 'UMAP'. If
-    nothing is selected for this but 'PCA' is selected as 'reducedDim', then
-    the new name will be 'UMAP_PCA'. DEFAULT = NULL. OPTIONAL.}
-  \item{useMarkers}{Before performing UMAPsubset the data for these markers.
+  \item{useMarkers}{Before performing UMAP, subset the data for these markers.
     DEFAULT = NULL. OPTIONAL.}
 }
 

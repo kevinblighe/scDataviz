@@ -10,7 +10,8 @@ processFCS <- function(
   asinhFactor = 5,
   downsample = 100000,
   downsampleVar = 0.1,
-  colsDiscard = c('Time','Event_length','Center','Offset','Width','Residual','tSNE1','tSNE2','BCKG'),
+  colsDiscard = c('Time','Event_length','Center','Offset','Width',
+    'Residual','tSNE1','tSNE2','BCKG'),
   colsRetain = NULL,
   newColnames = NULL)
 {
@@ -24,7 +25,8 @@ processFCS <- function(
 
   # read in the data to a list
   samples <- list()
-  samples <- lapply(files, function(x) exprs(read.FCS(x, transformation = FALSE)))
+  samples <- lapply(files,
+    function(x) exprs(read.FCS(x, transformation = FALSE)))
   names(samples) <- files
 
   # filter markers out
@@ -57,7 +59,8 @@ processFCS <- function(
     # Euclidean norm
     samples <- lapply(
       samples,
-      function(x) x[apply(x, 1, FUN = function(x) sqrt(sum(x^2))) > euclideanNormThreshold,])
+      function(x)
+        x[apply(x, 1, FUN = function(x) sqrt(sum(x^2))) > euclideanNormThreshold,])
 
     # noise correction
     for(i in seq_len(length(samples))) {
@@ -114,7 +117,7 @@ processFCS <- function(
       message('--Skipping downsampling')
     } else {
       message('--Downsampling to ', downsample, ' variables.')
-      idx <- sample(1:nrow(samples), downsample)
+      idx <- sample(seq_along(nrow(samples)), downsample)
       samples <- samples[idx,]
       metadata <- metadata[idx,]
 

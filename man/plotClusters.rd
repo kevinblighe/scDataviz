@@ -25,7 +25,7 @@
     labvjust = 0,
     drawConnectors = TRUE,
     widthConnectors = 0.5,
-    colConnectors = 'grey50',
+    colConnectors = 'black',
     xlab = dimColnames[1],
     xlabAngle = 0,
     xlabhjust = 0.5,
@@ -35,11 +35,12 @@
     ylabhjust = 0.5,
     ylabvjust = 0.5,
     axisLabSize = 16,
-    title = 'k-nearest neighbor (k-NN) clusters',
+    title = 'k-nearest neighbour (k-NN) clusters',
     subtitle = '',
-    caption = ifelse(class(indata) == 'SingleCellExperiment',
-    paste0('Total cells, ', nrow(as.data.frame(reducedDim(indata, reducedDim)))),
-    paste0('Total cells, ', length(clusterVector))),
+    caption = ifelse(is(indata, 'SingleCellExperiment'),
+      paste0('Total cells, ',
+        nrow(as.data.frame(reducedDim(indata, reducedDim)))),
+      paste0('Total cells, ', length(clusterVector))),
     titleLabSize = 16,
     subtitleLabSize = 12,
     captionLabSize = 12,
@@ -58,34 +59,40 @@
 }
 
 \arguments{
-  \item{indata}{A data-frame/matrix or SingleCellExperiment object. REQUIRED.}
+  \item{indata}{A data-frame or matrix, or SingleCellExperiment object. If a
+    data-frame or matrix, columns named in 'dimColnames' will be extracted
+    from the data and used to generate the plot. If a SingleCellExperiment
+    object, a reduction named by 'reducedDim' will be taken from your object
+    and used to generate the plot, again using columns whose names are
+    specified in 'dimColnames'. REQUIRED.}
   \item{clusterVector}{If 'indata' is a non-SingleCellExperiment object,
     'clusterVector' must be non-NULL and relate to a cell-to-cluster
     assignment whose length matches 'nrow(indata)'. DEFAULT = NULL. OPTIONAL.}
-  \item{reducedDim}{A reduced dimensional component stored within 'indata',
+  \item{reducedDim}{A reduced dimensional embedding stored within 'indata',
     e.g., PCA or UMAP. DEFAULT = 'UMAP'. OPTIONAL.}
   \item{dimColnames}{The column names of the dimensions to use. DEFAULT
     = c('UMAP1','UMAP2'). OPTIONAL.}
-  \item{clusterColname}{The column name in the metadata of 'indata' that contains
-    the cell-to-cluster assignment. DEFAULT = 'Cluster'. OPTIONAL.}
+  \item{clusterColname}{The column name in the metadata of 'indata' that
+    contains the cell-to-cluster assignment, assuming 'indata' is a
+    SingleCellExperiment object. DEFAULT = 'Cluster'. OPTIONAL.}
   \item{pointSize}{Size of plotted points. DEFAULT = 0.5. OPTIONAL.}
   \item{legendPosition}{Position of legend ('top', 'bottom', 'left', 'right',
-  'none'). DEFAULT = 'right'. OPTIONAL.}
+  'none'). DEFAULT = 'none'. OPTIONAL.}
   \item{legendLabSize}{Size of plot legend text. DEFAULT = 12. OPTIONAL.}
   \item{legendIconSize}{Size of plot legend icons / symbols. DEFAULT = 5.0.
   OPTIONAL.}
   \item{xlim}{Limits of the x-axis. DEFAULT = NULL. OPTIONAL.}
   \item{ylim}{Limits of the y-axis. DEFAULT = NULL. OPTIONAL.}
-  \item{label}{Boolean (TRUE / FALSE) to label the clusters or not. DEFAULT
-    = NULL. OPTIONAL.}
-  \item{labSize}{Size of labels. DEFAULT = 3.0. OPTIONAL.}
+  \item{label}{Logical, indicating whether or not to label the clusters.
+    DEFAULT = NULL. OPTIONAL.}
+  \item{labSize}{Size of labels. DEFAULT = 5.0. OPTIONAL.}
   \item{labhjust}{Horizontal adjustment of label. DEFAULT = 1.5. OPTIONAL.}
   \item{labvjust}{Vertical adjustment of label. DEFAULT = 0. OPTIONAL.}
   \item{drawConnectors}{Logical, indicating whether or not to connect plot
-  labels to their corresponding points by line connectors. DEFAULT = TRUE.
-  OPTIONAL.}
+    labels to their corresponding cluster islands by line connectors.
+    DEFAULT = TRUE. OPTIONAL.}
   \item{widthConnectors}{Line width of connectors. DEFAULT = 0.5. OPTIONAL.}
-  \item{colConnectors}{Line colour of connectors. DEFAULT = 'grey50'. OPTIONAL.}
+  \item{colConnectors}{Line colour of connectors. DEFAULT = 'black'. OPTIONAL.}
   \item{xlab}{Label for x-axis. DEFAULT = dimColnames[1]. OPTIONAL.}
   \item{xlabAngle}{Rotation angle of x-axis labels. DEFAULT = 0. OPTIONAL.}
   \item{xlabhjust}{Horizontal adjustment of x-axis labels. DEFAULT = 0.5.
@@ -99,40 +106,41 @@
   \item{ylabvjust}{Vertical adjustment of y-axis labels. DEFAULT = 0.5.
   OPTIONAL.}
   \item{axisLabSize}{Size of x- and y-axis labels. DEFAULT = 16. OPTIONAL.}
-  \item{title}{Plot title. DEFAULT = 'k-nearest neighbor (k-NN) clusters'.
+  \item{title}{Plot title. DEFAULT = 'k-nearest neighbour (k-NN) clusters'.
     OPTIONAL.}
   \item{subtitle}{Plot subtitle. DEFAULT = ''. OPTIONAL.}
   \item{caption}{Plot caption. DEFAULT =
-    ifelse(class(indata) == 'SingleCellExperiment',
-    paste0('Total cells, ', nrow(as.data.frame(reducedDim(indata, reducedDim)))),
+    ifelse(is(indata, 'SingleCellExperiment'),
+    paste0('Total cells, ',
+    nrow(as.data.frame(reducedDim(indata, reducedDim)))),
     paste0('Total cells, ', length(clusterVector))). OPTIONAL.}
   \item{titleLabSize}{Size of plot title. DEFAULT = 16. OPTIONAL.}
   \item{subtitleLabSize}{Size of plot subtitle. DEFAULT = 12. OPTIONAL.}
   \item{captionLabSize}{Size of plot caption. DEFAULT = 12. OPTIONAL.}
   \item{hline}{Draw one or more horizontal lines passing through this/these
-  values on y-axis. For single values, only a single numerical value is
-  necessary. For multiple lines, pass these as a vector, e.g., c(60,90).
-  DEFAULT = NULL. OPTIONAL.}
+    values on y-axis. For single values, only a single numerical value is
+    necessary. For multiple lines, pass these as a vector, e.g., c(60,90).
+    DEFAULT = NULL. OPTIONAL.}
   \item{hlineType}{Line type for hline ('blank', 'solid', 'dashed', 'dotted',
-  'dotdash', 'longdash', 'twodash'). DEFAULT = 'longdash'. OPTIONAL.}
+    'dotdash', 'longdash', 'twodash'). DEFAULT = 'longdash'. OPTIONAL.}
   \item{hlineCol}{Colour of hline. DEFAULT = 'black'. OPTIONAL.}
   \item{hlineWidth}{Width of hline. DEFAULT = 0.4. OPTIONAL.}
   \item{vline}{Draw one or more vertical lines passing through this/these
-  values on x-axis. For single values, only a single numerical value is
-  necessary. For multiple lines, pass these as a vector, e.g., c(60,90).
-  DEFAULT = NULL. OPTIONAL.}
+    values on x-axis. For single values, only a single numerical value is
+    necessary. For multiple lines, pass these as a vector, e.g., c(60,90).
+    DEFAULT = NULL. OPTIONAL.}
   \item{vlineType}{Line type for vline ('blank', 'solid', 'dashed', 'dotted',
-  'dotdash', 'longdash', 'twodash'). DEFAULT = 'longdash'. OPTIONAL.}
+    'dotdash', 'longdash', 'twodash'). DEFAULT = 'longdash'. OPTIONAL.}
   \item{vlineCol}{Colour of vline. DEFAULT = 'black'. OPTIONAL.}
   \item{vlineWidth}{Width of vline. DEFAULT = 0.4. OPTIONAL.}
   \item{gridlines.major}{Logical, indicating whether or not to draw major
-  gridlines. DEFAULT = TRUE. OPTIONAL.}
+    gridlines. DEFAULT = TRUE. OPTIONAL.}
   \item{gridlines.minor}{Logical, indicating whether or not to draw minor
-  gridlines. DEFAULT = TRUE. OPTIONAL.}
+    gridlines. DEFAULT = TRUE. OPTIONAL.}
   \item{borderWidth}{Width of the border on the x and y axes. DEFAULT = 0.8.
-  OPTIONAL.}
+    OPTIONAL.}
   \item{borderColour}{Colour of the border on the x and y axes. DEFAULT =
-  'black'. OPTIONAL.}
+    'black'. OPTIONAL.}
 }
 
 \value{

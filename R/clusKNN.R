@@ -28,7 +28,7 @@ clusKNN <- function(
   overwrite = FALSE)
 {
 
-  if (class(indata) == 'SingleCellExperiment') {
+  if (is(indata, 'SingleCellExperiment')) {
     message('--input data class is SingleCellExperiment')
     message('--\'', reducedDim, '\' reduced dimensional component will ',
       'be used for clustering, with dims / columns: ', paste(dimColnames,
@@ -74,7 +74,7 @@ clusKNN <- function(
     edge.file.name = edge.file.name,
     verbose = verbose)
 
-  if (class(indata) == 'SingleCellExperiment') {
+  if (is(indata, 'SingleCellExperiment')) {
     if (length(which(colnames(metadata(indata)) == clusterAssignName)) > 0 ) {
       metadata(indata) <- metadata(indata)[,-which(colnames(metadata(indata)) == clusterAssignName)]
     }

@@ -6,12 +6,13 @@ performUMAP <- function(
   newDimName = NULL,
   useMarkers = NULL)
 {
-  if (class(indata) == 'SingleCellExperiment') {
+  if (is(indata, 'SingleCellExperiment')) {
 
     message('--input data class is SingleCellExperiment')
 
     if (!is.null(reducedDim)) {
-        message('--input data is taken from \'', reducedDim, '\' dimensional reduction')
+        message('--input data is taken from \'', reducedDim,
+          '\' dimensional reduction')
         message('--Dimensions to use: ', paste(dims, collapse = ', '))
         mat <- as.matrix(reducedDims(indata)[[reducedDim]][,dims])
 
@@ -53,7 +54,8 @@ performUMAP <- function(
   } else {
 
     message('--input data class is ', class(indata))
-    message('Note: all non-SingleCellExperiment objects will be coerced to matrix')
+    message('Note: all non-SingleCellExperiment objects will be ',
+      'coerced to matrix')
     mat <- t(as.matrix(indata))
 
     message('--Performing UMAP...')

@@ -38,8 +38,9 @@
     axisLabSize = 16,
     title = 'Metadata plot',
     subtitle = '',
-    caption = ifelse(class(indata) == 'SingleCellExperiment',
-      paste0('Total cells, ', nrow(as.data.frame(reducedDim(indata, reducedDim)))),
+    caption = ifelse(is(indata, 'SingleCellExperiment'),
+      paste0('Total cells, ',
+        nrow(as.data.frame(reducedDim(indata, reducedDim)))),
       paste0('Total cells, ', nrow(meta))),
     titleLabSize = 16,
     subtitleLabSize = 12,
@@ -59,18 +60,23 @@
 }
 
 \arguments{
-  \item{indata}{A data-frame or matrix, or SingleCellExperiment object. REQUIRED.}
+  \item{indata}{A data-frame or matrix, or SingleCellExperiment object. If a
+    data-frame or matrix, columns named in 'dimColnames' will be extracted
+    from the data and used to generate the plot. If a SingleCellExperiment
+    object, a reduction named by 'reducedDim' will be taken from your object
+    and used to generate the plot, again using columns whose names are
+    specified in 'dimColnames'. REQUIRED.}
   \item{meta}{If 'indata' is a non-SingleCellExperiment object, 'meta' must be
     activated and relate to a data-frame of metadata that aligns with the rows
     of 'indata', and that also contains a column name specified by 'colby'.
     DEFAULT = NULL. OPTIONAL.}
-  \item{reducedDim}{A reduced dimensional component stored within 'sce',
+  \item{reducedDim}{A reduced dimensional embedding stored within 'indata',
     e.g., PCA or UMAP. DEFAULT = 'UMAP'. OPTIONAL.}
   \item{dimColnames}{The column names of the dimensions to use. DEFAULT
     = c('UMAP1','UMAP2'). OPTIONAL.}
   \item{colby}{If NULL, all points will be coloured differently. If not NULL,
-    value is assumed to be a column name in metadata(sce) relating to some
-    grouping/categorical variable. DEFAULT = NULL. OPTIONAL.}
+    the value is assumed to be a column name in 'metadata(indata)' relating
+    to some grouping / categorical variable. DEFAULT = NULL. OPTIONAL.}
   \item{colkey}{Vector of name-value pairs relating to value passed to 'col',
     e.g., c(A='forestgreen', B='gold'). DEFAULT = NULL. OPTIONAL.}
   \item{pointSize}{Size of plotted points. DEFAULT = 0.5. OPTIONAL.}
@@ -106,8 +112,10 @@
   \item{title}{Plot title. DEFAULT = 'Metadata plot'. OPTIONAL.}
   \item{subtitle}{Plot subtitle. DEFAULT = ''. OPTIONAL.}
   \item{caption}{Plot caption. DEFAULT =
-    paste0('Total cells, ', nrow(as.data.frame(reducedDim(sce, reducedDim)))).
-    OPTIONAL.}
+    ifelse(is(indata, 'SingleCellExperiment'),
+    paste0('Total cells, ',
+      nrow(as.data.frame(reducedDim(indata, reducedDim)))),
+    paste0('Total cells, ', nrow(meta))). OPTIONAL.}
   \item{titleLabSize}{Size of plot title. DEFAULT = 16. OPTIONAL.}
   \item{subtitleLabSize}{Size of plot subtitle. DEFAULT = 12. OPTIONAL.}
   \item{captionLabSize}{Size of plot caption. DEFAULT = 12. OPTIONAL.}

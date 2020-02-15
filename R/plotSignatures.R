@@ -8,7 +8,7 @@ plotSignatures <- function(
   legendCex = 1.0,
   labDegree = 90)
 {
-  if (class(indata) == 'SingleCellExperiment') {
+  if (is(indata, 'SingleCellExperiment')) {
     message('--input data class is SingleCellExperiment')
     data <- as.data.frame(t(as.matrix(assay(indata, assay))))
   } else {
@@ -19,11 +19,11 @@ plotSignatures <- function(
   data <- aggregate(data, list(clusterAssign), funcSummarise)
   data <- data[,-1]
   data <- apply(data, 2, scale, scale = FALSE)
-  #data <- t(data) / max(abs(range(data)))
+  data <- t(data) / max(abs(range(data)))
   data <- rescale(data, c(-1,1))
 
   corrplot(
-    data.matrix(data),
+    t(data.matrix(data)),
     method = "circle",
     order = "original",
     addgrid.col = "grey60",

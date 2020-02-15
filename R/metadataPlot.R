@@ -29,8 +29,9 @@ metadataPlot <- function(
   axisLabSize = 16,
   title = 'Metadata plot',
   subtitle = '',
-  caption = ifelse(class(indata) == 'SingleCellExperiment',
-    paste0('Total cells, ', nrow(as.data.frame(reducedDim(indata, reducedDim)))),
+  caption = ifelse(is(indata, 'SingleCellExperiment'),
+    paste0('Total cells, ',
+      nrow(as.data.frame(reducedDim(indata, reducedDim)))),
     paste0('Total cells, ', nrow(meta))),
   titleLabSize = 16,
   subtitleLabSize = 12,
@@ -77,7 +78,7 @@ metadataPlot <- function(
       title=element_text(size=legendLabSize),
       legend.title=element_blank())
 
-  if (class(indata) == 'SingleCellExperiment') {
+  if (is(indata, 'SingleCellExperiment')) {
 
     message('--input data class is SingleCellExperiment')
     plotobj <- as.data.frame(reducedDim(indata, reducedDim)[,dimColnames])

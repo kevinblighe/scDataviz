@@ -1,11 +1,11 @@
 scDataviz: single cell dataviz and downstream analyses
 ================
 Kevin Blighe
-2020-02-13
+2020-02-15
 
 -   [Introduction](#introduction)
 -   [Installation](#installation)
-    -   [1. Install from GitHub](#install-from-github)
+    -   [1. Download the package from Bioconductor](#download-the-package-from-bioconductor)
     -   [2. Load the package into R session](#load-the-package-into-r-session)
 -   [Tutorial 1: CyTOF FCS data](#tutorial-1-cytof-fcs-data)
     -   [Perform principal component analysis (PCA)](#perform-principal-component-analysis-pca)
@@ -30,11 +30,20 @@ In the single cell World, which includes flow cytometry, mass cytometry, single-
 Installation
 ============
 
-1. Install from GitHub
-----------------------
+1. Download the package from Bioconductor
+-----------------------------------------
 
 ``` r
-  devtools::install_github('kevinblighe/scDataviz')
+    if (!requireNamespace('BiocManager', quietly = TRUE))
+        install.packages('BiocManager')
+
+    BiocManager::install('scDataviz')
+```
+
+Note: to install development version:
+
+``` r
+    devtools::install_github('kevinblighe/scDataviz')
 ```
 
 2. Load the package into R session
@@ -87,6 +96,10 @@ Now, read in the data and normalise it. The `processFCS` command by default remo
     downsampleVar = 0.2,
     newColnames = paste0('CD', 1:65))
 ```
+
+    ## [1] TRUE
+
+\`\`\`
 
 One can also create a new *SingleCellExperiment* object manually using any type of data, including any data from scRNA-seq produced elsewhere. Import functions for data deriving from other sources is covered in Tutorials 2 and 3 in this vignette. All functions in *scDataviz* additionally accept data-frames or matrices on their own, de-necessitating the reliance on the *SingleCellexperiment* class.
 
@@ -202,7 +215,7 @@ Here, we randomly select some markers and then plot their expression profiles ac
   markers
 ```
 
-    ## [1] "CD47" "CD50" "CD14" "CD48" "CD25" "CD53"
+    ## [1] "CD21" "CD38" "CD59" "CD8"  "CD23" "CD43"
 
 ``` r
   ggout1 <- markerExpression(sce,
@@ -341,7 +354,7 @@ This function utilises the k nearest neighbours (k-NN) approach from Seurat, whi
     ## Running Louvain algorithm with multilevel refinement...
     ## Maximum modularity in 10 random starts: 0.9985
     ## Number of communities: 13
-    ## Elapsed time: 24 seconds
+    ## Elapsed time: 26 seconds
 
 ``` r
   sce <- clusKNN(sce,
@@ -361,7 +374,7 @@ This function utilises the k nearest neighbours (k-NN) approach from Seurat, whi
     ## Running Louvain algorithm with multilevel refinement...
     ## Maximum modularity in 10 random starts: 0.9974
     ## Number of communities: 8
-    ## Elapsed time: 23 seconds
+    ## Elapsed time: 22 seconds
 
 ``` r
   ggout1 <- plotClusters(sce,
@@ -421,7 +434,7 @@ Plot marker expression per identified cluster
   markers
 ```
 
-    ## [1] "CD49" "CD56" "CD15" "CD31" "CD23" "CD10" "CD47" "CD29"
+    ## [1] "CD17" "CD41" "CD65" "CD33" "CD5"  "CD47" "CD52" "CD38"
 
 ``` r
   markerExpressionPerCluster(sce,
@@ -528,10 +541,10 @@ NA
 16.052
 </td>
 <td style="text-align:left;">
-NA
+CD47-
 </td>
 <td style="text-align:left;">
-NA
+CD30+
 </td>
 <td style="text-align:right;">
 13.2693745
@@ -560,10 +573,10 @@ NA
 15.534
 </td>
 <td style="text-align:left;">
-NA
+CD30-CD51-
 </td>
 <td style="text-align:left;">
-NA
+CD46+
 </td>
 <td style="text-align:right;">
 31.8012102
@@ -592,10 +605,10 @@ NA
 11.737
 </td>
 <td style="text-align:left;">
-NA
+CD37-CD46-
 </td>
 <td style="text-align:left;">
-NA
+CD51+
 </td>
 <td style="text-align:right;">
 0.1789214
@@ -624,10 +637,10 @@ NA
 11.390
 </td>
 <td style="text-align:left;">
-NA
+CD30-CD46-
 </td>
 <td style="text-align:left;">
-NA
+CD47+
 </td>
 <td style="text-align:right;">
 77.3397717
@@ -656,10 +669,10 @@ NA
 8.712
 </td>
 <td style="text-align:left;">
-NA
+CD46-
 </td>
 <td style="text-align:left;">
-NA
+CD47+CD51+
 </td>
 <td style="text-align:right;">
 46.2695133
@@ -688,10 +701,10 @@ NA
 7.352
 </td>
 <td style="text-align:left;">
-NA
+CD47-
 </td>
 <td style="text-align:left;">
-NA
+CD46+
 </td>
 <td style="text-align:right;">
 0.9521219
@@ -720,10 +733,10 @@ NA
 3.410
 </td>
 <td style="text-align:left;">
-NA
+CD47-
 </td>
 <td style="text-align:left;">
-NA
+CD31+
 </td>
 <td style="text-align:right;">
 55.6011730
@@ -752,10 +765,10 @@ NA
 2.206
 </td>
 <td style="text-align:left;">
-NA
+CD21-CD47-
 </td>
 <td style="text-align:left;">
-NA
+CD30+
 </td>
 <td style="text-align:right;">
 67.7697189
@@ -784,10 +797,10 @@ NA
 2.063
 </td>
 <td style="text-align:left;">
-NA
+CD51-CD54-
 </td>
 <td style="text-align:left;">
-NA
+CD30+CD49+
 </td>
 <td style="text-align:right;">
 97.0916142
@@ -816,10 +829,10 @@ NA
 0.261
 </td>
 <td style="text-align:left;">
-NA
+CD47-
 </td>
 <td style="text-align:left;">
-NA
+CD46+
 </td>
 <td style="text-align:right;">
 98.8505747
@@ -848,10 +861,10 @@ NA
 0.087
 </td>
 <td style="text-align:left;">
-NA
+CD21-CD25-
 </td>
 <td style="text-align:left;">
-NA
+CD51+
 </td>
 <td style="text-align:right;">
 0.0000000
@@ -880,10 +893,10 @@ NA
 0.024
 </td>
 <td style="text-align:left;">
-NA
+CD23-CD32-CD46-
 </td>
 <td style="text-align:left;">
-NA
+CD36+
 </td>
 <td style="text-align:right;">
 4.1666667
@@ -998,10 +1011,10 @@ NA
 16.052
 </td>
 <td style="text-align:left;">
-NA
+CD47-
 </td>
 <td style="text-align:left;">
-NA
+CD30+
 </td>
 <td style="text-align:right;">
 0.3800150
@@ -1036,10 +1049,10 @@ NA
 15.534
 </td>
 <td style="text-align:left;">
-NA
+CD30-CD51-
 </td>
 <td style="text-align:left;">
-NA
+CD46+
 </td>
 <td style="text-align:right;">
 99.8841251
@@ -1074,10 +1087,10 @@ NA
 11.737
 </td>
 <td style="text-align:left;">
-NA
+CD37-CD46-
 </td>
 <td style="text-align:left;">
-NA
+CD51+
 </td>
 <td style="text-align:right;">
 99.2246741
@@ -1112,10 +1125,10 @@ NA
 11.390
 </td>
 <td style="text-align:left;">
-NA
+CD30-CD46-
 </td>
 <td style="text-align:left;">
-NA
+CD47+
 </td>
 <td style="text-align:right;">
 99.9385426
@@ -1150,10 +1163,10 @@ NA
 8.712
 </td>
 <td style="text-align:left;">
-NA
+CD46-
 </td>
 <td style="text-align:left;">
-NA
+CD47+CD51+
 </td>
 <td style="text-align:right;">
 0.4361800
@@ -1188,10 +1201,10 @@ NA
 7.352
 </td>
 <td style="text-align:left;">
-NA
+CD47-
 </td>
 <td style="text-align:left;">
-NA
+CD46+
 </td>
 <td style="text-align:right;">
 0.2992383
@@ -1226,10 +1239,10 @@ NA
 3.410
 </td>
 <td style="text-align:left;">
-NA
+CD47-
 </td>
 <td style="text-align:left;">
-NA
+CD31+
 </td>
 <td style="text-align:right;">
 0.0586510
@@ -1264,10 +1277,10 @@ NA
 2.206
 </td>
 <td style="text-align:left;">
-NA
+CD21-CD47-
 </td>
 <td style="text-align:left;">
-NA
+CD30+
 </td>
 <td style="text-align:right;">
 0.0906618
@@ -1302,10 +1315,10 @@ NA
 2.063
 </td>
 <td style="text-align:left;">
-NA
+CD51-CD54-
 </td>
 <td style="text-align:left;">
-NA
+CD30+CD49+
 </td>
 <td style="text-align:right;">
 0.0000000
@@ -1340,10 +1353,10 @@ NA
 0.261
 </td>
 <td style="text-align:left;">
-NA
+CD47-
 </td>
 <td style="text-align:left;">
-NA
+CD46+
 </td>
 <td style="text-align:right;">
 52.4904215
@@ -1378,10 +1391,10 @@ NA
 0.087
 </td>
 <td style="text-align:left;">
-NA
+CD21-CD25-
 </td>
 <td style="text-align:left;">
-NA
+CD51+
 </td>
 <td style="text-align:right;">
 63.2183908
@@ -1416,10 +1429,10 @@ NA
 0.024
 </td>
 <td style="text-align:left;">
-NA
+CD23-CD32-CD46-
 </td>
 <td style="text-align:left;">
-NA
+CD36+
 </td>
 <td style="text-align:right;">
 45.8333333
@@ -1459,38 +1472,78 @@ The expression signature is a quick way to visualise which markers are more or l
 Tutorial 2: Import from Seurat
 ==============================
 
-Due to the fact that *scDataviz* is based on *SingleCellExperiment*, it has increased interoperability with other packages, including the popular *Seurat* (Stuart et al. 2018). Taking the data produced from the [Seurat Tutorial](https://satijalab.org/seurat/v3.1/pbmc3k_tutorial.html) on Peripheral Blood Mononuclear Cells (PBMCs), we can do this as follows:
+Due to the fact that *scDataviz* is based on *SingleCellExperiment*, it has increased interoperability with other packages, including the popular *Seurat* (Stuart et al. 2018). Taking the data produced from the [Seurat Tutorial](https://satijalab.org/seurat/v3.1/pbmc3k_tutorial.html) on Peripheral Blood Mononuclear Cells (PBMCs), we can do this via `as.SingleCellExperiment()`, as follows:
 
 ``` r
-  # not run
   require(Seurat)
   require(SingleCellExperiment)
-  require(scDataviz)
 
   pbmc <- readRDS('pbmc3k_final.RDS')
   pbmc.sce <- as.SingleCellExperiment(pbmc)
+```
 
+    ## [1] TRUE
+
+We can then check the contents of the object:
+
+``` r
   assays(pbmc.sce)
+```
 
+    ## List of length 2
+    ## names(2): counts logcounts
+
+``` r
   head(metadata(pbmc.sce))
 ```
+
+    ## list()
 
 Let's check the reduced dimensions and then plot some randomly selected marker expression profiles across these.
 
 ``` r
-  # not run
   reducedDims(pbmc.sce)
+```
 
+    ## List of length 2
+    ## names(2): PCA UMAP
+
+``` r
   head(reducedDim(pbmc.sce, 'UMAP'))
+```
 
+    ##                   UMAP_1    UMAP_2
+    ## AAACATACAACCAC -4.136650 -5.002530
+    ## AAACATTGAGCTAC -1.368039 16.187368
+    ## AAACATTGATCAGC -1.899821 -2.233947
+    ## AAACCGTGCTTCCG 11.393142  1.269737
+    ## AAACCGTGTATGCG -9.984254 -3.002492
+    ## AAACGCACTGGTAC -2.112035 -5.860135
+
+``` r
   head(reducedDim(pbmc.sce, 'PCA'))[,1:5]
 ```
 
+    ##                       PC_1        PC_2       PC_3       PC_4       PC_5
+    ## AAACATACAACCAC   4.6060466 -0.60371951 -0.6052429 -1.7231935 -0.7443433
+    ## AAACATTGAGCTAC   0.1670809  4.54421712  6.4518867  6.8597974 -0.8011412
+    ## AAACATTGATCAGC   2.6455614 -4.00971883 -0.3723479 -0.9960236 -4.9837032
+    ## AAACCGTGCTTCCG -11.8569587  0.06340912  0.6226992 -0.2431955  0.2919980
+    ## AAACCGTGTATGCG   3.0531940 -6.00216498  0.8234015  2.0463393  8.2465179
+    ## AAACGCACTGGTAC   2.6832368  1.37196098 -0.5872163 -2.2090349 -2.5291571
+
 ``` r
-  # not run
   markers <- sample(rownames(pbmc.sce), 18)
   markers
+```
 
+    ##  [1] "LAPTM5"        "CCBL1"         "EMC9"          "CARS2"        
+    ##  [5] "MT-ND4L"       "S100A11"       "LEMD3"         "ZNF548"       
+    ##  [9] "TLR10"         "HOOK3"         "PACRGL"        "SYS1"         
+    ## [13] "CHKB-AS1"      "GPR84"         "ABR"           "HEATR3"       
+    ## [17] "RP11-876N24.4" "TBX19"
+
+``` r
   ggout <- markerExpression(pbmc.sce,
     assay = 'logcounts',
     markers = markers,
@@ -1513,10 +1566,11 @@ Let's check the reduced dimensions and then plot some randomly selected marker e
     nrow = 1, align = "l", label_size = 24)
 ```
 
+![SeuratToSCE: show marker expression across the layout](README_files/figure-markdown_github/ex8-1.png)
+
 We can also derive clusters using the same k-NN approach as before. Here, we are dealing with scRNA-seq data; so, let's relax the `resolution` threshold somewhat, which will permit more clusters to be identified.
 
 ``` r
-  # not run
   pbmc.sce <- clusKNN(pbmc.sce,
     reducedDim = 'UMAP',
     dimColnames = c('UMAP_1','UMAP_2'),
@@ -1524,7 +1578,19 @@ We can also derive clusters using the same k-NN approach as before. Here, we are
     prune.SNN = 1/15,
     resolution = 0.5,
     algorithm = 2)
+```
 
+    ## Modularity Optimizer version 1.3.0 by Ludo Waltman and Nees Jan van Eck
+    ## 
+    ## Number of nodes: 2700
+    ## Number of edges: 59214
+    ## 
+    ## Running Louvain algorithm with multilevel refinement...
+    ## Maximum modularity in 10 random starts: 0.9231
+    ## Number of communities: 14
+    ## Elapsed time: 0 seconds
+
+``` r
   ggout <- plotClusters(pbmc.sce,
     clusterColname = 'Cluster',
     labSize = 6.0,
@@ -1541,13 +1607,410 @@ We can also derive clusters using the same k-NN approach as before. Here, we are
     ncol = 1, align = "l", label_size = 24)
 ```
 
+![SeuratToSCE: find ideal clusters in the UMAP layout via k-nearest neighbours](README_files/figure-markdown_github/ex9-1.png)
+
 Now determine enriched markers per cluster.
 
 ``` r
-  # not run
   knitr::kable(markerEnrichment(pbmc.sce, assay = 'logcounts'), auto = TRUE) %>% kable_styling(full_width = F)
 ```
 
+<table class="table" style="width: auto !important; margin-left: auto; margin-right: auto;">
+<thead>
+<tr>
+<th style="text-align:right;">
+Cluster
+</th>
+<th style="text-align:right;">
+nCells
+</th>
+<th style="text-align:right;">
+TotalCells
+</th>
+<th style="text-align:right;">
+PercentCells
+</th>
+<th style="text-align:left;">
+NegMarkers
+</th>
+<th style="text-align:left;">
+PosMarkers
+</th>
+<th style="text-align:right;">
+PerCent\_13
+</th>
+<th style="text-align:right;">
+nCell\_13
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+316
+</td>
+<td style="text-align:right;">
+2700
+</td>
+<td style="text-align:right;">
+11.7037037
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:right;">
+100
+</td>
+<td style="text-align:right;">
+316
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+271
+</td>
+<td style="text-align:right;">
+2700
+</td>
+<td style="text-align:right;">
+10.0370370
+</td>
+<td style="text-align:left;">
+HLA-DRA-
+</td>
+<td style="text-align:left;">
+LTB+CD3D+IL32+
+</td>
+<td style="text-align:right;">
+100
+</td>
+<td style="text-align:right;">
+271
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2
+</td>
+<td style="text-align:right;">
+254
+</td>
+<td style="text-align:right;">
+2700
+</td>
+<td style="text-align:right;">
+9.4074074
+</td>
+<td style="text-align:left;">
+HLA-DRA-LYZ-
+</td>
+<td style="text-align:left;">
+BTG2+CYTIP+FYB+NDFIP1+GIMAP5+LEPROTL1+CD3E+CD3D+LDHB+CCR7+NOSIP+PIK3IP1+ST13+
+</td>
+<td style="text-align:right;">
+100
+</td>
+<td style="text-align:right;">
+254
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+3
+</td>
+<td style="text-align:right;">
+246
+</td>
+<td style="text-align:right;">
+2700
+</td>
+<td style="text-align:right;">
+9.1111111
+</td>
+<td style="text-align:left;">
+LTB-
+</td>
+<td style="text-align:left;">
+S100A9+LYZ+
+</td>
+<td style="text-align:right;">
+100
+</td>
+<td style="text-align:right;">
+246
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+4
+</td>
+<td style="text-align:right;">
+231
+</td>
+<td style="text-align:right;">
+2700
+</td>
+<td style="text-align:right;">
+8.5555556
+</td>
+<td style="text-align:left;">
+HLA-DRA-LYZ-COTL1-
+</td>
+<td style="text-align:left;">
+CCL5+NKG7+
+</td>
+<td style="text-align:right;">
+100
+</td>
+<td style="text-align:right;">
+231
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+5
+</td>
+<td style="text-align:right;">
+213
+</td>
+<td style="text-align:right;">
+2700
+</td>
+<td style="text-align:right;">
+7.8888889
+</td>
+<td style="text-align:left;">
+HLA-DRA-LYZ-
+</td>
+<td style="text-align:left;">
+LTB+CD3E+IL32+
+</td>
+<td style="text-align:right;">
+100
+</td>
+<td style="text-align:right;">
+213
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+6
+</td>
+<td style="text-align:right;">
+212
+</td>
+<td style="text-align:right;">
+2700
+</td>
+<td style="text-align:right;">
+7.8518519
+</td>
+<td style="text-align:left;">
+CXCR4-PTPRCAP-LDHB-
+</td>
+<td style="text-align:left;">
+LST1+AIF1+
+</td>
+<td style="text-align:right;">
+100
+</td>
+<td style="text-align:right;">
+212
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+7
+</td>
+<td style="text-align:right;">
+211
+</td>
+<td style="text-align:right;">
+2700
+</td>
+<td style="text-align:right;">
+7.8148148
+</td>
+<td style="text-align:left;">
+HLA-DRA-
+</td>
+<td style="text-align:left;">
+CD3E+CD3D+LDHB+CCR7+NOSIP+
+</td>
+<td style="text-align:right;">
+100
+</td>
+<td style="text-align:right;">
+211
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+8
+</td>
+<td style="text-align:right;">
+190
+</td>
+<td style="text-align:right;">
+2700
+</td>
+<td style="text-align:right;">
+7.0370370
+</td>
+<td style="text-align:left;">
+LTB-HLA-DRA-LYZ-COTL1-
+</td>
+<td style="text-align:left;">
+GNLY+NKG7+
+</td>
+<td style="text-align:right;">
+100
+</td>
+<td style="text-align:right;">
+190
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+9
+</td>
+<td style="text-align:right;">
+187
+</td>
+<td style="text-align:right;">
+2700
+</td>
+<td style="text-align:right;">
+6.9259259
+</td>
+<td style="text-align:left;">
+S100A4-GAPDH-
+</td>
+<td style="text-align:left;">
+HLA-DRA+CD79B+
+</td>
+<td style="text-align:right;">
+100
+</td>
+<td style="text-align:right;">
+187
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+10
+</td>
+<td style="text-align:right;">
+160
+</td>
+<td style="text-align:right;">
+2700
+</td>
+<td style="text-align:right;">
+5.9259259
+</td>
+<td style="text-align:left;">
+NPM1-LTB-TSC22D3-ITM2B-UBB-DDX5-RPSAP58-FXYD5-GLTSCR2-
+</td>
+<td style="text-align:left;">
+S100A9+S100A8+
+</td>
+<td style="text-align:right;">
+100
+</td>
+<td style="text-align:right;">
+160
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+11
+</td>
+<td style="text-align:right;">
+158
+</td>
+<td style="text-align:right;">
+2700
+</td>
+<td style="text-align:right;">
+5.8518519
+</td>
+<td style="text-align:left;">
+S100A4-
+</td>
+<td style="text-align:left;">
+HLA-DRA+CD79A+
+</td>
+<td style="text-align:right;">
+100
+</td>
+<td style="text-align:right;">
+158
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+12
+</td>
+<td style="text-align:right;">
+35
+</td>
+<td style="text-align:right;">
+2700
+</td>
+<td style="text-align:right;">
+1.2962963
+</td>
+<td style="text-align:left;">
+YBX1-ARPC2-ARPC1B-ARPC3-
+</td>
+<td style="text-align:left;">
+CD3D+
+</td>
+<td style="text-align:right;">
+100
+</td>
+<td style="text-align:right;">
+35
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+13
+</td>
+<td style="text-align:right;">
+16
+</td>
+<td style="text-align:right;">
+2700
+</td>
+<td style="text-align:right;">
+0.5925926
+</td>
+<td style="text-align:left;">
+PTPRCAP-
+</td>
+<td style="text-align:left;">
+HLA-DRA+HLA-DPB1+LYZ+CST3+
+</td>
+<td style="text-align:right;">
+100
+</td>
+<td style="text-align:right;">
+16
+</td>
+</tr>
+</tbody>
+</table>
 .
 
 Tutorial 3: Import any numerical data
@@ -1652,56 +2115,57 @@ sessionInfo()
     ## [8] methods   base     
     ## 
     ## other attached packages:
-    ##  [1] PCAtools_1.2.0              cowplot_1.0.0              
-    ##  [3] lattice_0.20-38             reshape2_1.4.3             
-    ##  [5] scDataviz_0.99.32           ggrepel_0.8.1              
-    ##  [7] ggplot2_3.2.1               SingleCellExperiment_1.8.0 
-    ##  [9] SummarizedExperiment_1.16.0 DelayedArray_0.12.0        
-    ## [11] BiocParallel_1.20.0         matrixStats_0.55.0         
-    ## [13] Biobase_2.46.0              GenomicRanges_1.38.0       
-    ## [15] GenomeInfoDb_1.22.0         IRanges_2.20.0             
-    ## [17] S4Vectors_0.24.0            BiocGenerics_0.32.0        
-    ## [19] kableExtra_1.1.0            knitr_1.26                 
+    ##  [1] Seurat_3.1.1                PCAtools_1.2.0             
+    ##  [3] cowplot_1.0.0               lattice_0.20-38            
+    ##  [5] reshape2_1.4.3              scDataviz_0.99.36          
+    ##  [7] ggrepel_0.8.1               ggplot2_3.2.1              
+    ##  [9] SingleCellExperiment_1.8.0  SummarizedExperiment_1.16.0
+    ## [11] DelayedArray_0.12.0         BiocParallel_1.20.0        
+    ## [13] matrixStats_0.55.0          Biobase_2.46.0             
+    ## [15] GenomicRanges_1.38.0        GenomeInfoDb_1.22.0        
+    ## [17] IRanges_2.20.0              S4Vectors_0.24.0           
+    ## [19] BiocGenerics_0.32.0         kableExtra_1.1.0           
+    ## [21] knitr_1.26                 
     ## 
     ## loaded via a namespace (and not attached):
-    ##   [1] Seurat_3.1.1             Rtsne_0.15               colorspace_1.4-1        
-    ##   [4] ggridges_0.5.1           XVector_0.26.0           rstudioapi_0.10         
-    ##   [7] leiden_0.3.1             listenv_0.7.0            npsurv_0.4-0            
-    ##  [10] xml2_1.2.2               codetools_0.2-16         splines_3.6.2           
-    ##  [13] R.methodsS3_1.7.1        lsei_1.2-0               zeallot_0.1.0           
-    ##  [16] jsonlite_1.6             umap_0.2.3.1             ica_1.0-2               
-    ##  [19] cluster_2.1.0            png_0.1-7                R.oo_1.23.0             
-    ##  [22] uwot_0.1.4               sctransform_0.2.0        readr_1.3.1             
-    ##  [25] compiler_3.6.2           httr_1.4.1               dqrng_0.2.1             
-    ##  [28] backports_1.1.5          assertthat_0.2.1         Matrix_1.2-17           
-    ##  [31] lazyeval_0.2.2           BiocSingular_1.2.0       htmltools_0.4.0         
-    ##  [34] tools_3.6.2              rsvd_1.0.2               igraph_1.2.4.1          
-    ##  [37] gtable_0.3.0             glue_1.3.1               GenomeInfoDbData_1.2.2  
-    ##  [40] RANN_2.6.1               dplyr_0.8.3              Rcpp_1.0.3              
-    ##  [43] vctrs_0.2.0              gdata_2.18.0             ape_5.3                 
-    ##  [46] nlme_3.1-142             DelayedMatrixStats_1.8.0 gbRd_0.4-11             
-    ##  [49] lmtest_0.9-37            xfun_0.11                stringr_1.4.0           
-    ##  [52] globals_0.12.4           rvest_0.3.5              lifecycle_0.1.0         
-    ##  [55] irlba_2.3.3              gtools_3.8.1             future_1.15.0           
-    ##  [58] zlibbioc_1.32.0          MASS_7.3-51.4            zoo_1.8-6               
-    ##  [61] scales_1.0.0             hms_0.5.2                RColorBrewer_1.1-2      
-    ##  [64] yaml_2.2.0               gridExtra_2.3            reticulate_1.13         
-    ##  [67] pbapply_1.4-2            stringi_1.4.3            highr_0.8               
-    ##  [70] corrplot_0.84            flowCore_1.52.0          caTools_1.17.1.2        
-    ##  [73] bibtex_0.4.2             Rdpack_0.11-0            SDMTools_1.1-221.1      
-    ##  [76] rlang_0.4.1              pkgconfig_2.0.3          bitops_1.0-6            
-    ##  [79] evaluate_0.14            ROCR_1.0-7               purrr_0.3.3             
-    ##  [82] labeling_0.3             htmlwidgets_1.5.1        tidyselect_0.2.5        
-    ##  [85] RcppAnnoy_0.0.14         plyr_1.8.4               magrittr_1.5            
-    ##  [88] R6_2.4.1                 gplots_3.0.1.1           pillar_1.4.2            
-    ##  [91] withr_2.1.2              fitdistrplus_1.0-14      survival_3.1-7          
-    ##  [94] RCurl_1.95-4.12          tsne_0.1-3               tibble_2.1.3            
-    ##  [97] future.apply_1.3.0       crayon_1.3.4             KernSmooth_2.23-16      
-    ## [100] plotly_4.9.1             rmarkdown_1.17           grid_3.6.2              
-    ## [103] data.table_1.12.6        metap_1.1                digest_0.6.22           
-    ## [106] webshot_0.5.2            tidyr_1.0.0              R.utils_2.9.0           
-    ## [109] RcppParallel_4.4.4       openssl_1.4.1            munsell_0.5.0           
-    ## [112] viridisLite_0.3.0        askpass_1.1
+    ##   [1] Rtsne_0.15               colorspace_1.4-1         ggridges_0.5.1          
+    ##   [4] XVector_0.26.0           rstudioapi_0.10          leiden_0.3.1            
+    ##   [7] listenv_0.7.0            npsurv_0.4-0             xml2_1.2.2              
+    ##  [10] codetools_0.2-16         splines_3.6.2            R.methodsS3_1.7.1       
+    ##  [13] lsei_1.2-0               zeallot_0.1.0            jsonlite_1.6            
+    ##  [16] umap_0.2.3.1             ica_1.0-2                cluster_2.1.0           
+    ##  [19] png_0.1-7                R.oo_1.23.0              uwot_0.1.4              
+    ##  [22] sctransform_0.2.0        readr_1.3.1              compiler_3.6.2          
+    ##  [25] httr_1.4.1               dqrng_0.2.1              backports_1.1.5         
+    ##  [28] assertthat_0.2.1         Matrix_1.2-17            lazyeval_0.2.2          
+    ##  [31] BiocSingular_1.2.0       htmltools_0.4.0          tools_3.6.2             
+    ##  [34] rsvd_1.0.2               igraph_1.2.4.1           gtable_0.3.0            
+    ##  [37] glue_1.3.1               GenomeInfoDbData_1.2.2   RANN_2.6.1              
+    ##  [40] dplyr_0.8.3              Rcpp_1.0.3               vctrs_0.2.0             
+    ##  [43] gdata_2.18.0             ape_5.3                  nlme_3.1-142            
+    ##  [46] DelayedMatrixStats_1.8.0 gbRd_0.4-11              lmtest_0.9-37           
+    ##  [49] xfun_0.11                stringr_1.4.0            globals_0.12.4          
+    ##  [52] rvest_0.3.5              lifecycle_0.1.0          irlba_2.3.3             
+    ##  [55] gtools_3.8.1             future_1.15.0            zlibbioc_1.32.0         
+    ##  [58] MASS_7.3-51.4            zoo_1.8-6                scales_1.0.0            
+    ##  [61] hms_0.5.2                RColorBrewer_1.1-2       yaml_2.2.0              
+    ##  [64] gridExtra_2.3            reticulate_1.13          pbapply_1.4-2           
+    ##  [67] stringi_1.4.3            highr_0.8                corrplot_0.84           
+    ##  [70] flowCore_1.52.0          caTools_1.17.1.2         bibtex_0.4.2            
+    ##  [73] Rdpack_0.11-0            SDMTools_1.1-221.1       rlang_0.4.1             
+    ##  [76] pkgconfig_2.0.3          bitops_1.0-6             evaluate_0.14           
+    ##  [79] ROCR_1.0-7               purrr_0.3.3              labeling_0.3            
+    ##  [82] htmlwidgets_1.5.1        tidyselect_0.2.5         RcppAnnoy_0.0.14        
+    ##  [85] plyr_1.8.4               magrittr_1.5             R6_2.4.1                
+    ##  [88] gplots_3.0.1.1           pillar_1.4.2             withr_2.1.2             
+    ##  [91] fitdistrplus_1.0-14      survival_3.1-7           RCurl_1.95-4.12         
+    ##  [94] tsne_0.1-3               tibble_2.1.3             future.apply_1.3.0      
+    ##  [97] crayon_1.3.4             KernSmooth_2.23-16       plotly_4.9.1            
+    ## [100] rmarkdown_1.17           grid_3.6.2               data.table_1.12.6       
+    ## [103] metap_1.1                digest_0.6.22            webshot_0.5.2           
+    ## [106] tidyr_1.0.0              R.utils_2.9.0            RcppParallel_4.4.4      
+    ## [109] openssl_1.4.1            munsell_0.5.0            viridisLite_0.3.0       
+    ## [112] askpass_1.1
 
 References
 ==========
@@ -1716,7 +2180,7 @@ Blighe and Lun (2018)
 
 Stuart et al. (2018)
 
-Blighe, K. 2020. “scDataviz: single cell dataviz and downstream analyses.” <https://github.com/kevinblighe>.
+Blighe, K. 2020. “scDataviz: single cell dataviz and downstream analyses.” <https://github.com/kevinblighe/scDataviz.>
 
 Blighe, K, and A Lun. 2018. “PCAtools: everything Principal Components Analysis.” <https://github.com/kevinblighe>.
 

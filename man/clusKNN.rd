@@ -4,7 +4,7 @@
 
 \title{clusKNN}
 
-\description{A wrapper function for Seurat's FindNeighbors and FindClusters. If the input object is a SingleCellExperiment, the eventual cell-to-cluster assignments will be added as a new column to the input object's metadata. If the input is just a data-frame or matrix of numbers, only the cluster assignment vector is returned.}
+\description{A wrapper function for Seurat's FindNeighbors and FindClusters.}
 
 \usage{
   clusKNN(
@@ -16,8 +16,8 @@
     k.param = 20,
     compute.SNN = TRUE,
     prune.SNN = 1/15,
-    nn.method = "rann",
-    annoy.metric = "euclidean",
+    nn.method = 'rann',
+    annoy.metric = 'euclidean',
     nn.eps = 0,
     verbose = TRUE,
     force.recalc = FALSE,
@@ -26,7 +26,7 @@
     weights = NULL,
     node.sizes = NULL,
     resolution = 0.8,
-    method = "matrix",
+    method = 'matrix',
     algorithm = 1,
     n.start = 10,
     n.iter = 10,
@@ -38,8 +38,12 @@
 }
 
 \arguments{
-  \item{indata}{A data-frame or matrix, or SingleCellExperiment object. REQUIRED.}
-  \item{reducedDim}{A reduced dimensional component stored within 'sce',
+  \item{indata}{A data-frame or matrix, or SingleCellExperiment object. If a
+    SingleCellExperiment object, the cell-to-cluster assignments will be
+    added as a new column, specified by 'clusterAssignName', to the input
+    object's metadata; if a data-frame or matrix, only the cluster assignment
+    vector is returned. REQUIRED.}
+  \item{reducedDim}{A reduced dimensional component stored within 'indata',
     e.g., PCA or UMAP. DEFAULT = 'UMAP'. OPTIONAL.}
   \item{dimColnames}{The column names of the dimensions to use. DEFAULT
     = c('UMAP1','UMAP2'). OPTIONAL.}
@@ -52,9 +56,9 @@
   \item{compute.SNN}{Refer to ?Seurat::FindNeighbors. DEFAULT = TRUE.
     OPTIONAL.}
   \item{prune.SNN}{Refer to ?Seurat::FindNeighbors. DEFAULT = 1/15. OPTIONAL.}
-  \item{nn.method}{Refer to ?Seurat::FindNeighbors. DEFAULT = "rann".
+  \item{nn.method}{Refer to ?Seurat::FindNeighbors. DEFAULT = 'rann'.
     OPTIONAL.}
-  \item{annoy.metric}{Refer to ?Seurat::FindNeighbors. DEFAULT = "euclidean".
+  \item{annoy.metric}{Refer to ?Seurat::FindNeighbors. DEFAULT = 'euclidean'.
     OPTIONAL.}
   \item{nn.eps}{Refer to ?Seurat::FindNeighbors. DEFAULT = 0. OPTIONAL.}
   \item{verbose}{Refer to ?Seurat::FindNeighbors. DEFAULT = TRUE. OPTIONAL.}
@@ -66,7 +70,7 @@
   \item{weights}{Refer to ?Seurat::FindClusters. DEFAULT = NULL. OPTIONAL.}
   \item{node.sizes}{Refer to ?Seurat::FindClusters. DEFAULT = NULL. OPTIONAL.}
   \item{resolution}{Refer to ?Seurat::FindClusters. DEFAULT = 0.8. OPTIONAL.}
-  \item{method}{Refer to ?Seurat::FindClusters. DEFAULT = "matrix". OPTIONAL.}
+  \item{method}{Refer to ?Seurat::FindClusters. DEFAULT = 'matrix'. OPTIONAL.}
   \item{algorithm}{Refer to ?Seurat::FindClusters. DEFAULT = 1. OPTIONAL.}
   \item{n.start}{Refer to ?Seurat::FindClusters. DEFAULT = 10. OPTIONAL.}
   \item{n.iter}{Refer to ?Seurat::FindClusters. DEFAULT = 10. OPTIONAL.}
@@ -83,7 +87,7 @@
 }
 
 \value{
-A \code{\link{SingleCellExperiment}} object.
+A \code{\link{SingleCellExperiment}} or \code{\link{numeric}}object.
 }
 
 \author{

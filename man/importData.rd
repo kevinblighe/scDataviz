@@ -4,27 +4,29 @@
 
 \title{importData}
 
-\description{Import expression data and associated metadata to a SingleCellExperiment object.}
+\description{Import a data-frame or matrix, and associated metadata, to a SingleCellExperiment object.}
 
 \usage{
-  importData(mat,
-  assayname,
-  metadata = NULL,
-  downsampleVar = NULL)
+  importData(
+    mat,
+    assayname,
+    metadata = NULL,
+    downsampleVar = NULL)
 }
 
 \arguments{
-  \item{mat}{A matrix of expression values. Data-frames will be coerced to
-    matrices. REQUIRED.}
-  \item{assayname}{Name of the assay slot in the final object sce in which
+  \item{mat}{A data-frame or matrix of expression values. Data-frames will be
+    coerced to matrices. REQUIRED.}
+  \item{assayname}{Name of the SingleCellExperiment assay slot in which
     data will be stored. REQUIRED.}
   \item{metadata}{Metadata associated with the data contained in 'mat'. A
     strict rule is enforced requiring that rownames(metadata) ==
     rownames(mat). DEFAULT = NULL. OPTIONAL.}
   \item{downsampleVar}{Downsample based on variance. Removes this proportion of
-    cells based on lesser variance. This is applied per sample. If user wishes
-    to apply this globally on the final merged dataset, then set this to 0 and
-    remove based on variance manually.  DEFAULT = NULL. OPTIONAL.}
+    variables (rows) based on lesser variance. This is applied on a per sample
+    basis. If user wishes to apply this globally on the final merged dataset,
+    then set this to 0 and remove based on variance manually after object
+    creation. DEFAULT = NULL. OPTIONAL.}
 }
 
 \value{

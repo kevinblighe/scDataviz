@@ -4,7 +4,7 @@
 
 \title{markerExpressionPerCluster}
 
-\description{Generate box-and-whisker plots illustrating marker expression per k-NN identified cluster.}
+\description{Generate box-and-whisker plots illustrating marker expression per k-NN identified cluster. By default, 9 randomly-selected clusters are selected, and the expression profiles of 10 randomly-selected markers are plot across these.}
 
 \usage{
   markerExpressionPerCluster(
@@ -44,20 +44,20 @@
 
 \arguments{
   \item{indata}{A data-frame or matrix, or SingleCellExperiment object. If a
-    non-SingleCellExperiment object, this generally should relate to an
-    expression matrix (cells as columns; genes as rows). REQUIRED.}
+    data-frame or matrix, this should relate to expression data (cells as
+    columns; genes as rows). If a SingleCellExperiment object, data will be
+    extracted from an assay component named by 'assay'. REQUIRED.}
   \item{assay}{Name of the assay slot in 'indata' from which data will be
-    taken, assuming 'indata' is a SingleCellExperiment object. DEFAULT = 'scaled'.
-    OPTIONAL.}
+    taken, assuming 'indata' is a SingleCellExperiment object.
+    DEFAULT = 'scaled'. OPTIONAL.}
   \item{clusters}{Vector containing clusters to plot. DEFAULT =
     sample(unique(metadata(indata)[['Cluster']]), 9). OPTIONAL.}
   \item{clusterAssign}{A vector of cell-to-cluster assignments. This can be
     from any source but must align with your cells / variables. There is no
     check to ensure this when 'indata' is not a SingleCellExperiment object.
     DEFAULT = metadata(indata)[['Cluster']]. OPTIONAL.}
-  \item{markers}{Vector containing marker names to plot. If no markers are
-    specified, then all will be plot. Default = sample(rownames(indata), 10).
-    OPTIONAL.}
+  \item{markers}{Vector containing marker names to plot.
+    Default = sample(rownames(indata), 10). OPTIONAL.}
   \item{ncol}{Number of columns for faceting. DEFAULT = 5. OPTIONAL.}
   \item{nrow}{Number of rows for faceting. DEFAULT = 2. OPTIONAL.}
   \item{legendPosition}{Position of legend ('top', 'bottom', 'left', 'right',
@@ -68,9 +68,8 @@
   \item{legendKeyHeight}{Height of the legend key. DEFAULT = 2.5. OPTIONAL.}
   \item{xlim}{Limits of the x-axis. DEFAULT = NULL. OPTIONAL.}
   \item{ylim}{Limits of the y-axis. DEFAULT = NULL. OPTIONAL.}
-  \item{yfixed}{Boolean (TRUE / FALSE) specifying whether or not to fix the
-    y axis scales across all clusters when faceting. DEFAULT = FALSE.
-    OPTIONAL.}
+  \item{yfixed}{Logical, specifying whether or not to fix the y-axis
+    scales across all clusters when faceting. DEFAULT = FALSE. OPTIONAL.}
   \item{xlab}{Label for x-axis. DEFAULT = 'Marker'. OPTIONAL.}
   \item{xlabAngle}{Rotation angle of x-axis labels. DEFAULT = 90. OPTIONAL.}
   \item{xlabhjust}{Horizontal adjustment of x-axis labels. DEFAULT = 0.5. OPTIONAL.}
@@ -83,7 +82,7 @@
   \item{ylabvjust}{Vertical adjustment of y-axis labels. DEFAULT = 0.5.
   OPTIONAL.}
   \item{axisLabSize}{Size of x- and y-axis labels. DEFAULT = 16. OPTIONAL.}
-  \item{stripLabSize}{Size of the strip (marker) labels. DEFAULT = 16. OPTIONAL.}
+  \item{stripLabSize}{Size of the strip labels. DEFAULT = 16. OPTIONAL.}
   \item{title}{Plot title. DEFAULT = 'Marker expression per cluster'. OPTIONAL.}
   \item{subtitle}{Plot subtitle. DEFAULT = ''. OPTIONAL.}
   \item{caption}{Plot caption. DEFAULT = ''. OPTIONAL.}

@@ -16,7 +16,7 @@ plotClusters <- function(
   labvjust = 0,
   drawConnectors = TRUE,
   widthConnectors = 0.5,
-  colConnectors = 'grey50',
+  colConnectors = 'black',
   xlab = dimColnames[1],
   xlabAngle = 0,
   xlabhjust = 0.5,
@@ -26,10 +26,11 @@ plotClusters <- function(
   ylabhjust = 0.5,
   ylabvjust = 0.5,
   axisLabSize = 16,
-  title = 'k-nearest neighbor (k-NN) clusters',
+  title = 'k-nearest neighbour (k-NN) clusters',
   subtitle = '',
-  caption = ifelse(class(indata) == 'SingleCellExperiment',
-    paste0('Total cells, ', nrow(as.data.frame(reducedDim(indata, reducedDim)))),
+  caption = ifelse(is(indata, 'SingleCellExperiment'),
+    paste0('Total cells, ',
+      nrow(as.data.frame(reducedDim(indata, reducedDim)))),
     paste0('Total cells, ', length(clusterVector))),
   titleLabSize = 16,
   subtitleLabSize = 12,
@@ -76,11 +77,12 @@ plotClusters <- function(
       legend.key.size=unit(0.5, 'cm'),
       legend.text=element_text(size=legendLabSize))
 
-  if (class(indata) == 'SingleCellExperiment') {
+  if (is(indata, 'SingleCellExperiment')) {
 
     message('--input data class is SingleCellExperiment')
     plotobj <- as.data.frame(reducedDim(indata, reducedDim))
-    plotobj <- data.frame(plotobj, Cluster = metadata(indata)[[clusterColname]])
+    plotobj <- data.frame(plotobj,
+      Cluster = metadata(indata)[[clusterColname]])
     colnames(plotobj) <- c('dim1','dim2','Cluster')
     plotobj$Cluster <- factor(plotobj$Cluster)
 

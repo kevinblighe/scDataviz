@@ -4,7 +4,7 @@
 
 \title{plotSignatures}
 
-\description{Find enriched markers per identified cluster and visualise these as a custom corrplot.}
+\description{Find enriched markers per identified cluster and visualise these as a custom corrplot. plotSignatures first collapses your input data's expression profiles from the level of cells to the level of clusters based on a mathematical function specified by 'funcSummarise'. It then centers, independently per marker, the expression of each marker across all clusters. Finaly, data is scaled to be between -1 and +1.}
 
 \usage{
   plotSignatures(
@@ -19,16 +19,19 @@
 }
 
 \arguments{
-  \item{indata}{A data-frame or matrix, or SingleCellExperiment object. REQUIRED.}
+  \item{indata}{A data-frame or matrix, or SingleCellExperiment object. If a
+    data-frame or matrix, this should relate to expression data (cells as
+    columns; genes as rows). If a SingleCellExperiment object, data will be
+    extracted from an assay component named by 'assay'. REQUIRED.}
   \item{assay}{Name of the assay slot in 'indata' from which data will be
-    taken, assuming 'indata' is a SingleCellExperiment object. DEFAULT = 'scaled'.
-    OPTIONAL.}
+    taken, assuming 'indata' is a SingleCellExperiment object.
+    DEFAULT = 'scaled'. OPTIONAL.}
   \item{clusterAssign}{A vector of cell-to-cluster assignments. This can be
     from any source but must align with your cells / variables. There is no
     check to ensure this when 'indata' is not a SingleCellExperiment object.
     DEFAULT = metadata(indata)[['Cluster']]. OPTIONAL.}
   \item{funcSummarise}{A mathematical function used to summarise expression
-    per marker per cluster. DEFAULT = function(x) median(x, na.rm = TRUE).
+    per marker, per cluster. DEFAULT = function(x) median(x, na.rm = TRUE).
     OPTIONAL.}
   \item{col}{colorRampPalette to be used for shading low-to-high expression.
     DEFAULT = colorRampPalette(rev(brewer.pal(9, 'RdBu')))(100). OPTIONAL.}

@@ -4,7 +4,7 @@
 
 \title{contourPlot}
 
-\description{Draw a contour plot, typically relating to co-ordinates of a 2-dimensional reduction / embedding.}
+\description{Draw a contour plot, typically relating to co-ordinates of a 2-dimensional reduction / embedding, typically contained within a SingleCellExperiment object.}
 
 \usage{
   contourPlot(
@@ -40,9 +40,10 @@
     axisLabSize = 16,
     title = 'Cellular density and contours',
     subtitle = '',
-    caption = ifelse(class(indata) == 'SingleCellExperiment',
-    paste0('Total cells, ', nrow(as.data.frame(reducedDim(indata, reducedDim))), '; Bins, ', bins),
-    paste0('Total cells, ', nrow(indata), '; Bins, ', bins)),
+    caption = ifelse(is(indata, 'SingleCellExperiment'),
+      paste0('Total cells, ',
+        nrow(as.data.frame(reducedDim(indata, reducedDim))), '; Bins, ', bins),
+      paste0('Total cells, ', nrow(indata), '; Bins, ', bins)),
     titleLabSize = 16,
     subtitleLabSize = 12,
     captionLabSize = 12,
@@ -66,8 +67,8 @@
     from the data and used to generate the contour plot. If a
     SingleCellExperiment object, a reduction named by 'reducedDim' will be
     taken from your object and used to generate the contour plot, again using
-    columns whose names are specified in 'dimColnames'. REQUIRED.},
-  \item{reducedDim}{A reduced dimensional component stored within 'indata',
+    columns whose names are specified in 'dimColnames'. REQUIRED.}
+  \item{reducedDim}{A reduced dimensional embedding stored within 'indata',
     e.g., PCA or UMAP. DEFAULT = 'UMAP'. OPTIONAL.}
   \item{dimColnames}{The column names of the dimensions to use. DEFAULT
     = c('UMAP1','UMAP2'). OPTIONAL.}
@@ -79,10 +80,10 @@
   \item{bins}{The number of bins that determine the overall density values.
     DEFAULT = 300. OPTIONAL.}
   \item{legendPosition}{Position of legend ('top', 'bottom', 'left', 'right',
-  'none'). DEFAULT = 'right'. OPTIONAL.}
+    'none'). DEFAULT = 'right'. OPTIONAL.}
   \item{legendLabSize}{Size of plot legend text. DEFAULT = 12. OPTIONAL.}
   \item{legendIconSize}{Size of plot legend icons / symbols. DEFAULT = 5.0.
-  OPTIONAL.}
+    OPTIONAL.}
   \item{legendKeyHeight}{Height of the legend key. DEFAULT = 2.5. OPTIONAL.}
   \item{xlim}{Limits of the x-axis. DEFAULT = NULL. OPTIONAL.}
   \item{ylim}{Limits of the y-axis. DEFAULT = NULL. OPTIONAL.}
@@ -110,37 +111,38 @@
   \item{axisLabSize}{Size of x- and y-axis labels. DEFAULT = 16. OPTIONAL.}
   \item{title}{Plot title. DEFAULT = 'Cellular density and contours'. OPTIONAL.}
   \item{subtitle}{Plot subtitle. DEFAULT = ''. OPTIONAL.}
-  \item{caption}{Plot caption. DEFAULT = ifelse(class(indata) ==
-    'SingleCellExperiment', paste0('Total cells, ',
+  \item{caption}{Plot caption. DEFAULT =
+    ifelse(is(indata, 'SingleCellExperiment'),
+    paste0('Total cells, ',
     nrow(as.data.frame(reducedDim(indata, reducedDim))), '; Bins, ', bins),
     paste0('Total cells, ', nrow(indata), '; Bins, ', bins)). OPTIONAL.}
   \item{titleLabSize}{Size of plot title. DEFAULT = 16. OPTIONAL.}
   \item{subtitleLabSize}{Size of plot subtitle. DEFAULT = 12. OPTIONAL.}
   \item{captionLabSize}{Size of plot caption. DEFAULT = 12. OPTIONAL.}
   \item{hline}{Draw one or more horizontal lines passing through this/these
-  values on y-axis. For single values, only a single numerical value is
-  necessary. For multiple lines, pass these as a vector, e.g., c(60,90).
-  DEFAULT = NULL. OPTIONAL.}
+    values on y-axis. For single values, only a single numerical value is
+    necessary. For multiple lines, pass these as a vector, e.g., c(60,90).
+    DEFAULT = NULL. OPTIONAL.}
   \item{hlineType}{Line type for hline ('blank', 'solid', 'dashed', 'dotted',
   'dotdash', 'longdash', 'twodash'). DEFAULT = 'longdash'. OPTIONAL.}
   \item{hlineCol}{Colour of hline. DEFAULT = 'black'. OPTIONAL.}
   \item{hlineWidth}{Width of hline. DEFAULT = 0.4. OPTIONAL.}
   \item{vline}{Draw one or more vertical lines passing through this/these
-  values on x-axis. For single values, only a single numerical value is
-  necessary. For multiple lines, pass these as a vector, e.g., c(60,90).
-  DEFAULT = NULL. OPTIONAL.}
+    values on x-axis. For single values, only a single numerical value is
+    necessary. For multiple lines, pass these as a vector, e.g., c(60,90).
+    DEFAULT = NULL. OPTIONAL.}
   \item{vlineType}{Line type for vline ('blank', 'solid', 'dashed', 'dotted',
   'dotdash', 'longdash', 'twodash'). DEFAULT = 'longdash'. OPTIONAL.}
   \item{vlineCol}{Colour of vline. DEFAULT = 'black'. OPTIONAL.}
   \item{vlineWidth}{Width of vline. DEFAULT = 0.4. OPTIONAL.}
   \item{gridlines.major}{Logical, indicating whether or not to draw major
-  gridlines. DEFAULT = TRUE. OPTIONAL.}
+    gridlines. DEFAULT = TRUE. OPTIONAL.}
   \item{gridlines.minor}{Logical, indicating whether or not to draw minor
-  gridlines. DEFAULT = TRUE. OPTIONAL.}
+    gridlines. DEFAULT = TRUE. OPTIONAL.}
   \item{borderWidth}{Width of the border on the x and y axes. DEFAULT = 0.8.
-  OPTIONAL.}
+    OPTIONAL.}
   \item{borderColour}{Colour of the border on the x and y axes. DEFAULT =
-  'black'. OPTIONAL.}
+    'black'. OPTIONAL.}
 }
 
 \value{

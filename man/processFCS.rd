@@ -26,7 +26,7 @@
 
 \arguments{
   \item{files}{A vector of FCS files. REQUIRED.}
-  \item{assayname}{Name of the assay slot in sce in which data will be stored.
+  \item{assayname}{Name of the assay slot in which data will be stored.
     DEFAULT = 'scaled'. OPTIONAL.}
   \item{metadata}{Metadata associated with the FCS files specified in
     'files'. A strict rule is enforced requiring that rownames(metadata)
@@ -49,12 +49,12 @@
     to 'transFun'. DEFAULT = 5. OPTIONAL.}
   \item{downsample}{Downsample to this number of random variables. This is
     perfromed on the final merged dataset, i.e., after all samples have been
-      bound together. NULL to disable. ThiDEFAULT = 100000. OPTIONAL.}
+    bound together. NULL to disable. DEFAULT = 100000. OPTIONAL.}
   \item{downsampleVar}{Downsample based on variance. Removes this proportion of
     cells based on lesser variance. This is applied per sample. If user wishes
     to apply this globally on the final merged dataset, then set this to 0 and
     remove based on variance manually.  DEFAULT = 0.1. OPTIONAL.}
-  \item{colsDiscard}{Columns to be removed from the final merged data. This
+  \item{colsDiscard}{Columns to be removed from the final merged data. These
     names are literal and must match exactly. DEFAULT = c('Time','Event_length',
     'Center','Offset','Width','Residual','tSNE1','tSNE2','BCKG'). OPTIONAL.}
   \item{colsRetain}{Retain these columns only. This is the same as 'colsDiscard'
@@ -92,5 +92,4 @@ Kevin Blighe <kevin@clinicalbioinformatics.co.uk>
     group = c('PB1', 'PB2'),
     row.names = c('mat1', 'mat2'),
     stringsAsFactors = FALSE)
-
 }

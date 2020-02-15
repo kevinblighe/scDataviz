@@ -31,8 +31,9 @@ contourPlot <- function(
   axisLabSize = 16,
   title = 'Cellular density and contours',
   subtitle = '',
-  caption = ifelse(class(indata) == 'SingleCellExperiment',
-    paste0('Total cells, ', nrow(as.data.frame(reducedDim(indata, reducedDim))), '; Bins, ', bins),
+  caption = ifelse(is(indata, 'SingleCellExperiment'),
+    paste0('Total cells, ',
+      nrow(as.data.frame(reducedDim(indata, reducedDim))), '; Bins, ', bins),
     paste0('Total cells, ', nrow(indata), '; Bins, ', bins)),
   titleLabSize = 16,
   subtitleLabSize = 12,
@@ -79,7 +80,7 @@ contourPlot <- function(
       legend.text=element_text(size = legendLabSize),
       legend.key.height = unit(legendKeyHeight, 'cm'))
 
-  if (class(indata) == 'SingleCellExperiment') {
+  if (is(indata, 'SingleCellExperiment')) {
     message('--input data class is SingleCellExperiment')
     plotobj <- as.data.frame(reducedDim(indata, reducedDim)[,dimColnames])
   } else {
@@ -114,7 +115,8 @@ contourPlot <- function(
   # initialise the plot object
   plot <- ggplot(plotobj, aes(dim1, dim2)) + th +
 
-    stat_density2d(aes(alpha = ..level.., fill = ..level..), size = 1, bins = bins, geom = 'polygon') +
+    stat_density2d(aes(alpha = ..level.., fill = ..level..),
+      size = 1, bins = bins, geom = 'polygon') +
 
     scale_fill_gradient(low = lowcol, high = highcol, name = 'Density') +
 
@@ -122,7 +124,8 @@ contourPlot <- function(
 
     geom_density2d(colour = contour)
 
-  plot <- plot + guides(colour = guide_legend(override.aes = list(size = legendIconSize)))
+  plot <- plot + guides(colour = guide_legend(
+    override.aes = list(size = legendIconSize)))
 
   # add elements to the plot for xy labeling and axis limits
   plot <- plot + xlab(xlab) + ylab(ylab)

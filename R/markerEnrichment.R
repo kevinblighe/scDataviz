@@ -14,7 +14,7 @@ markerEnrichment <- function(
   NegativeMarkers <- c()
   PositiveMarkers <- c()
 
-  if (class(indata) == 'SingleCellExperiment') {
+  if (is(indata, 'SingleCellExperiment')) {
 
     message('--input data class is SingleCellExperiment')
     metadata <- metadata(indata)
@@ -40,7 +40,7 @@ markerEnrichment <- function(
   data <- aggregate(data, list(clusterAssign), funcSummarise)
   data <- data[,-1]
   data <- apply(data, 2, scale, scale = FALSE)
-  #data <- t(data) / max(abs(range(data)))
+  data <- t(data) / max(abs(range(data)))
   data <- rescale(data, c(-1,1))
 
   nclus <- length(unique(clusterAssign))
