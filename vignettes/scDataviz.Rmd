@@ -37,7 +37,7 @@ In the single cell World, which includes flow cytometry, mass cytometry, single-
 
 ## 1. Download the package from Bioconductor
 
-```{r getPackage, eval=FALSE}
+```{r getPackage, eval = FALSE}
 
     if (!requireNamespace('BiocManager', quietly = TRUE))
         install.packages('BiocManager')
@@ -66,7 +66,7 @@ Note: to install development version:
 
 Here, we will utilise some of the flow cytometry data from [Deep phenotyping detects a pathological CD4+ T-cell complosome signature in systemic sclerosis](https://www.nature.com/articles/s41423-019-0360-8).
 
-In a practical situation, we would normally read in the data from the raw FCS files and then QC, normalise, transform, and filter them. This can be achieved via the `processFCS` function, which, by default, removes variables based on low variance and also downsamples [randomly] your data to 100000 variables. The user can change these via the `downsample` and `downsampleVar` parameters. An example (*not run*) is given below:
+In a practical situation, we would normally read in the data from the raw FCS files and then QC filter, normalise, and transform them. This can be achieved via the `processFCS` function, which, by default, also removes variables based on low variance and downsamples [randomly] your data to 100000 variables. The user can change these via the `downsample` and `downsampleVar` parameters. An example (*not run*) is given below:
 
 ```{r readFCS, eval = FALSE}
 
@@ -96,11 +96,9 @@ In a practical situation, we would normally read in the data from the raw FCS fi
     downsampleVar = 0.2,
     newColnames = paste0('CD', 1:65))
 
-  save(sce, file = 'scDataviz/data/complosome.rdata')
-
 ```
 
-For this vignette, to save time, we will work with a smaller pre-prepared dataset that has been downsampled to 10000 cells using the above code.
+For this vignette, due to the fact that the raw FCS data is > 500 megabytes, we will work with a smaller pre-prepared dataset that has been downsampled to 10000 cells using the above code.
 
 Load the pre-prepared complosome data.
 
