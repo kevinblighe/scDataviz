@@ -91,7 +91,7 @@ processFCS <- function(
   names <- colnames(metadata)
   metanew <- list()
   if (!is.null(metadata)) {
-    for (i in seq_len(length(samples))) {
+    for (i in seq(length(samples))) {
       tmp <- data.frame(row.names = seq_len(nrow(samples[[i]])))
       for (j in seq_len(ncol(metadata))) {
         tmp <- cbind(tmp, rep(metadata[i,j], nrow(samples[[i]])))
@@ -117,7 +117,7 @@ processFCS <- function(
       message('--Skipping downsampling')
     } else {
       message('--Downsampling to ', downsample, ' variables.')
-      idx <- sample(seq_along(nrow(samples)), downsample)
+      idx <- sample(seq(nrow(samples)), downsample)
       samples <- samples[idx,]
       metadata <- metadata[idx,]
 

@@ -53,7 +53,7 @@ Note: to install development version:
 
 ## 2. Load the package into R session
 
-```{r Load}
+```{r Load, message = FALSE}
 
   library(scDataviz)
 
@@ -63,7 +63,7 @@ Note: to install development version:
 
 Here, we will start with sample data stored as FCS files. Specifically, we will utilise some of the data used in [Deep phenotyping detects a pathological CD4+ T-cell complosome signature in systemic sclerosis](https://www.nature.com/articles/s41423-019-0360-8).
 
-In order to downlaod this data, we can use `git clone` from your command prompt:
+In order to download this data, we can use `git clone` from your command prompt:
 
 ```{r, engine = 'bash', eval = FALSE}
 
@@ -74,9 +74,9 @@ In order to downlaod this data, we can use `git clone` from your command prompt:
 **NB - this command (above) needs to be run outside R at your shell's command prompt (e.g., BASH)**
 
 
-Now, read in the data and normalise it. The `processFCS` command by default removes variables based on low variance and also downsamples [randomly] your data to 100000 variables. The user can change these via the `downsample` and `downsampleVar` parameters.
+Now, read in the data and normalise it. The `processFCS` function, by default, removes variables based on low variance and also downsamples [randomly] your data to 100000 variables. The user can change these via the `downsample` and `downsampleVar` parameters.
 
-```{r readFCS, eval = FALSE}
+```{r readFCS}
 
   filelist <- list.files(
     path = "scDataviz_data/FCS/",
@@ -106,23 +106,7 @@ Now, read in the data and normalise it. The `processFCS` command by default remo
 
 ```
 
-```{r load, eval = TRUE, echo = FALSE}
-
-  download.file('https://raw.githubusercontent.com/kevinblighe/scDataviz_data/master/save/FlowData.RDS',
-    'FlowData.RDS',
-    method = 'curl')
-
-  sce <- readRDS('FlowData.RDS')
-
-  require(scDataviz)
-
-  file.remove('FlowData.RDS')
-
-```
-
-```
-
-One can also create a new *SingleCellExperiment* object manually using any type of data, including any data from scRNA-seq produced elsewhere. Import functions for data deriving from other sources is covered in Tutorials 2 and 3 in this vignette. All functions in *scDataviz* additionally accept data-frames or matrices on their own, de-necessitating the reliance on the *SingleCellexperiment* class.
+One can also create a new *SingleCellExperiment* object manually using any type of data, including any data from scRNA-seq produced elsewhere. Import functions for data deriving from other sources is covered in Tutorials 2 and 3 in this vignette. All functions in *scDataviz* additionally accept data-frames or matrices on their own, de-necessitating the reliance on the *SingleCellExperiment* class.
 
 
 ## Perform principal component analysis (PCA)
@@ -452,7 +436,7 @@ The expression signature is a quick way to visualise which markers are more or l
 
 # Tutorial 2: Import from Seurat
 
-Due to the fact that *scDataviz* is based on *SingleCellExperiment*, it has increased interoperability with other packages, including the popular *Seurat* [@satijalab]. Taking the data produced from the [Seurat Tutorial](https://satijalab.org/seurat/v3.1/pbmc3k_tutorial.html) on Peripheral Blood Mononuclear Cells (PBMCs), we can do this via `as.SingleCellExperiment()`, as follows:
+Due to the fact that *scDataviz* is based on *SingleCellExperiment*, it has increased interoperability with other packages, including the popular *Seurat* [@satijalab]. Taking the data produced from the [Seurat Tutorial](https://satijalab.org/seurat/v3.1/pbmc3k_tutorial.html) on Peripheral Blood Mononuclear Cells (PBMCs), we can convert this to a *SingleCellExperiment* object recognisable by *scDataviz* via `as.SingleCellExperiment()`, as follows:
 
 ```{r SeuratToSCEa, eval = FALSE, message = FALSE}
 
@@ -608,7 +592,6 @@ This will also work without any assigned metadata.
 
 * Jessica Timms
 * James Opzoomer
-* Shahram Kordasti
 
 
 # Session info

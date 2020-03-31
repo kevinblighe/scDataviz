@@ -56,7 +56,7 @@ Note: to install development version:
 
 ## 2. Load the package into R session
 
-```{r Load}
+```{r Load, message = FALSE}
 
   library(scDataviz)
 
@@ -64,20 +64,9 @@ Note: to install development version:
 
 # Tutorial 1: CyTOF FCS data
 
-Here, we will start with sample data stored as FCS files. Specifically, we will utilise some of the data used in [Deep phenotyping detects a pathological CD4+ T-cell complosome signature in systemic sclerosis](https://www.nature.com/articles/s41423-019-0360-8).
+Here, we will utilise some of the flow cytometry data from [Deep phenotyping detects a pathological CD4+ T-cell complosome signature in systemic sclerosis](https://www.nature.com/articles/s41423-019-0360-8).
 
-In order to downlaod this data, we can use `git clone` from your command prompt:
-
-```{r, engine = 'bash', eval = FALSE}
-
-  git clone https://github.com/kevinblighe/scDataviz_data ;
-
-```
-
-**NB - this command (above) needs to be run outside R at your shell's command prompt (e.g., BASH)**
-
-
-Now, read in the data and normalise it. The `processFCS` command by default removes variables based on low variance and also downsamples [randomly] your data to 100000 variables. The user can change these via the `downsample` and `downsampleVar` parameters.
+In a practical situation, we would normally read in the data from the raw FCS files and then QC, normalise, transform, and filter them. This can be achieved via the `processFCS` function, which, by default, removes variables based on low variance and also downsamples [randomly] your data to 100000 variables. The user can change these via the `downsample` and `downsampleVar` parameters. An example (*not run*) is given below:
 
 ```{r readFCS, eval = FALSE}
 
@@ -103,29 +92,28 @@ Now, read in the data and normalise it. The `processFCS` command by default remo
     transformation = TRUE,
     transFun = function (x) asinh(x),
     asinhFactor = 5,
-    downsample = 100000,
+    downsample = 10000,
     downsampleVar = 0.2,
     newColnames = paste0('CD', 1:65))
 
-```
-
-```{r load, eval = TRUE, echo = FALSE}
-
-  download.file('https://raw.githubusercontent.com/kevinblighe/scDataviz_data/master/save/FlowData.RDS',
-    'FlowData.RDS',
-    method = 'curl')
-
-  sce <- readRDS('FlowData.RDS')
-
-  require(scDataviz)
-
-  file.remove('FlowData.RDS')
+  save(sce, file = 'scDataviz/data/complosome.rdata')
 
 ```
 
+For this vignette, to save time, we will work with a smaller pre-prepared dataset that has been downsampled to 10000 cells using the above code.
+
+Load the pre-prepared complosome data.
+
+```{r load}
+
+  load(system.file('extdata/', 'complosome.rdata', package = 'scDataviz'))
+  
 ```
 
-One can also create a new *SingleCellExperiment* object manually using any type of data, including any data from scRNA-seq produced elsewhere. Import functions for data deriving from other sources is covered in Tutorials 2 and 3 in this vignette. All functions in *scDataviz* additionally accept data-frames or matrices on their own, de-necessitating the reliance on the *SingleCellexperiment* class.
+To see a full vignette that utilises the raw FCS files, see the [GitHub vignette](https://github.com/kevinblighe/scDataviz/).
+
+
+One can also create a new *SingleCellExperiment* object manually using any type of data, including any data from scRNA-seq produced elsewhere. Import functions for data deriving from other sources is covered in Tutorials 2 and 3 in this vignette. All functions in *scDataviz* additionally accept data-frames or matrices on their own, de-necessitating the reliance on the *SingleCellExperiment* class.
 
 
 ## Perform principal component analysis (PCA)
@@ -142,13 +130,13 @@ We can use the *PCAtools* [@PCAtools] package for the purpose of performing PCA.
     colby = 'treatment',
     legendPosition = 'right',
     title = 'PCA applied to CyTOF data',
-    caption = '100000 cells randomly selected after having filtered for low variance')
+    caption = '10000 cells randomly selected after having filtered for low variance')
 
 ```
 
 We can add the rotated component loadings as a new reduced dimensional component to our dataset. Let's just add the first 20 PCs.
 
-```{r addPCAdim, eval = FALSE}
+```{r addPCAdim}
 
   reducedDim(sce, 'PCA') <- p$rotated[,1:20]
 
@@ -160,7 +148,7 @@ For more functionality via *PCAtools*, check the vignette: [PCAtools: everything
 
 UMAP can be performed on the entire dataset, if your computer's memory will permit. Currently it's default is to use the data contained in the 'scaled' assay component of your *SingleCellExperiment* object.
 
-```{r performUMAP, eval = FALSE}
+```{r performUMAP}
 
   sce <- performUMAP(sce)
 
@@ -170,7 +158,7 @@ UMAP can also be stratified based on a column in your metadata, e.g., (treated v
 
 We can also perform UMAP on a select number of PC eigenvectors. *PCAtools* [@PCAtools] can be used to infer ideal number of dimensions to use via the elbow method and Horn's parallel analysis.
 
-```{r elbowHorn, eval = TRUE}
+```{r elbowHorn}
 
   elbow <- findElbowPoint(p$variance)
   horn <- parallelPCA(assay(sce, 'scaled'))
@@ -182,18 +170,9 @@ We can also perform UMAP on a select number of PC eigenvectors. *PCAtools* [@PCA
 
 Let's use the number of PCs identified by Horn's.
 
-```{r performUMAP_PCA, eval = FALSE}
+```{r performUMAP_PCA}
 
   sce <- performUMAP(sce, reducedDim = 'PCA', dims = c(1:horn$n))
-
-```
-
-At this point, we have done a lot - let's save the dataset.
-
-```{r save, eval = FALSE}
-
-  dir.create('save')
-  saveRDS(sce, 'save/FlowData.RDS', compress = TRUE)
 
 ```
 
@@ -453,121 +432,13 @@ The expression signature is a quick way to visualise which markers are more or l
 
 ```
 
+
 # Tutorial 2: Import from Seurat
 
-Due to the fact that *scDataviz* is based on *SingleCellExperiment*, it has increased interoperability with other packages, including the popular *Seurat* [@satijalab]. Taking the data produced from the [Seurat Tutorial](https://satijalab.org/seurat/v3.1/pbmc3k_tutorial.html) on Peripheral Blood Mononuclear Cells (PBMCs), we can do this via `as.SingleCellExperiment()`, as follows:
+Due to the fact that *scDataviz* is based on *SingleCellExperiment*, it has increased interoperability with other packages, including the popular *Seurat* [@satijalab]. Taking the data produced from the [Seurat Tutorial](https://satijalab.org/seurat/v3.1/pbmc3k_tutorial.html) on Peripheral Blood Mononuclear Cells (PBMCs), we can convert this to a *SingleCellExperiment* object recognisable by *scDataviz* via `as.SingleCellExperiment()`.
 
-```{r SeuratToSCEa, eval = FALSE, message = FALSE}
+For a full workflow for *Seurat*-to-*scDataviz*, see the [GitHub vignette](https://github.com/kevinblighe/scDataviz/).
 
-  require(Seurat)
-  require(SingleCellExperiment)
-
-  pbmc <- readRDS('pbmc3k_final.RDS')
-  pbmc.sce <- as.SingleCellExperiment(pbmc)
-
-```
-
-```{r SeuratToSCEb, eval = TRUE, echo = FALSE}
-
-  require(Seurat)
-  require(SingleCellExperiment)
-  require(scDataviz)
-
-  download.file('https://raw.githubusercontent.com/kevinblighe/scDataviz_data/master/save/pbmc3k_final_sce.RDS',
-    'pbmc3k_final_sce.RDS',
-    method = 'curl')
-
-  pbmc.sce <- readRDS('pbmc3k_final_sce.RDS')
-
-  file.remove('pbmc3k_final_sce.RDS')
-
-```
-
-We can then check the contents of the object:
-
-```{r SeuratToSCEc}
-
-  assays(pbmc.sce)
-
-  head(metadata(pbmc.sce))
-
-```
-
-
-Let's check the reduced dimensions and then plot some randomly selected marker expression profiles across these.
-
-```{r SeuratToSCEd}
-
-  reducedDims(pbmc.sce)
-
-  head(reducedDim(pbmc.sce, 'UMAP'))
-
-  head(reducedDim(pbmc.sce, 'PCA'))[,1:5]
-
-```
-
-```{r ex8, fig.height = 12, fig.width = 16, fig.cap = "SeuratToSCE: show marker expression across the layout"}
-
-  markers <- sample(rownames(pbmc.sce), 18)
-  markers
-
-  ggout <- markerExpression(pbmc.sce,
-    assay = 'logcounts',
-    markers = markers,
-    reducedDim = 'UMAP',
-    dimColnames = c('UMAP_1','UMAP_2'),
-    col = c('cornsilk1', 'darkred'),
-    subtitle = 'Seurat PBMC data: UMAP layout',
-    nrow = 3, ncol = 6,
-    legendKeyHeight = 1.0,
-    legendLabSize = 18,
-    stripLabSize = 22,
-    axisLabSize = 22,
-    titleLabSize = 22,
-    subtitleLabSize = 18,
-    captionLabSize = 18)
-
-  require(cowplot)
-  plot_grid(ggout,
-    labels = c('A'),
-    nrow = 1, align = "l", label_size = 24)
-
-```
-
-We can also derive clusters using the same k-NN approach as before. Here, we are dealing with scRNA-seq data; so, let's relax the `resolution` threshold somewhat, which will permit more clusters to be identified.
-
-```{r ex9, message = FALSE, fig.height = 8, fig.width = 8, fig.cap = "SeuratToSCE: find ideal clusters in the UMAP layout via k-nearest neighbours"}
-
-  pbmc.sce <- clusKNN(pbmc.sce,
-    reducedDim = 'UMAP',
-    dimColnames = c('UMAP_1','UMAP_2'),
-    k.param = 20,
-    prune.SNN = 1/15,
-    resolution = 0.5,
-    algorithm = 2)
-
-  ggout <- plotClusters(pbmc.sce,
-    clusterColname = 'Cluster',
-    labSize = 6.0,
-    subtitle = 'UMAP performed on expression values',
-    caption = paste0('Note: clusters / communities identified via',
-      '\nLouvain algorithm with multilevel refinement'),
-    axisLabSize = 20,
-    titleLabSize = 20,
-    subtitleLabSize = 16,
-    captionLabSize = 16)
-
-  plot_grid(ggout,
-    labels = c('A'),
-    ncol = 1, align = "l", label_size = 24)
-
-```
-
-Now determine enriched markers per cluster.
-
-`{r knitr::kable(markerEnrichment(pbmc.sce, assay = 'logcounts'), auto = TRUE) %>% kable_styling(full_width = FALSE)`
-
-.
 
 # Tutorial 3: Import any numerical data
 
@@ -611,7 +482,6 @@ This will also work without any assigned metadata.
 
 * Jessica Timms
 * James Opzoomer
-* Shahram Kordasti
 
 
 # Session info
