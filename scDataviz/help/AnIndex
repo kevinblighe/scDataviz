@@ -1,0 +1,12 @@
+clusKNN	clusKNN
+contourPlot	contourPlot
+downsampleByVar	downsampleByVar
+importData	importData
+markerEnrichment	markerEnrichment
+markerExpression	markerExpression
+markerExpressionPerCluster	markerExpressionPerCluster
+metadataPlot	metadataPlot
+performUMAP	performUMAP
+plotClusters	plotClusters
+plotSignatures	plotSignatures
+processFCS	processFCS

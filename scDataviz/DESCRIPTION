@@ -10,33 +10,21 @@ Authors@R: c(
 Description: In the single cell World, which includes flow cytometry, mass cytometry, single-cell RNA-seq (scRNA-seq), and others, there is a need to improve data visualisation and to bring analysis capabilities to researchers even from non-technical backgrounds. scDataviz attempts to fit into this space, while also catering for advanced users. Additonally, due to the way that scDataviz is designed, which is based on SingleCellExperiment, it has a 'plug and play' feel, and immediately lends itself as flexibile and compatibile with studies that go beyond scDataviz. Finally, the graphics in scDataviz are generated via the ggplot engine, which means that users can 'add on' features to these with ease.
 BugReports: https://github.com/kevinblighe/scDataviz/issues
 License: GPL-3
-Depends:
-  R (>= 3.6.0),
-  SingleCellExperiment,
-  ggplot2,
-  ggrepel
-Imports:
-  flowCore,
-  umap,
-  Seurat,
-  cowplot,
-  reshape2,
-  scales,
-  RColorBrewer,
-  corrplot,
-  stats,
-  grDevices,
-  graphics,
-  utils,
-  MASS,
-  methods
-Suggests:
-  PCAtools,
-  BiocGenerics,
-  knitr,
-  kableExtra
+Depends: R (>= 3.6.0), SingleCellExperiment, ggplot2, ggrepel
+Imports: flowCore, umap, Seurat, cowplot, reshape2, scales,
+        RColorBrewer, corrplot, stats, grDevices, graphics, utils,
+        MASS, methods
+Suggests: PCAtools, BiocGenerics, knitr, kableExtra
 URL: https://github.com/kevinblighe/scDataviz
-biocViews: SingleCell, ImmunoOncology, RNASeq, GeneExpression, Transcription, FlowCytometry, MassSpectrometry
-VignetteBuilder:
-  knitr
+biocViews: SingleCell, ImmunoOncology, RNASeq, GeneExpression,
+        Transcription, FlowCytometry, MassSpectrometry
+VignetteBuilder: knitr
 RoxygenNote: 6.1.1
+NeedsCompilation: no
+Packaged: 2020-05-04 20:34:40 UTC; kblighe
+Author: Kevin Blighe [aut, cre],
+  Jessica Timms [ctb],
+  James Opzoomer [ctb],
+  Shahram Kordasti [aut]
+Maintainer: Kevin Blighe <kevin@clinicalbioinformatics.co.uk>
+Built: R 3.6.3; ; 2020-05-04 20:44:14 UTC; unix

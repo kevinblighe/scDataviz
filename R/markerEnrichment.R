@@ -45,10 +45,10 @@ markerEnrichment <- function(
 
   nclus <- length(unique(clusterAssign))
 
-  res <- data.frame(row.names = 0:(nclus-1))
-  metares <- data.frame(row.names = 0:(nclus-1))
+  res <- data.frame(row.names = seq(0, nclus-1))
+  metares <- data.frame(row.names = seq(0, nclus-1))
 
-  for (j in 0:(nclus-1)) {
+  for (j in seq(0, nclus-1)) {
     iCellsPerCluster <- length(clusterAssign[clusterAssign == j])
     iTotalCells <- length(clusterAssign)
     iPercentage <- (iCellsPerCluster/iTotalCells) * 100

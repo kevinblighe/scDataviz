@@ -1,4 +1,7 @@
+^\.Rproj\.user$
+^\.Rhistory$
+^\.RData$
+^\.Ruserdata$
+^library\.bib$
+^README\.Rmd$
 .Rproj.user
-.Rhistory
-.RData
-.Ruserdata

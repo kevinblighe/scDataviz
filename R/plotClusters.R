@@ -172,12 +172,12 @@ plotClusters <- function(
       size = borderWidth))
 
   # gridlines
-  if (gridlines.major == TRUE) {
+  if (gridlines.major) {
     plot <- plot + theme(panel.grid.major = element_line())
   } else {
     plot <- plot + theme(panel.grid.major = element_blank())
   }
-  if (gridlines.minor == TRUE) {
+  if (gridlines.minor) {
     plot <- plot + theme(panel.grid.minor = element_line())
   } else {
     plot <- plot + theme(panel.grid.minor = element_blank())
