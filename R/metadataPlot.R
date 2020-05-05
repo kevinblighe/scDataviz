@@ -51,32 +51,10 @@ metadataPlot <- function(
 {
   metadata <- dim1 <- dim2 <- lab <- NULL
 
-  # create a base theme that will later be modified
-  th <- theme_bw(base_size=24) +
-
-    theme(
-      legend.background=element_rect(),
-
-      plot.title=element_text(angle=0, size=titleLabSize,
-        face='bold', vjust=1),
-      plot.subtitle=element_text(angle = 0, size = subtitleLabSize,
-        face = 'plain', vjust = 1),
-      plot.caption=element_text(angle = 0, size = captionLabSize,
-        face = 'plain', vjust = 1),
-
-      axis.text.x=element_text(angle = xlabAngle, size = axisLabSize,
-        hjust = xlabhjust, vjust = xlabvjust),
-      axis.text.y=element_text(angle = ylabAngle, size = axisLabSize,
-        hjust = ylabhjust, vjust = ylabvjust),
-      axis.title=element_text(size=axisLabSize),
-
-      legend.position=legendPosition,
-      legend.key=element_blank(),
-      legend.key.size=unit(0.5, 'cm'),
-      legend.text=element_text(size=legendLabSize),
-
-      title=element_text(size=legendLabSize),
-      legend.title=element_blank())
+  # pull in the base theme, and add on parameters if necessary
+  th <- basetheme(titleLabSize, subtitleLabSize, captionLabSize,
+    axisLabSize, xlabAngle, xlabhjust, xlabvjust,
+    ylabAngle, ylabhjust, ylabvjust, legendPosition, legendLabSize)
 
   if (is(indata, 'SingleCellExperiment')) {
 
@@ -192,7 +170,7 @@ metadataPlot <- function(
   }
 
   if (!is.null(celllab)) {
-    if (drawConnectors == TRUE && is.null(celllab)) {
+    if (drawConnectors && is.null(celllab)) {
       plot <- plot + geom_text_repel(
         data = plotobj,
           aes(label = lab),
@@ -201,7 +179,7 @@ metadataPlot <- function(
           segment.size = widthConnectors,
           hjust = labhjust,
           vjust = labvjust)
-    } else if (drawConnectors == TRUE && !is.null(celllab)) {
+    } else if (drawConnectors && !is.null(celllab)) {
       plot <- plot + geom_text_repel(
         data=subset(plotobj,
           !is.na(plotobj[,'lab'])),
@@ -211,7 +189,7 @@ metadataPlot <- function(
           segment.size = widthConnectors,
           hjust = labhjust,
           vjust = labvjust)
-    } else if (drawConnectors == FALSE && !is.null(celllab)) {
+    } else if (!drawConnectors && !is.null(celllab)) {
       plot <- plot + geom_text(
         data=subset(plotobj,
           !is.na(plotobj[,'lab'])),
@@ -220,7 +198,7 @@ metadataPlot <- function(
           check_overlap = TRUE,
           hjust = labhjust,
           vjust = labvjust)
-    } else if (drawConnectors == FALSE && is.null(celllab)) {
+    } else if (!drawConnectors && is.null(celllab)) {
       plot <- plot + geom_text(
         data = plotobj,
           aes(label = lab),

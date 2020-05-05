@@ -22,7 +22,6 @@
     pointSize = 0.5,
     legendPosition = 'right',
     legendLabSize = 12,
-    legendIconSize = 5.0,
     legendKeyHeight = 2.5,
     xlim = NULL,
     ylim = NULL,
@@ -98,8 +97,6 @@
   \item{legendPosition}{Position of legend ('top', 'bottom', 'left', 'right',
     'none'). DEFAULT = 'right'. OPTIONAL.}
   \item{legendLabSize}{Size of plot legend text. DEFAULT = 12. OPTIONAL.}
-  \item{legendIconSize}{Size of plot legend icons / symbols. DEFAULT = 5.0.
-    OPTIONAL.}
   \item{legendKeyHeight}{Height of the legend key. DEFAULT = 2.5. OPTIONAL.}
   \item{xlim}{Limits of the x-axis. DEFAULT = NULL. OPTIONAL.}
   \item{ylim}{Limits of the y-axis. DEFAULT = NULL. OPTIONAL.}

@@ -16,7 +16,6 @@
     pointSize = 0.5,
     legendPosition = 'none',
     legendLabSize = 12,
-    legendIconSize = 5.0,
     xlim = NULL,
     ylim = NULL,
     label = TRUE,
@@ -79,8 +78,6 @@
   \item{legendPosition}{Position of legend ('top', 'bottom', 'left', 'right',
   'none'). DEFAULT = 'none'. OPTIONAL.}
   \item{legendLabSize}{Size of plot legend text. DEFAULT = 12. OPTIONAL.}
-  \item{legendIconSize}{Size of plot legend icons / symbols. DEFAULT = 5.0.
-  OPTIONAL.}
   \item{xlim}{Limits of the x-axis. DEFAULT = NULL. OPTIONAL.}
   \item{ylim}{Limits of the y-axis. DEFAULT = NULL. OPTIONAL.}
   \item{label}{Logical, indicating whether or not to label the clusters.

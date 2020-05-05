@@ -35,7 +35,7 @@ clusKNN <- function(
         collapse = ', '))
     clusdata <- reducedDim(indata, reducedDim)[,dimColnames]
 
-    if (length(which(colnames(metadata(indata)) == clusterAssignName)) > 0 && overwrite == FALSE) {
+    if (length(which(colnames(metadata(indata)) == clusterAssignName)) && overwrite == FALSE) {
       stop('Column \'', clusterAssignName, '\' already found in metadata.. ',
         'Re-run the command with \'overwrite == TRUE\' in order to confirm ',
         'overwrite, or change the value of \'clusterAssignName\'.')
@@ -75,11 +75,11 @@ clusKNN <- function(
     verbose = verbose)
 
   if (is(indata, 'SingleCellExperiment')) {
-    if (length(which(colnames(metadata(indata)) == clusterAssignName)) > 0 ) {
+    if (length(which(colnames(metadata(indata)) == clusterAssignName))) {
       metadata(indata) <- metadata(indata)[,-which(colnames(metadata(indata)) == clusterAssignName)]
     }
 
-    if (length(metadata(indata)) > 0) {
+    if (length(metadata(indata))) {
       metadata(indata) <- data.frame(
         metadata(indata),
         as.numeric(as.character(nnc[,1])),

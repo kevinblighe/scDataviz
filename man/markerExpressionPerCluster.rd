@@ -10,14 +10,13 @@
   markerExpressionPerCluster(
     indata,
     assay = 'scaled',
-    clusters = sample(unique(metadata(indata)[['Cluster']]), 9),
+    clusters = sample(unique(metadata(indata)[['Cluster']]), 5),
     clusterAssign = metadata(indata)[['Cluster']],
     markers = sample(rownames(indata), 10),
     ncol = 5,
     nrow = 2,
     legendPosition = 'none',
     legendLabSize = 12,
-    legendIconSize = 5.0,
     legendKeyHeight = 2.5,
     xlim = NULL,
     ylim = NULL,
@@ -51,7 +50,7 @@
     taken, assuming 'indata' is a SingleCellExperiment object.
     DEFAULT = 'scaled'. OPTIONAL.}
   \item{clusters}{Vector containing clusters to plot. DEFAULT =
-    sample(unique(metadata(indata)[['Cluster']]), 9). OPTIONAL.}
+    sample(unique(metadata(indata)[['Cluster']]), 5). OPTIONAL.}
   \item{clusterAssign}{A vector of cell-to-cluster assignments. This can be
     from any source but must align with your cells / variables. There is no
     check to ensure this when 'indata' is not a SingleCellExperiment object.
@@ -63,8 +62,6 @@
   \item{legendPosition}{Position of legend ('top', 'bottom', 'left', 'right',
   'none'). DEFAULT = 'none'. OPTIONAL.}
   \item{legendLabSize}{Size of plot legend text. DEFAULT = 12. OPTIONAL.}
-  \item{legendIconSize}{Size of plot legend icons / symbols. DEFAULT = 5.0.
-  OPTIONAL.}
   \item{legendKeyHeight}{Height of the legend key. DEFAULT = 2.5. OPTIONAL.}
   \item{xlim}{Limits of the x-axis. DEFAULT = NULL. OPTIONAL.}
   \item{ylim}{Limits of the y-axis. DEFAULT = NULL. OPTIONAL.}

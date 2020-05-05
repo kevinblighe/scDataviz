@@ -27,8 +27,10 @@ In the single cell World, which includes flow cytometry, mass cytometry, single-
 
 ```{r, echo = FALSE, message = FALSE}
 
-  library(knitr)
-  library(kableExtra)
+  suppressWarnings(library(knitr))
+
+  suppressWarnings(library(kableExtra))
+
   opts_chunk$set(tidy = FALSE, message = FALSE, warning = FALSE)
 
 ```
@@ -124,7 +126,7 @@ We can use the *PCAtools* [@PCAtools] package for the purpose of performing PCA.
   p <- pca(assay(sce, 'scaled'), metadata = metadata(sce))
   biplot(p,
     lab = NULL,
-    pointSize = 0.5,
+    pointSize = 1.0,
     colby = 'treatment',
     legendPosition = 'right',
     title = 'PCA applied to CyTOF data',
@@ -365,7 +367,7 @@ This function utilises the k nearest neighbours (k-NN) approach from Seurat, whi
 
 ## Plot marker expression per identified cluster
 
-```{r ex6a, fig.height = 9, fig.width = 18, fig.cap = "Plot marker expression per identified cluster1"}
+```{r ex6a, fig.height = 5, fig.width = 18, fig.cap = "Plot marker expression per identified cluster1"}
 
   markerExpressionPerCluster(sce,
     caption = 'Cluster assignments based on UMAP performed on expression values',
@@ -480,6 +482,7 @@ This will also work without any assigned metadata.
 
 * Jessica Timms
 * James Opzoomer
+* Marcel Ramos (Bioconductor)
 
 
 # Session info

@@ -21,7 +21,8 @@
   colsDiscard = c('Time','Event_length','Center','Offset',
     'Width','Residual','tSNE1','tSNE2','BCKG'),
   colsRetain = NULL,
-  newColnames = NULL)
+  newColnames = NULL,
+  verbose = TRUE)
 }
 
 \arguments{
@@ -64,6 +65,8 @@
   \item{newColnames}{Assuming that you know the exact order of your final selected
     markers, rename these based on a vector passed as this argument. Please
     exercise caution when using this. DEFAULT = NULL. OPTIONAL.}
+  \item{verbose}{Boolean (TRUE / FALSE) to print messages to console or not.
+    DEFAULT = TRUE. OPTIONAL.}
 }
 
 \value{

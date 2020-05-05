@@ -30,7 +30,7 @@ importData <- function(
     mat <- mat[keep,,drop=FALSE]
 
     if (!is.null(metadata)) {
-      metadata <- metadata[keep,,drop=FALSE]
+      metadata <- metadata[keep,,drop = FALSE]
     }
 
     vars <- vars[keep]

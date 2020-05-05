@@ -13,7 +13,8 @@ processFCS <- function(
   colsDiscard = c('Time','Event_length','Center','Offset','Width',
     'Residual','tSNE1','tSNE2','BCKG'),
   colsRetain = NULL,
-  newColnames = NULL)
+  newColnames = NULL,
+  verbose = TRUE)
 {
   # if metadata specified, enforce rule that rownames(metadata) is the
   # same as filelist
@@ -33,7 +34,7 @@ processFCS <- function(
   if (!is.null(colsDiscard)) {
     samples <- lapply(
       samples,
-      function(x) if (length(which(colnames(x) %in% colsDiscard)) > 0) {
+      function(x) if (length(which(colnames(x) %in% colsDiscard))) {
         x[,-which(colnames(x) %in% colsDiscard)]} else {return(x)})
   }
 
@@ -41,7 +42,7 @@ processFCS <- function(
   if (!is.null(colsRetain)) {
     samples <- lapply(
       samples,
-      function(x) if (length(which(colnames(x) %in% colsRetain)) > 0) {
+      function(x) if (length(which(colnames(x) %in% colsRetain))) {
         x[,which(colnames(x) %in% colsRetain)]} else {return(x)})
   }
 
@@ -53,8 +54,8 @@ processFCS <- function(
   }
 
   # filter
-  if (filter == TRUE) {
-    message('--filtering background / noise')
+  if (filter) {
+    if (verbose) message('--filtering background / noise')
 
     # Euclidean norm
     samples <- lapply(
@@ -71,8 +72,8 @@ processFCS <- function(
   }
 
   # transform
-  if (transformation == TRUE) {
-    message('--transforming data')
+  if (transformation) {
+    if (verbose) message('--transforming data')
     samples <- lapply(
       samples,
       function(x) transFun(x / asinhFactor))
@@ -83,7 +84,8 @@ processFCS <- function(
     if (downsampleVar > 0) {
       samples <- lapply(
         samples,
-        function(x) downsampleByVar(x, varianceFactor = downsampleVar))
+        function(x) downsampleByVar(x, varianceFactor = downsampleVar,
+          verbose = verbose))
     }
   }
 
@@ -114,9 +116,9 @@ processFCS <- function(
       warning('Cannot downsample to ', downsample, ' number of variables as',
         ' there are ', nrow(samples), ' variables currently in the merged ',
         'dataset.')
-      message('--Skipping downsampling')
+      if (verbose) message('--Skipping downsampling')
     } else {
-      message('--Downsampling to ', downsample, ' variables.')
+      if (verbose) message('--Downsampling to ', downsample, ' variables.')
       idx <- sample(seq(nrow(samples)), downsample)
       samples <- samples[idx,]
       metadata <- metadata[idx,]
