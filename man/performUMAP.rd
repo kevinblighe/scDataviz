@@ -13,7 +13,8 @@
     reducedDim = NULL,
     dims = seq_len(20),
     newDimName = NULL,
-    useMarkers = NULL)
+    useMarkers = NULL,
+    verbose = TRUE)
 }
 
 \arguments{
@@ -38,6 +39,8 @@
     OPTIONAL.}
   \item{useMarkers}{Before performing UMAP, subset the data for these markers.
     DEFAULT = NULL. OPTIONAL.}
+  \item{verbose}{Boolean (TRUE / FALSE) to print messages to console or not.
+    DEFAULT = TRUE. OPTIONAL.}
 }
 
 \value{

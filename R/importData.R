@@ -2,8 +2,10 @@ importData <- function(
   mat,
   assayname,
   metadata = NULL,
-  downsampleVar = NULL)
+  downsampleVar = NULL,
+  verbose = TRUE)
 {
+
   # avoid attempting to coerce S4 matrices into full matrices.
   if (is.data.frame(mat)) {
     mat <- as.matrix(mat)
@@ -20,7 +22,7 @@ importData <- function(
   # remove lower portion of variables based on variation
   vars <- rowVars(mat)
   if (!is.null(downsampleVar)) {
-    message('-- removing the lower ', downsampleVar * 100,
+    if (verbose) message('-- removing the lower ', downsampleVar * 100,
       '% of variables based on variance')
 
     varorder <- order(vars, decreasing = TRUE)

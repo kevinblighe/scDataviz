@@ -29,7 +29,8 @@ markerExpressionPerCluster <- function(
   subtitleLabSize = 12,
   captionLabSize = 12,
   borderWidth = 0.8,
-  borderColour = 'black')
+  borderColour = 'black',
+  verbose = TRUE)
 {
   Marker <- Expression <- lab <- NULL
 
@@ -44,7 +45,7 @@ markerExpressionPerCluster <- function(
 
   if (is(indata, 'SingleCellExperiment')) {
 
-    message('--input data class is SingleCellExperiment')
+    if (verbose) message('--input data class is SingleCellExperiment')
     idx <- which(rownames(indata) %in% markers)
     plotobj <- data.frame(Cluster = clusterAssign,
       as.data.frame(t(as.matrix(assay(indata, assay)[idx,]))))
@@ -57,7 +58,7 @@ markerExpressionPerCluster <- function(
 
   } else {
 
-    message('--input data class is ', class(indata))
+    if (verbose) message('--input data class is ', class(indata))
     idx <- which(rownames(indata) %in% markers)
     plotobj <- data.frame(Cluster = clusterAssign,
       as.data.frame(t(as.matrix(indata[idx,]))))

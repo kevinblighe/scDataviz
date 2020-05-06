@@ -29,8 +29,8 @@ clusKNN <- function(
 {
 
   if (is(indata, 'SingleCellExperiment')) {
-    message('--input data class is SingleCellExperiment')
-    message('--\'', reducedDim, '\' reduced dimensional component will ',
+    if (verbose) message('--input data class is SingleCellExperiment')
+    if (verbose) message('--\'', reducedDim, '\' reduced dimensional component will ',
       'be used for clustering, with dims / columns: ', paste(dimColnames,
         collapse = ', '))
     clusdata <- reducedDim(indata, reducedDim)[,dimColnames]
@@ -41,7 +41,7 @@ clusKNN <- function(
         'overwrite, or change the value of \'clusterAssignName\'.')
     }
   } else {
-    message('--input data class is ', class(indata))
+    if (verbose) message('--input data class is ', class(indata))
     clusdata <- indata
   }
 
@@ -92,7 +92,7 @@ clusKNN <- function(
 
     colnames(metadata(indata))[ncol(metadata(indata))] <- clusterAssignName
 
-    message('\ncluster information added to your input SingleCellExperiment ',
+    if (verbose) message('\ncluster information added to your input SingleCellExperiment ',
       'object\'s metadata under colname \'', clusterAssignName, '\'')
 
     return(indata)

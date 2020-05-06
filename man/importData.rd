@@ -11,7 +11,8 @@
     mat,
     assayname,
     metadata = NULL,
-    downsampleVar = NULL)
+    downsampleVar = NULL,
+    verbose = TRUE)
 }
 
 \arguments{
@@ -27,6 +28,8 @@
     basis. If user wishes to apply this globally on the final merged dataset,
     then set this to 0 and remove based on variance manually after object
     creation. DEFAULT = NULL. OPTIONAL.}
+  \item{verbose}{Boolean (TRUE / FALSE) to print messages to console or not.
+    DEFAULT = TRUE. OPTIONAL.}
 }
 
 \value{

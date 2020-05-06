@@ -49,7 +49,7 @@ metadataPlot <- function(
   borderWidth = 0.8,
   borderColour = 'black')
 {
-  metadata <- dim1 <- dim2 <- lab <- NULL
+  dim1 <- dim2 <- lab <- NULL
 
   # pull in the base theme, and add on parameters if necessary
   th <- basetheme(titleLabSize, subtitleLabSize, captionLabSize,

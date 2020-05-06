@@ -30,7 +30,6 @@
   \item{xlabAngle}{Rotation angle of x-axis labels. REQUIRED.}
   \item{xlabhjust}{Horizontal adjustment of x-axis labels. REQUIRED.}
   \item{xlabvjust}{Vertical adjustment of x-axis labels. REQUIRED.}
-  \item{ylab}{Label for y-axis. DEFAULT = dimColnames[2]. REQUIRED.}
   \item{ylabAngle}{Rotation angle of y-axis labels. REQUIRED.}
   \item{ylabhjust}{Horizontal adjustment of y-axis labels. REQUIRED.}
   \item{ylabvjust}{Vertical adjustment of y-axis labels. REQUIRED.}

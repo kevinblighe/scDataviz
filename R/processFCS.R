@@ -16,6 +16,7 @@ processFCS <- function(
   newColnames = NULL,
   verbose = TRUE)
 {
+
   # if metadata specified, enforce rule that rownames(metadata) is the
   # same as filelist
   if (!is.null(metadata)) {
@@ -82,6 +83,9 @@ processFCS <- function(
   # load function for downsampling based on variance
   if(!is.null(downsampleVar)) {
     if (downsampleVar > 0) {
+      if (verbose) message('--removing the lower ', downsampleVar * 100,
+        '% of cells based on variance')
+
       samples <- lapply(
         samples,
         function(x) downsampleByVar(x, varianceFactor = downsampleVar,
@@ -116,9 +120,9 @@ processFCS <- function(
       warning('Cannot downsample to ', downsample, ' number of variables as',
         ' there are ', nrow(samples), ' variables currently in the merged ',
         'dataset.')
-      if (verbose) message('--Skipping downsampling')
+      if (verbose) message('--skipping downsampling')
     } else {
-      if (verbose) message('--Downsampling to ', downsample, ' variables.')
+      if (verbose) message('--downsampling to ', downsample, ' variables.')
       idx <- sample(seq(nrow(samples)), downsample)
       samples <- samples[idx,]
       metadata <- metadata[idx,]

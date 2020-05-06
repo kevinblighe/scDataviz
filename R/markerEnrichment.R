@@ -6,7 +6,8 @@ markerEnrichment <- function(
   clusterAssign = metadata(indata)[['Cluster']],
   funcSummarise = function(x) median(x, na.rm = TRUE),
   lowerPercentile = 5,
-  upperPercentile = 5)
+  upperPercentile = 5,
+  verbose = TRUE)
 {
   iCellsPerCluster <- c()
   iTotalCells <- c()
@@ -16,13 +17,13 @@ markerEnrichment <- function(
 
   if (is(indata, 'SingleCellExperiment')) {
 
-    message('--input data class is SingleCellExperiment')
+    if (verbose) message('--input data class is SingleCellExperiment')
     metadata <- metadata(indata)
     data <- as.data.frame(t(as.matrix(assay(indata, assay))))
 
   } else {
 
-    message('--input data class is ', class(indata))
+    if (verbose) message('--input data class is ', class(indata))
 
     if (is.null(meta)) {
       stop('When the input data is a non-SingleCellExperiment object, ',

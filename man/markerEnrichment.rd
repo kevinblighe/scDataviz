@@ -15,7 +15,8 @@
     clusterAssign = metadata(indata)[['Cluster']],
     funcSummarise = function(x) median(x, na.rm = TRUE),
     lowerPercentile = 5,
-    upperPercentile = 5)
+    upperPercentile = 5,
+    verbose = TRUE)
 }
 
 \arguments{
@@ -43,6 +44,8 @@
     selecting a signature marker for each cluster. DEFAULT = 5. OPTIONAL.}
   \item{upperPercentile}{Upper limit (%) of the scaled expression range for
     selecting a signature marker for each cluster. DEFAULT = 5. OPTIONAL.}
+  \item{verbose}{Boolean (TRUE / FALSE) to print messages to console or not.
+    DEFAULT = TRUE. OPTIONAL.}
 }
 
 \value{

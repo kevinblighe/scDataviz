@@ -49,7 +49,8 @@ contourPlot <- function(
   gridlines.major = TRUE,
   gridlines.minor = TRUE,
   borderWidth = 0.8,
-  borderColour = 'black')
+  borderColour = 'black',
+  verbose = TRUE)
 {
   dim1 <- dim2 <- ..level.. <- lab <- NULL
 
@@ -61,10 +62,10 @@ contourPlot <- function(
     theme(legend.key.height = unit(legendKeyHeight, 'cm'))
 
   if (is(indata, 'SingleCellExperiment')) {
-    message('--input data class is SingleCellExperiment')
+    if (verbose) message('--input data class is SingleCellExperiment')
     plotobj <- as.data.frame(reducedDim(indata, reducedDim)[,dimColnames])
   } else {
-    message('--input data class is ', class(indata))
+    if (verbose) message('--input data class is ', class(indata))
     plotobj <- as.data.frame(indata[,dimColnames])
   }
   colnames(plotobj) <- c('dim1','dim2')

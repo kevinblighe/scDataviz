@@ -6,13 +6,15 @@ plotSignatures <- function(
   col = colorRampPalette(rev(brewer.pal(9, 'RdBu')))(100),
   labCex = 1.0,
   legendCex = 1.0,
-  labDegree = 90)
+  labDegree = 90,
+  verbose = TRUE)
 {
+
   if (is(indata, 'SingleCellExperiment')) {
-    message('--input data class is SingleCellExperiment')
+    if (verbose) message('--input data class is SingleCellExperiment')
     data <- as.data.frame(t(as.matrix(assay(indata, assay))))
   } else {
-    message('--input data class is ', class(indata))
+    if (verbose) message('--input data class is ', class(indata))
     data <- as.data.frame(t(as.matrix(indata)))
   }
 

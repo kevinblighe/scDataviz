@@ -58,7 +58,8 @@
     gridlines.major = TRUE,
     gridlines.minor = TRUE,
     borderWidth = 0.8,
-    borderColour = 'black')
+    borderColour = 'black',
+    verbose = TRUE)
 }
 
 \arguments{
@@ -143,6 +144,8 @@
     OPTIONAL.}
   \item{borderColour}{Colour of the border on the x and y axes. DEFAULT =
     'black'. OPTIONAL.}
+  \item{verbose}{Boolean (TRUE / FALSE) to print messages to console or not.
+    DEFAULT = TRUE. OPTIONAL.}
 }
 
 \value{

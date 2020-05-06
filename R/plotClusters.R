@@ -45,9 +45,10 @@ plotClusters <- function(
   gridlines.major = TRUE,
   gridlines.minor = TRUE,
   borderWidth = 0.8,
-  borderColour = 'black')
+  borderColour = 'black',
+  verbose = TRUE)
 {
-  metadata <- dim1 <- dim2 <- Cluster <- lab <- NULL
+  dim1 <- dim2 <- Cluster <- lab <- NULL
 
   # pull in the base theme, and add on parameters if necessary
   th <- basetheme(titleLabSize, subtitleLabSize, captionLabSize,
@@ -56,7 +57,7 @@ plotClusters <- function(
 
   if (is(indata, 'SingleCellExperiment')) {
 
-    message('--input data class is SingleCellExperiment')
+    if (verbose) message('--input data class is SingleCellExperiment')
     plotobj <- as.data.frame(reducedDim(indata, reducedDim))
     plotobj <- data.frame(plotobj,
       Cluster = metadata(indata)[[clusterColname]])
@@ -65,7 +66,7 @@ plotClusters <- function(
 
   } else {
 
-    message('--input data class is ', class(indata))
+    if (verbose) message('--input data class is ', class(indata))
 
     if (is.null(clusterVector)) {
       stop('When the input data is a non-SingleCellExperiment object, ',

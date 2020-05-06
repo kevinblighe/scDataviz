@@ -15,7 +15,8 @@
     col = colorRampPalette(rev(brewer.pal(9, 'RdBu')))(100),
     labCex = 1.0,
     legendCex = 1.0,
-    labDegree = 90)
+    labDegree = 90,
+    verbose = TRUE)
 }
 
 \arguments{
@@ -39,6 +40,8 @@
   \item{legendCex}{cex (size) of the legend labels. DEFAULT = 1.0. OPTIONAL.}
   \item{labDegree}{Rotation angle of the main plot labels. DEFAULT = 90.
     OPTIONAL.}
+  \item{verbose}{Boolean (TRUE / FALSE) to print messages to console or not.
+    DEFAULT = TRUE. OPTIONAL.}
 }
 
 \value{

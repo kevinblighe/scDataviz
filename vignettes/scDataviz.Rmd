@@ -22,7 +22,17 @@ vignette: >
 
 # Introduction
 
-In the single cell World, which includes flow cytometry, mass cytometry, single-cell RNA-seq (scRNA-seq), and others, there is a need to improve data visualisation and to bring analysis capabilities to researchers even from non-technical backgrounds. *scDataviz* [@scDataviz] attempts to fit into this space, while also catering for advanced users. Additonally, due to the way that *scDataviz* is designed, which is based on *SingleCellExperiment* [@Lun], it has a 'plug and play' feel, and immediately lends itself as flexibile and compatibile with studies that go beyond *scDataviz*. Finally, the graphics in *scDataviz* are generated via the *ggplot* [@Wickham] engine, which means that users can 'add on' features to these with ease.
+In the single cell World, which includes flow cytometry, mass cytometry,
+single-cell RNA-seq (scRNA-seq), and others, there is a need to improve
+data visualisation and to bring analysis capabilities to researchers even
+from non-technical backgrounds. *scDataviz* [@scDataviz] attempts to fit
+into this space, while also catering for advanced users. Additonally, due
+to the way that *scDataviz* is designed, which is based on
+*SingleCellExperiment* [@Lun], it has a 'plug and play' feel, and immediately
+lends itself as flexibile and compatibile with studies that go beyond
+*scDataviz*. Finally, the graphics in *scDataviz* are generated via the
+*ggplot* [@Wickham] engine, which means that users can 'add on' features
+to these with ease.
 
 
 ```{r, echo = FALSE, message = FALSE}
@@ -41,10 +51,10 @@ In the single cell World, which includes flow cytometry, mass cytometry, single-
 
 ```{r getPackage, eval = FALSE}
 
-    if (!requireNamespace('BiocManager', quietly = TRUE))
-        install.packages('BiocManager')
+  if (!requireNamespace('BiocManager', quietly = TRUE))
+    install.packages('BiocManager')
 
-    BiocManager::install('scDataviz')
+  BiocManager::install('scDataviz')
 
 ```
 
@@ -52,7 +62,7 @@ Note: to install development version:
 
 ```{r getPackageDevel, eval = FALSE}
 
-    devtools::install_github('kevinblighe/scDataviz')
+  devtools::install_github('kevinblighe/scDataviz')
 
 ```
 
@@ -66,9 +76,15 @@ Note: to install development version:
 
 # Tutorial 1: CyTOF FCS data
 
-Here, we will utilise some of the flow cytometry data from [Deep phenotyping detects a pathological CD4+ T-cell complosome signature in systemic sclerosis](https://www.nature.com/articles/s41423-019-0360-8).
+Here, we will utilise some of the flow cytometry data from
+[Deep phenotyping detects a pathological CD4+ T-cell complosome signature in systemic sclerosis](https://www.nature.com/articles/s41423-019-0360-8).
 
-In a practical situation, we would normally read in the data from the raw FCS files and then QC filter, normalise, and transform them. This can be achieved via the `processFCS` function, which, by default, also removes variables based on low variance and downsamples [randomly] your data to 100000 variables. The user can change these via the `downsample` and `downsampleVar` parameters. An example (*not run*) is given below:
+In a practical situation, we would normally read in the data from the raw FCS
+files and then QC filter, normalise, and transform them. This can be achieved
+via the `processFCS` function, which, by default, also removes variables based
+on low variance and downsamples [randomly] your data to 100000 variables. The
+user can change these via the `downsample` and `downsampleVar` parameters. An
+example (*not run*) is given below:
 
 ```{r readFCS, eval = FALSE}
 
@@ -94,13 +110,15 @@ In a practical situation, we would normally read in the data from the raw FCS fi
     transformation = TRUE,
     transFun = function (x) asinh(x),
     asinhFactor = 5,
-    downsample = 9000,
+    downsample = 10000,
     downsampleVar = 0.2,
     newColnames = paste0('CD', 1:65))
 
 ```
 
-For this vignette, due to the fact that the raw FCS data is > 500 megabytes, we will work with a smaller pre-prepared dataset that has been downsampled to 9000 cells using the above code.
+For this vignette, due to the fact that the raw FCS data is > 500 megabytes,
+we will work with a smaller pre-prepared dataset that has been downsampled to
+10000 cells using the above code. THis data comes included with the package.
 
 Load the pre-prepared complosome data.
 
@@ -110,17 +128,23 @@ Load the pre-prepared complosome data.
   
 ```
 
-To see a full vignette that utilises the raw FCS files, see the [GitHub vignette](https://github.com/kevinblighe/scDataviz/).
+To see a full vignette that utilises the raw FCS files, see the
+[GitHub vignette](https://github.com/kevinblighe/scDataviz/).
 
-
-One can also create a new *SingleCellExperiment* object manually using any type of data, including any data from scRNA-seq produced elsewhere. Import functions for data deriving from other sources is covered in Tutorials 2 and 3 in this vignette. All functions in *scDataviz* additionally accept data-frames or matrices on their own, de-necessitating the reliance on the *SingleCellExperiment* class.
+One can also create a new *SingleCellExperiment* object manually using any
+type of data, including any data from scRNA-seq produced elsewhere. Import
+functions for data deriving from other sources is covered in Tutorials 2 and
+3 in this vignette. All functions in *scDataviz* additionally accept
+data-frames or matrices on their own, de-necessitating the reliance on the
+*SingleCellExperiment* class.
 
 
 ## Perform principal component analysis (PCA)
 
-We can use the *PCAtools* [@PCAtools] package for the purpose of performing PCA.
+We can use the *PCAtools* [@PCAtools] package for the purpose of performing
+PCA.
 
-```{r ex1, fig.height = 7, fig.width = 8, fig.cap = "Perform principal component analysis"}
+```{r ex1, fig.height = 7, fig.width = 8, fig.cap = 'Perform PCA'}
 
   library(PCAtools)
   p <- pca(assay(sce, 'scaled'), metadata = metadata(sce))
@@ -130,11 +154,13 @@ We can use the *PCAtools* [@PCAtools] package for the purpose of performing PCA.
     colby = 'treatment',
     legendPosition = 'right',
     title = 'PCA applied to CyTOF data',
-    caption = '9000 cells randomly selected after having filtered for low variance')
+    caption = paste0('10000 cells randomly selected after ',
+      'having filtered for low variance'))
 
 ```
 
-We can add the rotated component loadings as a new reduced dimensional component to our dataset. Let's just add the first 20 PCs.
+We can add the rotated component loadings as a new reduced dimensional
+component to our dataset. Let's just add the first 20 PCs.
 
 ```{r addPCAdim}
 
@@ -142,11 +168,14 @@ We can add the rotated component loadings as a new reduced dimensional component
 
 ```
 
-For more functionality via *PCAtools*, check the vignette: [PCAtools: everything Principal Component Analysis](https://bioconductor.org/packages/release/bioc/vignettes/PCAtools/inst/doc/PCAtools.html)
+For more functionality via *PCAtools*, check the vignette:
+[PCAtools: everything Principal Component Analysis](https://bioconductor.org/packages/release/bioc/vignettes/PCAtools/inst/doc/PCAtools.html)
 
 ## Perform UMAP
 
-UMAP can be performed on the entire dataset, if your computer's memory will permit. Currently it's default is to use the data contained in the 'scaled' assay component of your *SingleCellExperiment* object.
+UMAP can be performed on the entire dataset, if your computer's memory will
+permit. Currently it's default is to use the data contained in the 'scaled'
+assay component of your *SingleCellExperiment* object.
 
 ```{r performUMAP}
 
@@ -154,9 +183,15 @@ UMAP can be performed on the entire dataset, if your computer's memory will perm
 
 ```
 
-UMAP can also be stratified based on a column in your metadata, e.g., (treated versus untreated samples); however, to do this, I recommend creating separate *SingleCellExperiment* objects from the very start, i.e., from the the data input stage, and processing the data separately for each group.
+UMAP can also be stratified based on a column in your metadata, e.g.,
+(treated versus untreated samples); however, to do this, I recommend
+creating separate *SingleCellExperiment* objects from the very start,
+i.e., from the the data input stage, and processing the data separately
+for each group.
 
-We can also perform UMAP on a select number of PC eigenvectors. *PCAtools* [@PCAtools] can be used to infer ideal number of dimensions to use via the elbow method and Horn's parallel analysis.
+We can also perform UMAP on a select number of PC eigenvectors.
+*PCAtools* [@PCAtools] can be used to infer ideal number of dimensions
+to use via the elbow method and Horn's parallel analysis.
 
 ```{r elbowHorn}
 
@@ -178,11 +213,19 @@ Let's use the number of PCs identified by Horn's.
 
 ## Create a contour plot of the UMAP layout
 
-This and the remaining sections in this tutorial are about producing great visualisations of the data and attempting to make sense of it, while not fully overlapping with functionalioty provided by other programs that operate in tis space.
+This and the remaining sections in this tutorial are about producing great
+visualisations of the data and attempting to make sense of it, while not
+fully overlapping with functionalioty provided by other programs that operate
+in tis space.
 
-With the contour plot, we are essentially looking at celluar density. It can provide for a beautiful viusualisation in a manuscript while also serving as a useful QC tool: if the density is 'scrunched up' into a single area in the plot space, then there are likely issues with your input data distribution. We want to see well-separated, high density 'islands', or, at least, gradual gradients that blend into one another across high density 'peaks'.
+With the contour plot, we are essentially looking at celluar density. It can
+provide for a beautiful viusualisation in a manuscript while also serving as
+a useful QC tool: if the density is 'scrunched up' into a single area in the
+plot space, then there are likely issues with your input data distribution.
+We want to see well-separated, high density 'islands', or, at least, gradual
+gradients that blend into one another across high density 'peaks'.
 
-```{r ex2, fig.height = 8, fig.width = 16, fig.cap = "Create a contour plot of the UMAP layout"}
+```{r ex2, fig.height = 8, fig.width = 16, fig.cap = 'Create a contour plot of the UMAP layout'}
 
   ggout1 <- contourPlot(sce,
     reducedDim = 'UMAP',
@@ -210,9 +253,10 @@ With the contour plot, we are essentially looking at celluar density. It can pro
 
 ## Show marker expression across the layout
 
-Here, we randomly select some markers and then plot their expression profiles across the UMAP layouts.
+Here, we randomly select some markers and then plot their expression profiles
+across the UMAP layouts.
 
-```{r ex3, fig.height = 12, fig.width = 20, fig.cap = "Show marker expression across the layout"}
+```{r ex3, fig.height = 12, fig.width = 20, fig.cap = 'Show marker expression across the layout'}
 
   markers <- sample(rownames(sce), 6)
   markers
@@ -250,7 +294,8 @@ Here, we randomly select some markers and then plot their expression profiles ac
 
 ## Shade cells by metadata
 
-Shading cells by metadata can be useful for identifying any batch effects, but also useful for visualising, e.g., differences across treatments.
+Shading cells by metadata can be useful for identifying any batch effects,
+but also useful for visualising, e.g., differences across treatments.
 
 First, let's take a look inside the metadata that we have.
 
@@ -264,7 +309,7 @@ First, let's take a look inside the metadata that we have.
 
 ```
 
-```{r ex4, fig.height = 12, fig.width = 14, fig.cap = "Shade cells by metadata", message = FALSE}
+```{r ex4, fig.height = 12, fig.width = 14, fig.cap = 'Shade cells by metadata', message = FALSE}
 
   ggout1 <- metadataPlot(sce,
     colby = 'group',
@@ -318,15 +363,18 @@ First, let's take a look inside the metadata that we have.
 
 ## Find ideal clusters in the UMAP layout via k-nearest neighbours
 
-This function utilises the k nearest neighbours (k-NN) approach from Seurat, which works quite well on flow cytometry and CyTOF UMAP layouts, from my experience.
+This function utilises the k nearest neighbours (k-NN) approach from Seurat,
+which works quite well on flow cytometry and CyTOF UMAP layouts, from my
+experience.
 
-```{r ex5, message = FALSE, fig.height = 8, fig.width = 14, fig.cap = "Find ideal clusters in the UMAP layout via k-nearest neighbours"}
+```{r ex5, message = FALSE, fig.height = 8, fig.width = 14, fig.cap = 'Find ideal clusters in the UMAP layout via k-nearest neighbours'}
 
   sce <- clusKNN(sce,
     k.param = 20,
     prune.SNN = 1/15,
     resolution = 0.01,
-    algorithm = 2)
+    algorithm = 2,
+    verbose = FALSE)
 
   sce <- clusKNN(sce,
     reducedDim = 'UMAP_PCA',
@@ -334,7 +382,8 @@ This function utilises the k nearest neighbours (k-NN) approach from Seurat, whi
     k.param = 20,
     prune.SNN = 1/15,
     resolution = 0.01,
-    algorithm = 2)
+    algorithm = 2,
+    verbose = FALSE)
 
   ggout1 <- plotClusters(sce,
     clusterColname = 'Cluster',
@@ -367,7 +416,7 @@ This function utilises the k nearest neighbours (k-NN) approach from Seurat, whi
 
 ## Plot marker expression per identified cluster
 
-```{r ex6a, fig.height = 5, fig.width = 18, fig.cap = "Plot marker expression per identified cluster1"}
+```{r ex6a, fig.height = 5, fig.width = 18, fig.cap = 'Plot marker expression per identified cluster1'}
 
   markerExpressionPerCluster(sce,
     caption = 'Cluster assignments based on UMAP performed on expression values',
@@ -379,7 +428,7 @@ This function utilises the k nearest neighbours (k-NN) approach from Seurat, whi
 
 ```
 
-```{r ex6b, fig.height = 9, fig.width = 16, fig.cap = "Plot marker expression per identified cluster2"}
+```{r ex6b, fig.height = 9, fig.width = 16, fig.cap = 'Plot marker expression per identified cluster2'}
 
   clusters <- unique(metadata(sce)[['Cluster_PCA']])
   clusters
@@ -391,7 +440,7 @@ This function utilises the k nearest neighbours (k-NN) approach from Seurat, whi
     clusters = clusters,
     clusterAssign = metadata(sce)[['Cluster_PCA']],
     markers = markers,
-    nrow = 2, ncol = 4,
+    nrow = 2, ncol = 5,
     caption = 'Cluster assignments based on UMAP performed on PC eigenvectors',
     stripLabSize = 22,
     axisLabSize = 22,
@@ -404,7 +453,9 @@ This function utilises the k nearest neighbours (k-NN) approach from Seurat, whi
 
 ## Determine enriched markers in each cluster and plot the expression signature
 
-This method also calculates metacluster abundances across a chosen phenotype. The function returns a data-frame, which can then be exported to do other analyses.
+This method also calculates metacluster abundances across a chosen phenotype.
+The function returns a data-frame, which can then be exported to do other
+analyses.
 
 ### Disease vs Healthy metacluster abundances
 
@@ -422,9 +473,10 @@ This method also calculates metacluster abundances across a chosen phenotype. Th
 
 ### Expression signature
 
-The expression signature is a quick way to visualise which markers are more or less expressed in each identified cluster of cells.
+The expression signature is a quick way to visualise which markers are more or
+less expressed in each identified cluster of cells.
 
-```{r ex7, fig.height = 8, fig.width = 16, fig.cap = "Determine enriched markers in each cluster and plot the expression signature"}
+```{r ex7, fig.height = 8, fig.width = 16, fig.cap = 'Determine enriched markers in each cluster and plot the expression signature'}
 
   plotSignatures(sce,
     labCex = 1.5,
@@ -435,14 +487,24 @@ The expression signature is a quick way to visualise which markers are more or l
 
 # Tutorial 2: Import from Seurat
 
-Due to the fact that *scDataviz* is based on *SingleCellExperiment*, it has increased interoperability with other packages, including the popular *Seurat* [@satijalab]. Taking the data produced from the [Seurat Tutorial](https://satijalab.org/seurat/v3.1/pbmc3k_tutorial.html) on Peripheral Blood Mononuclear Cells (PBMCs), we can convert this to a *SingleCellExperiment* object recognisable by *scDataviz* via `as.SingleCellExperiment()`.
+Due to the fact that *scDataviz* is based on *SingleCellExperiment*, it has
+increased interoperability with other packages, including the popular
+*Seurat* [@satijalab]. Taking the data produced from the
+[Seurat Tutorial](https://satijalab.org/seurat/v3.1/pbmc3k_tutorial.html) on
+Peripheral Blood Mononuclear Cells (PBMCs), we can convert this to a
+*SingleCellExperiment* object recognisable by *scDataviz* via
+`as.SingleCellExperiment()`.
 
-For a full workflow for *Seurat*-to-*scDataviz*, see the [GitHub vignette](https://github.com/kevinblighe/scDataviz/).
+For a full workflow for *Seurat*-to-*scDataviz*, see the
+[GitHub vignette](https://github.com/kevinblighe/scDataviz/).
 
 
 # Tutorial 3: Import any numerical data
 
-*scDataviz* will work with any numerical data, too. Here, we show a quick example of how one can import a data-matrix of randomly-generated numbers that follow a negative binomial distribution, comprising 2500 cells and 20 markers:
+*scDataviz* will work with any numerical data, too. Here, we show a quick
+example of how one can import a data-matrix of randomly-generated numbers
+that follow a negative binomial distribution, comprising 2500 cells and 20
+markers:
 
 ```{r importRandomData1}
 
