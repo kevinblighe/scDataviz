@@ -1,4 +1,6 @@
-.Rproj.user
+library.bib
+README.Rmd
+.Rbuildignore
+.Rproj
 .Rhistory
-.RData
-.Ruserdata
+.Rproj.user
