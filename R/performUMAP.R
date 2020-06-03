@@ -39,6 +39,7 @@
 #'
 #' @importFrom MASS rnegbin
 #' @importFrom umap umap
+#' @importFrom methods is
 #'
 #' @export
 performUMAP <- function(

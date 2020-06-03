@@ -63,6 +63,7 @@
 #' @import SingleCellExperiment ggplot2
 #'
 #' @importFrom MASS rnegbin
+#' @importFrom methods is
 #' 
 #' @export
 markerExpressionPerCluster <- function(

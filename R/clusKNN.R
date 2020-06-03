@@ -60,6 +60,7 @@
 #' @importFrom Seurat FindNeighbors FindClusters
 #' @importFrom S4Vectors metadata
 #' @importFrom S4Vectors metadata<-
+#' @importFrom methods is
 #' 
 #' @export
 clusKNN <- function(

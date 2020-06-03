@@ -118,7 +118,7 @@ example (*not run*) is given below:
 
 For this vignette, due to the fact that the raw FCS data is > 500 megabytes,
 we will work with a smaller pre-prepared dataset that has been downsampled to
-10000 cells using the above code. This data comes included with the package.
+7500 cells using the above code. This data comes included with the package.
 
 Load the pre-prepared complosome data.
 
@@ -155,7 +155,7 @@ PCA.
     colby = 'treatment',
     legendPosition = 'right',
     title = 'PCA applied to CyTOF data',
-    caption = paste0('10000 cells randomly selected after ',
+    caption = paste0('7500 cells randomly selected after ',
       'having filtered for low variance'))
 
 ```

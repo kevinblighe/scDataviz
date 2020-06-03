@@ -90,6 +90,7 @@
 #'
 #' @importFrom MASS rnegbin
 #' @importFrom umap umap
+#' @importFrom methods is
 #'
 #' @export
 contourPlot <- function(

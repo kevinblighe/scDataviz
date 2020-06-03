@@ -49,6 +49,7 @@
 #' @importFrom grDevices colorRampPalette
 #' @importFrom graphics legend
 #' @importFrom scales rescale
+#' @importFrom methods is
 #'
 #' @export
 plotSignatures <- function(

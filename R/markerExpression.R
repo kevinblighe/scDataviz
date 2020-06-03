@@ -101,6 +101,7 @@
 #' @importFrom MASS rnegbin
 #' @importFrom umap umap
 #' @importFrom reshape2 melt
+#' @importFrom methods is
 #' 
 #' @export
 markerExpression <- function(

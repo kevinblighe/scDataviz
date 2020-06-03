@@ -66,6 +66,7 @@
 #' @importFrom MASS rnegbin
 #' @importFrom umap umap
 #' @importFrom stats aggregate median sd quantile
+#' @importFrom methods is
 #' 
 #' @export
 markerEnrichment <- function(
