@@ -1,3 +1,96 @@
+#' Highlight cell-to-cluster assignments across a 2-dimensional reduction / embedding.
+#'
+#' @param indata A data-frame or matrix, or \code{SingleCellExperiment} object. If a
+#'   data-frame or matrix, columns named in \code{dimColnames} will be extracted
+#'   from the data and used to generate the plot. If a SingleCellExperiment
+#'   object, a reduction named by \code{reducedDim} will be taken from your object
+#'   and used to generate the plot, again using columns whose names are
+#'   specified in \code{dimColnames}.
+#' @param clusterVector If \code{indata} is a non-\code{SingleCellExperiment} object,
+#'   \code{clusterVector} must be non-NULL and relate to a cell-to-cluster
+#'   assignment whose length matches \code{nrow(indata)}.
+#' @param reducedDim A reduced dimensional embedding stored within 'indata',
+#'   e.g., PCA or UMAP.
+#' @param dimColnames The column names of the dimensions to use.
+#' @param clusterColname The column name in the metadata of \code{indata} that
+#'   contains the cell-to-cluster assignment, assuming \code{indata} is a
+#'   \code{SingleCellExperiment} object.
+#' @param pointSize Size of plotted points.
+#' @param legendPosition Position of legend \code{('top', 'bottom', 'left', 'right',
+#'   'none')}.
+#' @param legendLabSize Size of plot legend text.
+#' @param xlim Limits of the x-axis.
+#' @param ylim Limits of the y-axis.
+#' @param label Logical, indicating whether or not to label the clusters.
+#' @param labSize Size of labels.
+#' @param labhjust Horizontal adjustment of label.
+#' @param labvjust Vertical adjustment of label.
+#' @param drawConnectors Logical, indicating whether or not to connect plot
+#'   labels to their corresponding cluster islands by line connectors.
+#' @param widthConnectors Line width of connectors.
+#' @param colConnectors Line colour of connectors.
+#' @param xlab Label for x-axis.
+#' @param xlabAngle Rotation angle of x-axis labels.
+#' @param xlabhjust Horizontal adjustment of x-axis labels.
+#' @param xlabvjust Vertical adjustment of x-axis labels.
+#' @param ylab Label for y-axis.
+#' @param ylabAngle Rotation angle of y-axis labels.
+#' @param ylabhjust Horizontal adjustment of y-axis labels.
+#' @param ylabvjust Vertical adjustment of y-axis labels.
+#' @param axisLabSize Size of x- and y-axis labels.
+#' @param title Plot title.
+#' @param subtitle Plot subtitle.
+#' @param caption Plot caption.
+#' @param titleLabSize Size of plot title.
+#' @param subtitleLabSize Size of plot subtitle.
+#' @param captionLabSize Size of plot caption.
+#' @param hline Draw one or more horizontal lines passing through this/these
+#'   values on y-axis. For single values, only a single numerical value is
+#'   necessary. For multiple lines, pass these as a vector, e.g., c(60,90).
+#' @param hlineType Line type for hline \code{('blank', 'solid', 'dashed', 'dotted',
+#'   'dotdash', 'longdash', 'twodash')}.
+#' @param hlineCol Colour of hline.
+#' @param hlineWidth Width of hline.
+#' @param vline Draw one or more vertical lines passing through this/these
+#'   values on x-axis. For single values, only a single numerical value is
+#'   necessary. For multiple lines, pass these as a vector, e.g., c(60,90).
+#' @param vlineType Line type for vline \code{('blank', 'solid', 'dashed', 'dotted',
+#'   'dotdash', 'longdash', 'twodash')}.
+#' @param vlineCol Colour of vline.
+#' @param vlineWidth Width of vline.
+#' @param gridlines.major Logical, indicating whether or not to draw major
+#'   gridlines.
+#' @param gridlines.minor Logical, indicating whether or not to draw minor
+#'   gridlines.
+#' @param borderWidth Width of the border on the x and y axes.
+#' @param borderColour Colour of the border on the x and y axes.
+#' @param verbose Boolean (TRUE / FALSE) to print messages to console or not.
+#'
+#' @details
+#' Highlight cell-to-cluster assignments across a 2-dimensional reduction / embedding.
+#'
+#' @return A \code{ggplot2} object.
+#'
+#' @author Kevin Blighe <kevin@clinicalbioinformatics.co.uk>
+#'
+#' @examples
+#' # create random data that follows a negative binomial
+#' mat <- jitter(matrix(
+#'   MASS::rnegbin(rexp(1000, rate=.1), theta = 4.5),
+#'   ncol = 20))
+#' colnames(mat) <- paste0('CD', 1:ncol(mat))
+#' rownames(mat) <- paste0('cell', 1:nrow(mat))
+#'
+#' u <- umap::umap(mat)
+#' clusvec <- clusKNN(u$layout)
+#' plotClusters(u$layout, clusvec)
+#'
+#' @import SingleCellExperiment ggplot2 ggrepel
+#'
+#' @importFrom MASS rnegbin
+#' @importFrom umap umap
+#'
+#' @export
 plotClusters <- function(
   indata,
   clusterVector = NULL,

@@ -1,3 +1,75 @@
+#' Input, filter, normalise, and transform FCS expression data.
+#'
+#' @param files A vector of FCS files.
+#' @param assayname Name of the assay slot in which data will be stored.
+#' @param metadata Metadata associated with the FCS files specified in
+#'   'files'. A strict rule is enforced requiring that \code{rownames(metadata)}
+#'   matches files in both name and order.
+#' @param filter Boolean (TRUE / FALSE) to enable filtering (per sample)
+#'   for background signal / noise.
+#' @param bgNoiseThreshold Threshold for background noise. Used when 
+#'   \code{filter == TRUE}.
+#' @param euclideanNormThreshold Euclidean norm threshold for background
+#'   noise. Used when \code{filter == TRUE}.
+#' @param transformation Boolean (TRUE / FALSE) to enable data transformation
+#'   after filtering.
+#' @param transFun The function to apply (per sample) for transformation. 
+#'   Typically, for flow and mass cytometry, this is hyperbolic arc sine
+#'   (\code{asinh(x)}). User can supply any function.
+#' @param asinhFactor The factor to apply when transforming via \code{asinh()}. For
+#'   flow cytometry, this is usually 150; for mass cytometry and CyTOF, it is
+#'   5. Note that this is not used if the user has supplied their own function
+#'   to \code{transFun}.
+#' @param downsample Downsample to this number of random variables. This is
+#'   perfromed on the final merged dataset, i.e., after all samples have been
+#'   bound together. NULL to disable.
+#' @param downsampleVar Downsample based on variance. Removes this proportion of
+#'   cells based on lesser variance. This is applied per sample. If user wishes
+#'   to apply this globally on the final merged dataset, then set this to 0 and
+#'   remove based on variance manually.
+#' @param colsDiscard Columns to be removed from the final merged data. These
+#'   names are literal and must match exactly.
+#' @param colsRetain Retain these columns only. This is the same as \code{colsDiscard}
+#'   but in reverse. Technically, it is possible to activate both \code{colsDiscard}
+#'   and \code{colsRetain}, but \code{colsDiscard} will be executed first.
+#' @param newColnames Assuming that you know the exact order of your final selected
+#'   markers, rename these based on a vector passed as this argument. Please
+#'   exercise caution when using this.
+#' @param verbose Boolean (TRUE / FALSE) to print messages to console or not.
+#'
+#' @details
+#' Input, filter, normalise, and transform FCS expression data.
+#'
+#' @return A \code{SingleCellExperiment} object.
+#'
+#' @author Kevin Blighe <kevin@clinicalbioinformatics.co.uk>
+#'
+#' @examples
+#' # create random data that follows a negative binomial
+#' mat1 <- jitter(matrix(
+#'   MASS::rnegbin(rexp(50000, rate=.1), theta = 4.5),
+#'   ncol = 20))
+#' colnames(mat1) <- paste0('CD', 1:ncol(mat1))
+#' rownames(mat1) <- paste0('cell', 1:nrow(mat1))
+#'
+#' mat2 <- jitter(matrix(
+#'   MASS::rnegbin(rexp(50000, rate=.1), theta = 4.5),
+#'   ncol = 20))
+#' colnames(mat2) <- paste0('CD', 1:ncol(mat2))
+#' rownames(mat2) <- paste0('cell', 1:nrow(mat2))
+#'
+#' metadata <- data.frame(
+#'   group = c('PB1', 'PB2'),
+#'   row.names = c('mat1', 'mat2'),
+#'   stringsAsFactors = FALSE)
+#'
+#' @import SingleCellExperiment
+#' 
+#' @importFrom MASS rnegbin
+#' @importFrom flowCore read.FCS exprs
+#' @importFrom S4Vectors metadata<-
+#'
+#' @export
 processFCS <- function(
   files,
   assayname = 'scaled',

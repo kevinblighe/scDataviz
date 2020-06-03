@@ -1,3 +1,108 @@
+#' Highlight the individual marker expression profile across a 2-dimensional reduction / embedding, typically contained within a \code{SingleCellExperiment} object. By default, this function plots the expression profile of 6 randomly-selected markers from your data.
+#'
+#' @param indata A data-frame or matrix, or \code{SingleCellExperiment} object. If a
+#'   data-frame or matrix, this should relate to expression data (cells as
+#'   columns; genes as rows). If a \code{SingleCellExperiment} object, data will be
+#'   extracted from an assay component named by \code{assay}.
+#' @param layout If 'indata' is a non-SingleCellExperiment object, \code{layout} must
+#'   be activated and relate to a 2-dimensional reduction / embedding, although,
+#'   technically, any data-frame or matrix of numbers will be accepted, provided
+#'   that it aligns with the dimensions of \code{indata}, and provided that it
+#'   contains columns as specified in \code{dimColnames}.
+#' @param assay Name of the assay slot in 'indata' from which data will be
+#'   taken, assuming \code{indata} is a \code{SingleCellExperiment} object.
+#' @param reducedDim A reduced dimensional component stored within \code{indata},
+#'   e.g., PCA or UMAP.
+#' @param dimColnames The column names of the dimensions to use.
+#' @param markers Vector containing marker names to plot.
+#' @param ncol Number of columns for faceting.
+#' @param nrow Number of rows for faceting.
+#' @param col Colours used for generation of fill gradient according to
+#'   expression values. Can be 2 or 3 colours.
+#' @param colMidpoint Mid-point (expression value) for the colour range. Only
+#'   used when 3 colours are specified by \code{col}.
+#' @param alpha Control the gradient of colour transparency, with 1 being opaque.
+#' @param pointSize Size of plotted points.
+#' @param legendPosition Position of legend \code{('top', 'bottom', 'left', 'right',
+#'   'none')}.
+#' @param legendLabSize Size of plot legend text.
+#' @param legendKeyHeight Height of the legend key.
+#' @param xlim Limits of the x-axis.
+#' @param ylim Limits of the y-axis.
+#' @param celllab A vector containing any cells that the user wishes to label
+#'   in the plot.
+#' @param labSize Size of labels.
+#' @param labhjust Horizontal adjustment of label.
+#' @param labvjust Vertical adjustment of label.
+#' @param drawConnectors Logical, indicating whether or not to connect plot
+#'   labels to their corresponding points by line connectors.
+#' @param widthConnectors Line width of connectors.
+#' @param colConnectors Line colour of connectors.
+#' @param xlab Label for x-axis.
+#' @param xlabAngle Rotation angle of x-axis labels.
+#' @param xlabhjust Horizontal adjustment of x-axis labels.
+#' @param xlabvjust Vertical adjustment of x-axis labels.
+#' @param ylab Label for y-axis.
+#' @param ylabAngle Rotation angle of y-axis labels.
+#' @param ylabhjust Horizontal adjustment of y-axis labels.
+#' @param ylabvjust Vertical adjustment of y-axis labels.
+#' @param axisLabSize Size of x- and y-axis labels.
+#' @param stripLabSize Size of the strip (marker) labels.
+#' @param title Plot title.
+#' @param subtitle Plot subtitle.
+#' @param caption Plot caption.
+#' @param titleLabSize Size of plot title.
+#' @param subtitleLabSize Size of plot subtitle.
+#' @param captionLabSize Size of plot caption.
+#' @param hline Draw one or more horizontal lines passing through this/these
+#'    values on y-axis. For single values, only a single numerical value is
+#'   necessary. For multiple lines, pass these as a vector, e.g., c(60,90).
+#' @param hlineType Line type for hline \code{('blank', 'solid', 'dashed', 'dotted',
+#'   'dotdash', 'longdash', 'twodash')}.
+#' @param hlineCol Colour of hline.
+#' @param hlineWidth Width of hline.
+#' @param vline Draw one or more vertical lines passing through this/these
+#'   values on x-axis. For single values, only a single numerical value is
+#'   necessary. For multiple lines, pass these as a vector, e.g., c(60,90).
+#' @param vlineType Line type for vline \code{('blank', 'solid', 'dashed', 'dotted',
+#'   'dotdash', 'longdash', 'twodash')}.
+#' @param vlineCol Colour of vline.
+#' @param vlineWidth Width of vline.
+#' @param gridlines.major Logical, indicating whether or not to draw major
+#'   gridlines.
+#' @param gridlines.minor Logical, indicating whether or not to draw minor
+#'   gridlines.
+#' @param borderWidth Width of the border on the x and y axes.
+#' @param borderColour Colour of the border on the x and y axes.
+#'
+#' @details
+#' Highlight the individual marker expression profile across a 2-dimensional reduction / embedding, typically contained within a \code{SingleCellExperiment} object. By default, this function plots the expression profile of 6 randomly-selected markers from your data.
+#'
+#' @return A \code{ggplot2} object.
+#'
+#' @author Kevin Blighe <kevin@clinicalbioinformatics.co.uk>
+#'
+#' @examples
+#' # create random data that follows a negative binomial
+#' mat <- jitter(matrix(
+#' MASS::rnegbin(rexp(1000, rate=.1), theta = 4.5),
+#'   ncol = 20))
+#' colnames(mat) <- paste0('CD', 1:ncol(mat))
+#' rownames(mat) <- paste0('cell', 1:nrow(mat))
+#'
+#' u <- umap::umap(mat)$layout
+#' colnames(u) <- c('UMAP1','UMAP2')
+#' rownames(u) <- rownames(mat)
+#'
+#' markerExpression(t(mat), layout = u)
+#'
+#' @import SingleCellExperiment ggplot2
+#'
+#' @importFrom MASS rnegbin
+#' @importFrom umap umap
+#' @importFrom reshape2 melt
+#' 
+#' @export
 markerExpression <- function(
   indata,
   layout = NULL,

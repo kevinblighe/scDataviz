@@ -1,3 +1,67 @@
+#' A wrapper function for \code{Seurat}'s \code{FindNeighbors} and \code{FindClusters}.
+#'
+#' @param indata A data-frame or matrix, or \code{SingleCellExperiment} object.
+#'   If a \code{SingleCellExperiment} object, the cell-to-cluster assignments
+#'   will be added as a new column, specified by \code{clusterAssignName}, to
+#'   the input object's metadata; if a data-frame or matrix, only the cluster
+#'   assignment vector is returned.
+#' @param reducedDim A reduced dimensional component stored within \code{indata}.
+#'   e.g., PCA or UMAP.
+#' @param dimColnames The column names of the dimensions to use.
+#' @param clusterAssignName The new column name in the metadata that will
+#'   contain the determined cell-to-cluster assignments.
+#' @param distance.matrix Refer to \code{?Seurat::FindNeighbors}.
+#' @param k.param Refer to \code{?Seurat::FindNeighbors}.
+#' @param compute.SNN Refer to \code{?Seurat::FindNeighbors}.
+#' @param prune.SNN Refer to \code{?Seurat::FindNeighbors}.
+#' @param nn.method Refer to \code{?Seurat::FindNeighbors}.
+#' @param annoy.metric Refer to \code{?Seurat::FindNeighbors}.
+#' @param nn.eps Refer to \code{?Seurat::FindNeighbors}.
+#' @param verbose Refer to \code{?Seurat::FindNeighbors}.
+#' @param force.recalc Refer to \code{?Seurat::FindNeighbors}.
+#' @param modularity.fxn Refer to \code{?Seurat::FindClusters}.
+#' @param initial.membership Refer to \code{?Seurat::FindClusters}.
+#' @param weights Refer to \code{?Seurat::FindClusters}.
+#' @param node.sizes Refer to \code{?Seurat::FindClusters}.
+#' @param resolution Refer to \code{?Seurat::FindClusters}.
+#' @param method Refer to \code{?Seurat::FindClusters}.
+#' @param algorithm Refer to \code{?Seurat::FindClusters}.
+#' @param n.start Refer to \code{?Seurat::FindClusters}.
+#' @param n.iter Refer to \code{?Seurat::FindClusters}.
+#' @param random.seed Refer to \code{?Seurat::FindClusters}.
+#' @param group.singletons Refer to \code{?Seurat::FindClusters}.
+#' @param temp.file.location Refer to \code{?Seurat::FindClusters}.
+#' @param edge.file.name Refer to \code{?Seurat::FindClusters}.
+#' @param overwrite When the input object is a SingleCellExperiment, enabling
+#'   this will result in the overwriting, with the new cluster assignments, of
+#'   any column in your metadata that has the same name as
+#'   \code{clusterAssignName}.
+#'
+#' @details
+#' A wrapper function for Seurat's FindNeighbors and FindClusters.
+#'
+#' @return A \code{SingleCellExperiment} or \code{numeric} object.
+#'
+#' @author Kevin Blighe <kevin@clinicalbioinformatics.co.uk>
+#'
+#' @examples
+#' # create random data that follows a negative binomial
+#' mat <- jitter(matrix(
+#'   MASS::rnegbin(rexp(1000, rate=.1), theta = 4.5),
+#'   ncol = 20))
+#' colnames(mat) <- paste0('CD', 1:ncol(mat))
+#' rownames(mat) <- paste0('cell', 1:nrow(mat))
+#'
+#' clusKNN(mat)
+#'
+#' @import SingleCellExperiment
+#'
+#' @importFrom MASS rnegbin
+#' @importFrom Seurat FindNeighbors FindClusters
+#' @importFrom S4Vectors metadata
+#' @importFrom S4Vectors metadata<-
+#' 
+#' @export
 clusKNN <- function(
   indata,
   reducedDim = 'UMAP',

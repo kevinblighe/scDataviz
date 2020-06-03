@@ -1,3 +1,45 @@
+#' Package-wide, non-user function used to set a base \code{ggplot2} theme.
+#'
+#' @param titleLabSize Size of plot title.
+#' @param subtitleLabSize Size of plot subtitle.
+#' @param captionLabSize Size of plot caption.
+#' @param axisLabSize Size of x- and y-axis labels.
+#' @param xlabAngle Rotation angle of x-axis labels.
+#' @param xlabhjust Horizontal adjustment of x-axis labels.
+#' @param xlabvjust Vertical adjustment of x-axis labels.
+#' @param ylabAngle Rotation angle of y-axis labels.
+#' @param ylabhjust Horizontal adjustment of y-axis labels.
+#' @param ylabvjust Vertical adjustment of y-axis labels.
+#' @param legendPosition Position of \code{legend ('top', 'bottom',
+#'   'left', 'right', 'none')}.
+#' @param legendLabSize Size of plot legend text.
+#'
+#' @details
+#' Package-wide, non-user function used to set a base \code{ggplot2} theme.
+#'
+#' @return A \code{list} object.
+#'
+#' @author Kevin Blighe <kevin@clinicalbioinformatics.co.uk>
+#'
+#' @examples
+#' # create a theme
+#' th <- basetheme(
+#'   titleLabSize = 16,
+#'   subtitleLabSize = 12,
+#'   captionLabSize = 12,
+#'   axisLabSize = 16,
+#'   xlabAngle = 0,
+#'   xlabhjust = 0.5,
+#'   xlabvjust = 0.5,
+#'   ylabAngle = 0,
+#'   ylabhjust = 0.5,
+#'   ylabvjust = 0.5,
+#'   legendPosition = 'none',
+#'   legendLabSize = 12)
+#'
+#' @importFrom ggplot2 theme_bw theme
+#'
+#' @export
 basetheme <- function(
   titleLabSize,
   subtitleLabSize,

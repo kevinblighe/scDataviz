@@ -1,6 +1,6 @@
 ---
 title: "scDataviz: single cell dataviz and downstream analyses"
-author: "Kevin Blighe, Shahram Kordasti"
+author: "Kevin Blighe"
 date: "`r Sys.Date()`"
 package: "`r packageVersion('scDataviz')`"
 output:
@@ -110,7 +110,7 @@ example (*not run*) is given below:
     transformation = TRUE,
     transFun = function (x) asinh(x),
     asinhFactor = 5,
-    downsample = 10000,
+    downsample = 100000,
     downsampleVar = 0.2,
     newColnames = paste0('CD', 1:65))
 
@@ -118,7 +118,7 @@ example (*not run*) is given below:
 
 For this vignette, due to the fact that the raw FCS data is > 500 megabytes,
 we will work with a smaller pre-prepared dataset that has been downsampled to
-10000 cells using the above code. THis data comes included with the package.
+10000 cells using the above code. This data comes included with the package.
 
 Load the pre-prepared complosome data.
 
@@ -148,6 +148,7 @@ PCA.
 
   library(PCAtools)
   p <- pca(assay(sce, 'scaled'), metadata = metadata(sce))
+
   biplot(p,
     lab = NULL,
     pointSize = 1.0,
@@ -225,7 +226,7 @@ plot space, then there are likely issues with your input data distribution.
 We want to see well-separated, high density 'islands', or, at least, gradual
 gradients that blend into one another across high density 'peaks'.
 
-```{r ex2, fig.height = 8, fig.width = 16, fig.cap = 'Create a contour plot of the UMAP layout'}
+```{r ex2, fig.height = 7.5, fig.width = 16, fig.cap = 'Create a contour plot of the UMAP layout'}
 
   ggout1 <- contourPlot(sce,
     reducedDim = 'UMAP',
@@ -450,6 +451,25 @@ experience.
 
 ```
 
+Try all markers across a single cluster:
+
+```{r ex6c, fig.height = 6, fig.width = 20, fig.cap = 'Plot marker expression per identified cluster3'}
+
+  cluster <- sample(unique(metadata(sce)[['Cluster']]), 1)
+  cluster
+
+  markerExpressionPerCluster(sce,
+    clusters = cluster,
+    markers = rownames(sce),
+    stripLabSize = 20,
+    axisLabSize = 20,
+    titleLabSize = 20,
+    subtitleLabSize = 14,
+    captionLabSize = 12)
+
+```
+
+
 
 ## Determine enriched markers in each cluster and plot the expression signature
 
@@ -459,15 +479,30 @@ analyses.
 
 ### Disease vs Healthy metacluster abundances
 
+```{r echo = TRUE, eval = FALSE}
 
-`r knitr::kable(markerEnrichment(sce, metacluster = 'group'), auto = TRUE) %>% kable_styling(full_width = FALSE)`
+  markerEnrichment(sce,
+    method = 'quantile',
+    studyvarID = 'group')
+
+```
+
+`r knitr::kable(markerEnrichment(sce, method = 'quantile', studyvarID = 'group'), auto = TRUE) %>% kable_styling(full_width = FALSE)`
 
 .
 
 ### Treatment type metacluster abundances
 
+```{r echo = TRUE, eval = FALSE}
 
-`r knitr::kable(markerEnrichment(sce, metacluster = 'treatment'), auto = TRUE) %>% kable_styling(full_width = FALSE)`
+  markerEnrichment(sce,
+    sampleAbundances = FALSE,
+    method = 'quantile',
+    studyvarID = 'treatment')
+
+```
+v
+`r knitr::kable(markerEnrichment(sce, sampleAbundances = FALSE, method = 'quantile', studyvarID = 'treatment'), auto = TRUE) %>% kable_styling(full_width = FALSE)`
 
 .
 
@@ -542,9 +577,11 @@ This will also work without any assigned metadata.
 
 # Acknowledgments
 
+* Shahram Kordasti
 * Jessica Timms
 * James Opzoomer
 * Marcel Ramos (Bioconductor)
+* Bioinformatics CRO
 
 
 # Session info
@@ -559,11 +596,11 @@ sessionInfo()
 
 ﻿@scDataviz
 
-@Lun
-
-@Wickham
-
 @PCAtools
 
+@Lun
+
 @satijalab
+
+@Wickham
 

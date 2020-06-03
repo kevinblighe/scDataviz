@@ -1,3 +1,70 @@
+#' Generate box-and-whisker plots illustrating marker expression per k-NN identified cluster. By default, 5 randomly-selected clusters are selected, and the expression profiles of 10 randomly-selected markers are plot across these.
+#'
+#' @param indata A data-frame or matrix, or SingleCellExperiment object. If a
+#'    data-frame or matrix, this should relate to expression data (cells as
+#'    columns; genes as rows). If a \code{SingleCellExperiment} object, data will be
+#'    extracted from an assay component named by \code{assay}.
+#' @param assay Name of the assay slot in \code{indata} from which data will be
+#'    taken, assuming \code{indata} is a \code{SingleCellExperiment} object.
+#' @param clusters Vector containing clusters to plot.
+#' @param clusterAssign A vector of cell-to-cluster assignments. This can be
+#'    from any source but must align with your cells / variables. There is no
+#'    check to ensure this when \code{indata} is not a \code{SingleCellExperiment} object.
+#' @param markers Vector containing marker names to plot.
+#' @param ncol Number of columns for faceting.
+#' @param nrow Number of rows for faceting.
+#' @param legendPosition Position of legend \code{('top', 'bottom', 'left', 'right',
+#'  'none')}.
+#' @param legendLabSize Size of plot legend text.
+#' @param legendKeyHeight Height of the legend key.
+#' @param xlim Limits of the x-axis.
+#' @param ylim Limits of the y-axis.
+#' @param yfixed Logical, specifying whether or not to fix the y-axis
+#'    scales across all clusters when faceting.
+#' @param xlab Label for x-axis.
+#' @param xlabAngle Rotation angle of x-axis labels.
+#' @param xlabhjust Horizontal adjustment of x-axis labels.
+#' @param xlabvjust Vertical adjustment of x-axis labels.
+#' @param ylab Label for y-axis.
+#' @param ylabAngle Rotation angle of y-axis labels.
+#' @param ylabhjust Horizontal adjustment of y-axis labels.
+#' @param ylabvjust Vertical adjustment of y-axis labels.
+#' @param axisLabSize Size of x- and y-axis labels.
+#' @param stripLabSize Size of the strip labels.
+#' @param title Plot title.
+#' @param subtitle Plot subtitle.
+#' @param caption Plot caption.
+#' @param titleLabSize Size of plot title.
+#' @param subtitleLabSize Size of plot subtitle.
+#' @param captionLabSize Size of plot caption.
+#' @param borderWidth Width of the border on the x and y axes.
+#' @param borderColour Colour of the border on the x and y axes.
+#' @param verbose Boolean (TRUE / FALSE) to print messages to console or not.
+#'
+#' @details
+#' Generate box-and-whisker plots illustrating marker expression per k-NN identified cluster. By default, 5 randomly-selected clusters are selected, and the expression profiles of 10 randomly-selected markers are plot across these.
+#'
+#' @return A \code{ggplot2} object.
+#'
+#' @author Kevin Blighe <kevin@clinicalbioinformatics.co.uk>
+#'
+#' @examples
+#' # create random data that follows a negative binomial
+#' mat <- jitter(matrix(
+#'   MASS::rnegbin(rexp(5000, rate=.1), theta = 4.5),
+#'   ncol = 20))
+#' colnames(mat) <- paste0('CD', 1:ncol(mat))
+#' rownames(mat) <- paste0('cell', 1:nrow(mat))
+#'
+#' clus <- clusKNN(mat)
+#' markerExpressionPerCluster(t(mat), clusters = c(0, 1),
+#'   clusterAssign = clus)
+#'
+#' @import SingleCellExperiment ggplot2
+#'
+#' @importFrom MASS rnegbin
+#' 
+#' @export
 markerExpressionPerCluster <- function(
   indata,
   assay = 'scaled',
