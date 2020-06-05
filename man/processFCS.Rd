@@ -20,6 +20,7 @@ processFCS(
     "tSNE1", "tSNE2", "BCKG"),
   colsRetain = NULL,
   newColnames = NULL,
+  emptyValue = TRUE,
   verbose = TRUE
 )
 }
@@ -72,6 +73,9 @@ and \code{colsRetain}, but \code{colsDiscard} will be executed first.}
 \item{newColnames}{Assuming that you know the exact order of your final selected
 markers, rename these based on a vector passed as this argument. Please
 exercise caution when using this.}
+
+\item{emptyValue}{boolean (taken from ?flowCore::read.FCS indicating whether or
+not we allow an empty value for keyword values in TEXT segment.}
 
 \item{verbose}{Boolean (TRUE / FALSE) to print messages to console or not.}
 }

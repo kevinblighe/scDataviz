@@ -4,7 +4,7 @@ test_that('datatypes', {
       processFCS(files, assayname, colsDiscard,
         colsRetain, newColnames),
       c('character'))
-    expect_type(processFCS(filter, transformation),
+    expect_type(processFCS(filter, transformation, emptyValue),
       c('logical'))
     expect_type(processFCS(transFun),
       c('closure'))

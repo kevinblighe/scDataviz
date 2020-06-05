@@ -35,6 +35,8 @@
 #' @param newColnames Assuming that you know the exact order of your final selected
 #'   markers, rename these based on a vector passed as this argument. Please
 #'   exercise caution when using this.
+#' @param emptyValue boolean (taken from ?flowCore::read.FCS indicating whether or
+#'   not we allow an empty value for keyword values in TEXT segment.
 #' @param verbose Boolean (TRUE / FALSE) to print messages to console or not.
 #'
 #' @details
@@ -86,6 +88,7 @@ processFCS <- function(
     'Residual','tSNE1','tSNE2','BCKG'),
   colsRetain = NULL,
   newColnames = NULL,
+  emptyValue = TRUE,
   verbose = TRUE)
 {
 
@@ -100,7 +103,7 @@ processFCS <- function(
   # read in the data to a list
   samples <- list()
   samples <- lapply(files,
-    function(x) exprs(read.FCS(x, transformation = FALSE)))
+    function(x) exprs(read.FCS(x, transformation = FALSE, emptyValue = emptyValue)))
   names(samples) <- files
 
   # filter markers out

@@ -156,7 +156,7 @@ of performing PCA.
     colby = 'treatment',
     legendPosition = 'right',
     title = 'PCA applied to CyTOF data',
-    caption = paste0('10000 cells randomly selected after ',
+    caption = paste0('25000 cells randomly selected after ',
       'having filtered for low variance'))
 ```
 
