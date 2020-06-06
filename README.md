@@ -1,7 +1,7 @@
 scDataviz: single cell dataviz and downstream analyses
 ================
 Kevin Blighe
-2020-06-03
+2020-06-05
 
 # Introduction
 
@@ -129,7 +129,7 @@ via the `downsample` and `downsampleVar` parameters.
     transformation = TRUE,
     transFun = function (x) asinh(x),
     asinhFactor = 5,
-    downsample = 25000,
+    downsample = 50000,
     downsampleVar = 0.2,
     newColnames = paste0('CD', 1:65))
 ```
@@ -151,12 +151,15 @@ of performing PCA.
   p <- pca(assay(sce, 'scaled'), metadata = metadata(sce))
 
   biplot(p,
+    x = 'PC1', y = 'PC2',
     lab = NULL,
+    xlim = c(min(p$rotated[,'PC1'])-1, max(p$rotated[,'PC1'])+1),
+    ylim = c(min(p$rotated[,'PC2'])-1, max(p$rotated[,'PC2'])+1),
     pointSize = 1.0,
     colby = 'treatment',
     legendPosition = 'right',
     title = 'PCA applied to CyTOF data',
-    caption = paste0('25000 cells randomly selected after ',
+    caption = paste0('50000 cells randomly selected after ',
       'having filtered for low variance'))
 ```
 
@@ -233,6 +236,7 @@ across high density ‘peaks’.
 ``` r
   ggout1 <- contourPlot(sce,
     reducedDim = 'UMAP',
+    bins = 150,
     subtitle = 'UMAP performed on expression values',
     legendLabSize = 18,
     axisLabSize = 22,
@@ -242,6 +246,7 @@ across high density ‘peaks’.
 
   ggout2 <- contourPlot(sce,
     reducedDim = 'UMAP_PCA',
+    bins = 150,
     subtitle = 'UMAP performed on PC eigenvectors',
     legendLabSize = 18,
     axisLabSize = 22,
@@ -267,7 +272,7 @@ profiles across the UMAP layouts.
   markers
 ```
 
-    ## [1] "CD25" "CD2"  "CD58" "CD22" "CD19" "CD47"
+    ## [1] "CD52" "CD36" "CD27" "CD11" "CD29" "CD57"
 
 ``` r
   ggout1 <- markerExpression(sce,
@@ -316,12 +321,12 @@ First, let’s take a look inside the metadata that we have.
 ```
 
     ##       sample   group treatment
-    ## cell1    P04 Disease       CD3
-    ## cell2  HD262 Healthy    Unstim
-    ## cell3  HD262 Healthy    Unstim
-    ## cell4    P00 Disease    Unstim
-    ## cell5  HD262 Healthy      CD46
-    ## cell6  HD262 Healthy    Unstim
+    ## cell1    P00 Disease    Unstim
+    ## cell2    P04 Disease       CD3
+    ## cell3   HD01 Healthy      CD46
+    ## cell4    P00 Disease      CD46
+    ## cell5    P04 Disease      CD46
+    ## cell6    P00 Disease    Unstim
 
 ``` r
   levels(metadata(sce)$group)
@@ -453,22 +458,19 @@ neighbours](README_files/figure-gfm/ex5-1.png)
     captionLabSize = 18)
 ```
 
-![Plot marker expression per identified
-cluster1](README_files/figure-gfm/ex6a-1.png)
-
 ``` r
   clusters <- unique(metadata(sce)[['Cluster_PCA']])
   clusters
 ```
 
-    ## [1] 1 2 6 0 5 3 4 7
+    ## [1] 6 0 4 2 3 5 1 7
 
 ``` r
   markers <- sample(rownames(sce), 8)
   markers
 ```
 
-    ## [1] "CD42" "CD62" "CD8"  "CD1"  "CD20" "CD53" "CD36" "CD34"
+    ## [1] "CD27" "CD58" "CD28" "CD8"  "CD13" "CD32" "CD31" "CD56"
 
 ``` r
   markerExpressionPerCluster(sce,
@@ -494,7 +496,7 @@ Try all markers across a single cluster:
   cluster
 ```
 
-    ## [1] 7
+    ## [1] 6
 
 ``` r
   markerExpressionPerCluster(sce,
@@ -642,19 +644,219 @@ nCell\_Disease
 
 <td style="text-align:right;">
 
-5902
+9050
 
 </td>
 
 <td style="text-align:right;">
 
-25000
+50000
 
 </td>
 
 <td style="text-align:right;">
 
-23.608
+18.100
+
+</td>
+
+<td style="text-align:left;">
+
+CD2-CD4-CD7-CD8-CD9-CD10-CD11-CD15-CD56-
+
+</td>
+
+<td style="text-align:left;">
+
+CD1+CD23+CD32+CD57+CD58+
+
+</td>
+
+<td style="text-align:right;">
+
+22.2320442
+
+</td>
+
+<td style="text-align:right;">
+
+0.0000000
+
+</td>
+
+<td style="text-align:right;">
+
+0.0331492
+
+</td>
+
+<td style="text-align:right;">
+
+0.0220994
+
+</td>
+
+<td style="text-align:right;">
+
+18.9392265
+
+</td>
+
+<td style="text-align:right;">
+
+11.5469613
+
+</td>
+
+<td style="text-align:right;">
+
+47.2265193
+
+</td>
+
+<td style="text-align:right;">
+
+0.0000000
+
+</td>
+
+<td style="text-align:right;">
+
+2015
+
+</td>
+
+<td style="text-align:right;">
+
+7035
+
+</td>
+
+</tr>
+
+<tr>
+
+<td style="text-align:right;">
+
+1
+
+</td>
+
+<td style="text-align:right;">
+
+7753
+
+</td>
+
+<td style="text-align:right;">
+
+50000
+
+</td>
+
+<td style="text-align:right;">
+
+15.506
+
+</td>
+
+<td style="text-align:left;">
+
+CD2-CD4-CD7-CD11-CD15-
+
+</td>
+
+<td style="text-align:left;">
+
+CD1+CD23+CD32+CD51+CD57+CD58+
+
+</td>
+
+<td style="text-align:right;">
+
+0.0000000
+
+</td>
+
+<td style="text-align:right;">
+
+32.3100735
+
+</td>
+
+<td style="text-align:right;">
+
+0.1160841
+
+</td>
+
+<td style="text-align:right;">
+
+67.2771830
+
+</td>
+
+<td style="text-align:right;">
+
+0.0000000
+
+</td>
+
+<td style="text-align:right;">
+
+0.0257965
+
+</td>
+
+<td style="text-align:right;">
+
+0.2192700
+
+</td>
+
+<td style="text-align:right;">
+
+0.0515929
+
+</td>
+
+<td style="text-align:right;">
+
+2514
+
+</td>
+
+<td style="text-align:right;">
+
+5239
+
+</td>
+
+</tr>
+
+<tr>
+
+<td style="text-align:right;">
+
+2
+
+</td>
+
+<td style="text-align:right;">
+
+7594
+
+</td>
+
+<td style="text-align:right;">
+
+50000
+
+</td>
+
+<td style="text-align:right;">
+
+15.188
 
 </td>
 
@@ -684,25 +886,13 @@ CD1+CD21+CD23+CD30+CD32+CD37+CD57+CD58+
 
 <td style="text-align:right;">
 
-63.3852931
+62.3650250
 
 </td>
 
 <td style="text-align:right;">
 
-0.1016605
-
-</td>
-
-<td style="text-align:right;">
-
-0.0000000
-
-</td>
-
-<td style="text-align:right;">
-
-0.000000
+0.1316829
 
 </td>
 
@@ -714,65 +904,7 @@ CD1+CD21+CD23+CD30+CD32+CD37+CD57+CD58+
 
 <td style="text-align:right;">
 
-36.5130464
-
-</td>
-
-<td style="text-align:right;">
-
-3741
-
-</td>
-
-<td style="text-align:right;">
-
-2161
-
-</td>
-
-</tr>
-
-<tr>
-
-<td style="text-align:right;">
-
-1
-
-</td>
-
-<td style="text-align:right;">
-
-4451
-
-</td>
-
-<td style="text-align:right;">
-
-25000
-
-</td>
-
-<td style="text-align:right;">
-
-17.804
-
-</td>
-
-<td style="text-align:left;">
-
-CD2-CD4-CD7-CD8-CD9-CD10-CD11-CD15-
-
-</td>
-
-<td style="text-align:left;">
-
-CD1+CD23+CD32+CD57+CD58+
-
-</td>
-
-<td style="text-align:right;">
-
-22.6915300
+0.0131683
 
 </td>
 
@@ -784,149 +916,19 @@ CD1+CD23+CD32+CD57+CD58+
 
 <td style="text-align:right;">
 
-0.0224669
+37.4901238
 
 </td>
 
 <td style="text-align:right;">
 
-0.0449337
+4736
 
 </td>
 
 <td style="text-align:right;">
 
-18.5800944
-
-</td>
-
-<td style="text-align:right;">
-
-11.817569
-
-</td>
-
-<td style="text-align:right;">
-
-46.8434060
-
-</td>
-
-<td style="text-align:right;">
-
-0.0000000
-
-</td>
-
-<td style="text-align:right;">
-
-1011
-
-</td>
-
-<td style="text-align:right;">
-
-3440
-
-</td>
-
-</tr>
-
-<tr>
-
-<td style="text-align:right;">
-
-2
-
-</td>
-
-<td style="text-align:right;">
-
-3877
-
-</td>
-
-<td style="text-align:right;">
-
-25000
-
-</td>
-
-<td style="text-align:right;">
-
-15.508
-
-</td>
-
-<td style="text-align:left;">
-
-CD2-CD4-CD7-CD11-CD15-
-
-</td>
-
-<td style="text-align:left;">
-
-CD1+CD23+CD32+CD51+CD57+CD58+
-
-</td>
-
-<td style="text-align:right;">
-
-0.0257931
-
-</td>
-
-<td style="text-align:right;">
-
-32.9120454
-
-</td>
-
-<td style="text-align:right;">
-
-0.0773794
-
-</td>
-
-<td style="text-align:right;">
-
-66.8042301
-
-</td>
-
-<td style="text-align:right;">
-
-0.0257931
-
-</td>
-
-<td style="text-align:right;">
-
-0.000000
-
-</td>
-
-<td style="text-align:right;">
-
-0.1289657
-
-</td>
-
-<td style="text-align:right;">
-
-0.0257931
-
-</td>
-
-<td style="text-align:right;">
-
-1280
-
-</td>
-
-<td style="text-align:right;">
-
-2597
+2858
 
 </td>
 
@@ -942,25 +944,25 @@ CD1+CD23+CD32+CD51+CD57+CD58+
 
 <td style="text-align:right;">
 
-2972
+5920
 
 </td>
 
 <td style="text-align:right;">
 
-25000
+50000
 
 </td>
 
 <td style="text-align:right;">
 
-11.888
+11.840
 
 </td>
 
 <td style="text-align:left;">
 
-CD2-CD4-CD7-CD8-CD9-CD11-CD15-
+CD2-CD4-CD7-CD8-CD9-CD11-CD15-CD56-
 
 </td>
 
@@ -972,7 +974,7 @@ CD1+CD32+CD39+CD47+CD57+CD58+
 
 <td style="text-align:right;">
 
-0.0672948
+0.2364865
 
 </td>
 
@@ -990,43 +992,43 @@ CD1+CD32+CD39+CD47+CD57+CD58+
 
 <td style="text-align:right;">
 
+0.0168919
+
+</td>
+
+<td style="text-align:right;">
+
+21.0979730
+
+</td>
+
+<td style="text-align:right;">
+
+30.7601351
+
+</td>
+
+<td style="text-align:right;">
+
+47.8885135
+
+</td>
+
+<td style="text-align:right;">
+
 0.0000000
 
 </td>
 
 <td style="text-align:right;">
 
-20.9623149
+14
 
 </td>
 
 <td style="text-align:right;">
 
-30.551817
-
-</td>
-
-<td style="text-align:right;">
-
-48.4185734
-
-</td>
-
-<td style="text-align:right;">
-
-0.0000000
-
-</td>
-
-<td style="text-align:right;">
-
-2
-
-</td>
-
-<td style="text-align:right;">
-
-2970
+5906
 
 </td>
 
@@ -1042,19 +1044,19 @@ CD1+CD32+CD39+CD47+CD57+CD58+
 
 <td style="text-align:right;">
 
-2900
+5619
 
 </td>
 
 <td style="text-align:right;">
 
-25000
+50000
 
 </td>
 
 <td style="text-align:right;">
 
-11.600
+11.238
 
 </td>
 
@@ -1072,61 +1074,61 @@ CD1+CD23+CD32+CD38+CD47+CD51+CD57+CD58+
 
 <td style="text-align:right;">
 
+0.0177968
+
+</td>
+
+<td style="text-align:right;">
+
+0.0533903
+
+</td>
+
+<td style="text-align:right;">
+
+77.3981135
+
+</td>
+
+<td style="text-align:right;">
+
+0.4271223
+
+</td>
+
+<td style="text-align:right;">
+
 0.0000000
 
 </td>
 
 <td style="text-align:right;">
 
-0.0344828
-
-</td>
-
-<td style="text-align:right;">
-
-77.9655172
-
-</td>
-
-<td style="text-align:right;">
-
-0.3448276
-
-</td>
-
-<td style="text-align:right;">
-
 0.0000000
 
 </td>
 
 <td style="text-align:right;">
 
-0.000000
+0.0177968
 
 </td>
 
 <td style="text-align:right;">
 
-0.0689655
+22.0857804
 
 </td>
 
 <td style="text-align:right;">
 
-21.5862069
+4353
 
 </td>
 
 <td style="text-align:right;">
 
-2262
-
-</td>
-
-<td style="text-align:right;">
-
-638
+1266
 
 </td>
 
@@ -1142,19 +1144,19 @@ CD1+CD23+CD32+CD38+CD47+CD51+CD57+CD58+
 
 <td style="text-align:right;">
 
-2028
+4295
 
 </td>
 
 <td style="text-align:right;">
 
-25000
+50000
 
 </td>
 
 <td style="text-align:right;">
 
-8.112
+8.590
 
 </td>
 
@@ -1178,19 +1180,19 @@ CD1+CD23+CD32+CD57+CD58+
 
 <td style="text-align:right;">
 
-45.7593688
+45.0291036
 
 </td>
 
 <td style="text-align:right;">
 
-0.0493097
+0.0698487
 
 </td>
 
 <td style="text-align:right;">
 
-53.9940828
+54.7380675
 
 </td>
 
@@ -1202,31 +1204,31 @@ CD1+CD23+CD32+CD57+CD58+
 
 <td style="text-align:right;">
 
-0.000000
+0.0000000
 
 </td>
 
 <td style="text-align:right;">
 
-0.1479290
+0.1629802
 
 </td>
 
 <td style="text-align:right;">
 
-0.0493097
+0.0000000
 
 </td>
 
 <td style="text-align:right;">
 
-929
+1937
 
 </td>
 
 <td style="text-align:right;">
 
-1099
+2358
 
 </td>
 
@@ -1242,25 +1244,125 @@ CD1+CD23+CD32+CD57+CD58+
 
 <td style="text-align:right;">
 
-1895
+4254
 
 </td>
 
 <td style="text-align:right;">
 
-25000
+50000
 
 </td>
 
 <td style="text-align:right;">
 
-7.580
+8.508
 
 </td>
 
 <td style="text-align:left;">
 
-CD2-CD4-CD7-CD8-CD11-CD15-CD55-
+CD2-CD4-CD7-CD11-CD15-
+
+</td>
+
+<td style="text-align:left;">
+
+CD1+CD23+CD30+CD32+CD37+CD57+CD58+
+
+</td>
+
+<td style="text-align:right;">
+
+0.0000000
+
+</td>
+
+<td style="text-align:right;">
+
+0.0000000
+
+</td>
+
+<td style="text-align:right;">
+
+65.6793606
+
+</td>
+
+<td style="text-align:right;">
+
+0.0940291
+
+</td>
+
+<td style="text-align:right;">
+
+0.0000000
+
+</td>
+
+<td style="text-align:right;">
+
+0.0470146
+
+</td>
+
+<td style="text-align:right;">
+
+0.0000000
+
+</td>
+
+<td style="text-align:right;">
+
+34.1795957
+
+</td>
+
+<td style="text-align:right;">
+
+2794
+
+</td>
+
+<td style="text-align:right;">
+
+1460
+
+</td>
+
+</tr>
+
+<tr>
+
+<td style="text-align:right;">
+
+7
+
+</td>
+
+<td style="text-align:right;">
+
+3588
+
+</td>
+
+<td style="text-align:right;">
+
+50000
+
+</td>
+
+<td style="text-align:right;">
+
+7.176
+
+</td>
+
+<td style="text-align:left;">
+
+CD2-CD4-CD7-CD8-CD9-CD11-CD15-CD55-
 
 </td>
 
@@ -1278,95 +1380,25 @@ CD1+CD21+CD23+CD31+CD32+CD57+CD58+
 
 <td style="text-align:right;">
 
-1.1609499
+1.5050167
 
 </td>
 
 <td style="text-align:right;">
 
-0.2110818
+0.0836120
 
 </td>
 
 <td style="text-align:right;">
 
-98.3641161
+98.3277592
 
 </td>
 
 <td style="text-align:right;">
 
-0.0000000
-
-</td>
-
-<td style="text-align:right;">
-
-0.000000
-
-</td>
-
-<td style="text-align:right;">
-
-0.2110818
-
-</td>
-
-<td style="text-align:right;">
-
-0.0527704
-
-</td>
-
-<td style="text-align:right;">
-
-26
-
-</td>
-
-<td style="text-align:right;">
-
-1869
-
-</td>
-
-</tr>
-
-<tr>
-
-<td style="text-align:right;">
-
-7
-
-</td>
-
-<td style="text-align:right;">
-
-915
-
-</td>
-
-<td style="text-align:right;">
-
-25000
-
-</td>
-
-<td style="text-align:right;">
-
-3.660
-
-</td>
-
-<td style="text-align:left;">
-
-CD2-CD4-CD7-CD11-CD15-
-
-</td>
-
-<td style="text-align:left;">
-
-CD1+CD23+CD30+CD32+CD37+CD49+CD51+CD57+CD58+
+0.0278707
 
 </td>
 
@@ -1378,13 +1410,7 @@ CD1+CD23+CD30+CD32+CD37+CD49+CD51+CD57+CD58+
 
 <td style="text-align:right;">
 
-0.0000000
-
-</td>
-
-<td style="text-align:right;">
-
-58.1420765
+0.0557414
 
 </td>
 
@@ -1396,37 +1422,13 @@ CD1+CD23+CD30+CD32+CD37+CD49+CD51+CD57+CD58+
 
 <td style="text-align:right;">
 
-0.0000000
+57
 
 </td>
 
 <td style="text-align:right;">
 
-0.000000
-
-</td>
-
-<td style="text-align:right;">
-
-0.0000000
-
-</td>
-
-<td style="text-align:right;">
-
-41.8579235
-
-</td>
-
-<td style="text-align:right;">
-
-532
-
-</td>
-
-<td style="text-align:right;">
-
-383
+3531
 
 </td>
 
@@ -1442,25 +1444,225 @@ CD1+CD23+CD30+CD32+CD37+CD49+CD51+CD57+CD58+
 
 <td style="text-align:right;">
 
-37
+1757
 
 </td>
 
 <td style="text-align:right;">
 
-25000
+50000
 
 </td>
 
 <td style="text-align:right;">
 
-0.148
+3.514
 
 </td>
 
 <td style="text-align:left;">
 
-CD2-CD4-CD7-CD11-CD12-CD17-CD44-CD55-
+CD2-CD4-CD7-CD11-CD15-
+
+</td>
+
+<td style="text-align:left;">
+
+CD1+CD23+CD30+CD32+CD37+CD49+CD57+CD58+
+
+</td>
+
+<td style="text-align:right;">
+
+0.0000000
+
+</td>
+
+<td style="text-align:right;">
+
+0.0569152
+
+</td>
+
+<td style="text-align:right;">
+
+58.1104155
+
+</td>
+
+<td style="text-align:right;">
+
+0.0000000
+
+</td>
+
+<td style="text-align:right;">
+
+0.0000000
+
+</td>
+
+<td style="text-align:right;">
+
+0.0000000
+
+</td>
+
+<td style="text-align:right;">
+
+0.0000000
+
+</td>
+
+<td style="text-align:right;">
+
+41.8326693
+
+</td>
+
+<td style="text-align:right;">
+
+1022
+
+</td>
+
+<td style="text-align:right;">
+
+735
+
+</td>
+
+</tr>
+
+<tr>
+
+<td style="text-align:right;">
+
+9
+
+</td>
+
+<td style="text-align:right;">
+
+62
+
+</td>
+
+<td style="text-align:right;">
+
+50000
+
+</td>
+
+<td style="text-align:right;">
+
+0.124
+
+</td>
+
+<td style="text-align:left;">
+
+CD2-CD4-CD7-CD8-CD9-CD11-CD15-CD29-
+
+</td>
+
+<td style="text-align:left;">
+
+CD1+CD23+CD38+CD41+CD47+CD51+CD57+CD58+
+
+</td>
+
+<td style="text-align:right;">
+
+0.0000000
+
+</td>
+
+<td style="text-align:right;">
+
+100.0000000
+
+</td>
+
+<td style="text-align:right;">
+
+0.0000000
+
+</td>
+
+<td style="text-align:right;">
+
+0.0000000
+
+</td>
+
+<td style="text-align:right;">
+
+0.0000000
+
+</td>
+
+<td style="text-align:right;">
+
+0.0000000
+
+</td>
+
+<td style="text-align:right;">
+
+0.0000000
+
+</td>
+
+<td style="text-align:right;">
+
+0.0000000
+
+</td>
+
+<td style="text-align:right;">
+
+62
+
+</td>
+
+<td style="text-align:right;">
+
+0
+
+</td>
+
+</tr>
+
+<tr>
+
+<td style="text-align:right;">
+
+10
+
+</td>
+
+<td style="text-align:right;">
+
+58
+
+</td>
+
+<td style="text-align:right;">
+
+50000
+
+</td>
+
+<td style="text-align:right;">
+
+0.116
+
+</td>
+
+<td style="text-align:left;">
+
+CD2-CD4-CD6-CD7-CD11-CD15-CD55-
 
 </td>
 
@@ -1502,12 +1704,6 @@ CD1+CD32+CD51+CD57+CD58+
 
 <td style="text-align:right;">
 
-0.000000
-
-</td>
-
-<td style="text-align:right;">
-
 0.0000000
 
 </td>
@@ -1520,7 +1716,13 @@ CD1+CD32+CD51+CD57+CD58+
 
 <td style="text-align:right;">
 
-37
+0.0000000
+
+</td>
+
+<td style="text-align:right;">
+
+58
 
 </td>
 
@@ -1536,37 +1738,37 @@ CD1+CD32+CD51+CD57+CD58+
 
 <td style="text-align:right;">
 
-9
+11
 
 </td>
 
 <td style="text-align:right;">
 
-23
+50
 
 </td>
 
 <td style="text-align:right;">
 
-25000
+50000
 
 </td>
 
 <td style="text-align:right;">
 
-0.092
+0.100
 
 </td>
 
 <td style="text-align:left;">
 
-CD2-CD4-CD6-CD7-CD8-CD9-CD10-CD11-CD18-CD55-
+CD2-CD4-CD6-CD7-CD9-CD10-CD11-CD15-
 
 </td>
 
 <td style="text-align:left;">
 
-CD1+CD36+CD41+CD47+CD57+CD58+
+CD1+CD36+CD47+CD57+CD58+
 
 </td>
 
@@ -1596,19 +1798,19 @@ CD1+CD36+CD41+CD47+CD57+CD58+
 
 <td style="text-align:right;">
 
-13.0434783
+2.0000000
 
 </td>
 
 <td style="text-align:right;">
 
-4.347826
+6.0000000
 
 </td>
 
 <td style="text-align:right;">
 
-82.6086957
+92.0000000
 
 </td>
 
@@ -1626,7 +1828,7 @@ CD1+CD36+CD41+CD47+CD57+CD58+
 
 <td style="text-align:right;">
 
-23
+50
 
 </td>
 
@@ -1725,83 +1927,25 @@ nCell\_CD3
 
 <td style="text-align:right;">
 
-5902
+9050
 
 </td>
 
 <td style="text-align:right;">
 
-25000
+50000
 
 </td>
 
 <td style="text-align:right;">
 
-23.608
+18.100
 
 </td>
 
 <td style="text-align:left;">
 
-CD2-CD4-CD7-CD11-CD15-
-
-</td>
-
-<td style="text-align:left;">
-
-CD1+CD21+CD23+CD30+CD32+CD37+CD57+CD58+
-
-</td>
-
-<td style="text-align:right;">
-
-1
-
-</td>
-
-<td style="text-align:right;">
-
-5900
-
-</td>
-
-<td style="text-align:right;">
-
-1
-
-</td>
-
-</tr>
-
-<tr>
-
-<td style="text-align:right;">
-
-1
-
-</td>
-
-<td style="text-align:right;">
-
-4451
-
-</td>
-
-<td style="text-align:right;">
-
-25000
-
-</td>
-
-<td style="text-align:right;">
-
-17.804
-
-</td>
-
-<td style="text-align:left;">
-
-CD2-CD4-CD7-CD8-CD9-CD10-CD11-CD15-
+CD2-CD4-CD7-CD8-CD9-CD10-CD11-CD15-CD56-
 
 </td>
 
@@ -1813,19 +1957,19 @@ CD1+CD23+CD32+CD57+CD58+
 
 <td style="text-align:right;">
 
-18
+28
 
 </td>
 
 <td style="text-align:right;">
 
-1012
+2014
 
 </td>
 
 <td style="text-align:right;">
 
-3421
+7008
 
 </td>
 
@@ -1835,25 +1979,25 @@ CD1+CD23+CD32+CD57+CD58+
 
 <td style="text-align:right;">
 
-2
+1
 
 </td>
 
 <td style="text-align:right;">
 
-3877
+7753
 
 </td>
 
 <td style="text-align:right;">
 
-25000
+50000
 
 </td>
 
 <td style="text-align:right;">
 
-15.508
+15.506
 
 </td>
 
@@ -1871,19 +2015,77 @@ CD1+CD23+CD32+CD51+CD57+CD58+
 
 <td style="text-align:right;">
 
-3875
+7736
 
 </td>
 
 <td style="text-align:right;">
 
-1
+10
 
 </td>
 
 <td style="text-align:right;">
 
-1
+7
+
+</td>
+
+</tr>
+
+<tr>
+
+<td style="text-align:right;">
+
+2
+
+</td>
+
+<td style="text-align:right;">
+
+7594
+
+</td>
+
+<td style="text-align:right;">
+
+50000
+
+</td>
+
+<td style="text-align:right;">
+
+15.188
+
+</td>
+
+<td style="text-align:left;">
+
+CD2-CD4-CD7-CD11-CD15-
+
+</td>
+
+<td style="text-align:left;">
+
+CD1+CD21+CD23+CD30+CD32+CD37+CD57+CD58+
+
+</td>
+
+<td style="text-align:right;">
+
+3
+
+</td>
+
+<td style="text-align:right;">
+
+7591
+
+</td>
+
+<td style="text-align:right;">
+
+0
 
 </td>
 
@@ -1899,25 +2101,25 @@ CD1+CD23+CD32+CD51+CD57+CD58+
 
 <td style="text-align:right;">
 
-2972
+5920
 
 </td>
 
 <td style="text-align:right;">
 
-25000
+50000
 
 </td>
 
 <td style="text-align:right;">
 
-11.888
+11.840
 
 </td>
 
 <td style="text-align:left;">
 
-CD2-CD4-CD7-CD8-CD9-CD11-CD15-
+CD2-CD4-CD7-CD8-CD9-CD11-CD15-CD56-
 
 </td>
 
@@ -1929,7 +2131,7 @@ CD1+CD32+CD39+CD47+CD57+CD58+
 
 <td style="text-align:right;">
 
-2923
+5863
 
 </td>
 
@@ -1941,7 +2143,7 @@ CD1+CD32+CD39+CD47+CD57+CD58+
 
 <td style="text-align:right;">
 
-49
+57
 
 </td>
 
@@ -1957,19 +2159,19 @@ CD1+CD32+CD39+CD47+CD57+CD58+
 
 <td style="text-align:right;">
 
-2900
+5619
 
 </td>
 
 <td style="text-align:right;">
 
-25000
+50000
 
 </td>
 
 <td style="text-align:right;">
 
-11.600
+11.238
 
 </td>
 
@@ -1987,13 +2189,13 @@ CD1+CD23+CD32+CD38+CD47+CD51+CD57+CD58+
 
 <td style="text-align:right;">
 
-2900
+5616
 
 </td>
 
 <td style="text-align:right;">
 
-0
+3
 
 </td>
 
@@ -2015,19 +2217,19 @@ CD1+CD23+CD32+CD38+CD47+CD51+CD57+CD58+
 
 <td style="text-align:right;">
 
-2028
+4295
 
 </td>
 
 <td style="text-align:right;">
 
-25000
+50000
 
 </td>
 
 <td style="text-align:right;">
 
-8.112
+8.590
 
 </td>
 
@@ -2045,19 +2247,19 @@ CD1+CD23+CD32+CD57+CD58+
 
 <td style="text-align:right;">
 
-19
+27
 
 </td>
 
 <td style="text-align:right;">
 
-2006
+4261
 
 </td>
 
 <td style="text-align:right;">
 
-3
+7
 
 </td>
 
@@ -2073,49 +2275,49 @@ CD1+CD23+CD32+CD57+CD58+
 
 <td style="text-align:right;">
 
-1895
+4254
 
 </td>
 
 <td style="text-align:right;">
 
-25000
+50000
 
 </td>
 
 <td style="text-align:right;">
 
-7.580
+8.508
 
 </td>
 
 <td style="text-align:left;">
 
-CD2-CD4-CD7-CD8-CD11-CD15-CD55-
+CD2-CD4-CD7-CD11-CD15-
 
 </td>
 
 <td style="text-align:left;">
 
-CD1+CD21+CD23+CD31+CD32+CD57+CD58+
-
-</td>
-
-<td style="text-align:right;">
-
-8
-
-</td>
-
-<td style="text-align:right;">
-
-1883
+CD1+CD23+CD30+CD32+CD37+CD57+CD58+
 
 </td>
 
 <td style="text-align:right;">
 
 4
+
+</td>
+
+<td style="text-align:right;">
+
+4249
+
+</td>
+
+<td style="text-align:right;">
+
+1
 
 </td>
 
@@ -2131,49 +2333,49 @@ CD1+CD21+CD23+CD31+CD32+CD57+CD58+
 
 <td style="text-align:right;">
 
-915
+3588
 
 </td>
 
 <td style="text-align:right;">
 
-25000
+50000
 
 </td>
 
 <td style="text-align:right;">
 
-3.660
+7.176
 
 </td>
 
 <td style="text-align:left;">
 
-CD2-CD4-CD7-CD11-CD15-
+CD2-CD4-CD7-CD8-CD9-CD11-CD15-CD55-
 
 </td>
 
 <td style="text-align:left;">
 
-CD1+CD23+CD30+CD32+CD37+CD49+CD51+CD57+CD58+
+CD1+CD21+CD23+CD31+CD32+CD57+CD58+
 
 </td>
 
 <td style="text-align:right;">
 
-1
+14
 
 </td>
 
 <td style="text-align:right;">
 
-2
+3571
 
 </td>
 
 <td style="text-align:right;">
 
-912
+3
 
 </td>
 
@@ -2189,31 +2391,37 @@ CD1+CD23+CD30+CD32+CD37+CD49+CD51+CD57+CD58+
 
 <td style="text-align:right;">
 
-37
+1757
 
 </td>
 
 <td style="text-align:right;">
 
-25000
+50000
 
 </td>
 
 <td style="text-align:right;">
 
-0.148
+3.514
 
 </td>
 
 <td style="text-align:left;">
 
-CD2-CD4-CD7-CD11-CD12-CD17-CD44-CD55-
+CD2-CD4-CD7-CD11-CD15-
 
 </td>
 
 <td style="text-align:left;">
 
-CD1+CD32+CD51+CD57+CD58+
+CD1+CD23+CD30+CD32+CD37+CD49+CD57+CD58+
+
+</td>
+
+<td style="text-align:right;">
+
+2
 
 </td>
 
@@ -2225,13 +2433,7 @@ CD1+CD32+CD51+CD57+CD58+
 
 <td style="text-align:right;">
 
-37
-
-</td>
-
-<td style="text-align:right;">
-
-0
+1755
 
 </td>
 
@@ -2247,37 +2449,37 @@ CD1+CD32+CD51+CD57+CD58+
 
 <td style="text-align:right;">
 
-23
+62
 
 </td>
 
 <td style="text-align:right;">
 
-25000
+50000
 
 </td>
 
 <td style="text-align:right;">
 
-0.092
+0.124
 
 </td>
 
 <td style="text-align:left;">
 
-CD2-CD4-CD6-CD7-CD8-CD9-CD10-CD11-CD18-CD55-
+CD2-CD4-CD7-CD8-CD9-CD11-CD15-CD29-
 
 </td>
 
 <td style="text-align:left;">
 
-CD1+CD36+CD41+CD47+CD57+CD58+
+CD1+CD23+CD38+CD41+CD47+CD51+CD57+CD58+
 
 </td>
 
 <td style="text-align:right;">
 
-12
+62
 
 </td>
 
@@ -2289,7 +2491,123 @@ CD1+CD36+CD41+CD47+CD57+CD58+
 
 <td style="text-align:right;">
 
+0
+
+</td>
+
+</tr>
+
+<tr>
+
+<td style="text-align:right;">
+
+10
+
+</td>
+
+<td style="text-align:right;">
+
+58
+
+</td>
+
+<td style="text-align:right;">
+
+50000
+
+</td>
+
+<td style="text-align:right;">
+
+0.116
+
+</td>
+
+<td style="text-align:left;">
+
+CD2-CD4-CD6-CD7-CD11-CD15-CD55-
+
+</td>
+
+<td style="text-align:left;">
+
+CD1+CD32+CD51+CD57+CD58+
+
+</td>
+
+<td style="text-align:right;">
+
+1
+
+</td>
+
+<td style="text-align:right;">
+
+57
+
+</td>
+
+<td style="text-align:right;">
+
+0
+
+</td>
+
+</tr>
+
+<tr>
+
+<td style="text-align:right;">
+
 11
+
+</td>
+
+<td style="text-align:right;">
+
+50
+
+</td>
+
+<td style="text-align:right;">
+
+50000
+
+</td>
+
+<td style="text-align:right;">
+
+0.100
+
+</td>
+
+<td style="text-align:left;">
+
+CD2-CD4-CD6-CD7-CD9-CD10-CD11-CD15-
+
+</td>
+
+<td style="text-align:left;">
+
+CD1+CD36+CD47+CD57+CD58+
+
+</td>
+
+<td style="text-align:right;">
+
+36
+
+</td>
+
+<td style="text-align:right;">
+
+0
+
+</td>
+
+<td style="text-align:right;">
+
+14
 
 </td>
 

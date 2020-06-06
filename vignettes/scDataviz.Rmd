@@ -118,7 +118,7 @@ example (*not run*) is given below:
 
 For this vignette, due to the fact that the raw FCS data is > 500 megabytes,
 we will work with a smaller pre-prepared dataset that has been downsampled to
-6500 cells using the above code. This data comes included with the package.
+5000 cells using the above code. This data comes included with the package.
 
 Load the pre-prepared complosome data.
 
@@ -150,12 +150,15 @@ PCA.
   p <- pca(assay(sce, 'scaled'), metadata = metadata(sce))
 
   biplot(p,
+    x = 'PC1', y = 'PC2',
     lab = NULL,
+    xlim = c(min(p$rotated[,'PC1'])-1, max(p$rotated[,'PC1'])+1),
+    ylim = c(min(p$rotated[,'PC2'])-1, max(p$rotated[,'PC2'])+1),
     pointSize = 1.0,
     colby = 'treatment',
     legendPosition = 'right',
     title = 'PCA applied to CyTOF data',
-    caption = paste0('6500 cells randomly selected after ',
+    caption = paste0('5000 cells randomly selected after ',
       'having filtered for low variance'))
 
 ```
@@ -230,6 +233,7 @@ gradients that blend into one another across high density 'peaks'.
 
   ggout1 <- contourPlot(sce,
     reducedDim = 'UMAP',
+    bins = 75,
     subtitle = 'UMAP performed on expression values',
     legendLabSize = 18,
     axisLabSize = 22,
@@ -239,6 +243,7 @@ gradients that blend into one another across high density 'peaks'.
 
   ggout2 <- contourPlot(sce,
     reducedDim = 'UMAP_PCA',
+    bins = 75,
     subtitle = 'UMAP performed on PC eigenvectors',
     legendLabSize = 18,
     axisLabSize = 22,
