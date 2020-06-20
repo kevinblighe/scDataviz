@@ -32,9 +32,10 @@
 #' @param colsRetain Retain these columns only. This is the same as \code{colsDiscard}
 #'   but in reverse. Technically, it is possible to activate both \code{colsDiscard}
 #'   and \code{colsRetain}, but \code{colsDiscard} will be executed first.
-#' @param newColnames Assuming that you know the exact order of your final selected
-#'   markers, rename these based on a vector passed as this argument. Please
-#'   exercise caution when using this.
+#' @param newColnames A named vector of new marker names to assign to each sample.
+#'   The values of this vector should be the new marker names; the names of this
+#'   vector should represent the ooriginal marker names. This operation is performed
+#'   AFTER any operation involving \code{colsDiscard} and \code{colsRetain}.
 #' @param emptyValue boolean (taken from ?flowCore::read.FCS indicating whether or
 #'   not we allow an empty value for keyword values in TEXT segment.
 #' @param verbose Boolean (TRUE / FALSE) to print messages to console or not.
@@ -84,8 +85,7 @@ processFCS <- function(
   asinhFactor = 5,
   downsample = 100000,
   downsampleVar = 0.1,
-  colsDiscard = c('Time','Event_length','Center','Offset','Width',
-    'Residual','tSNE1','tSNE2','BCKG'),
+  colsDiscard = NULL,
   colsRetain = NULL,
   newColnames = NULL,
   emptyValue = TRUE,
@@ -93,11 +93,20 @@ processFCS <- function(
 {
 
   # if metadata specified, enforce rule that rownames(metadata) is the
-  # same as filelist
+  # same as files
   if (!is.null(metadata)) {
     if(!identical(files, rownames(metadata))) {
-      stop("'filelist' is not identical to 'rownames(metadata)'")
+      stop("'files' is not identical to 'rownames(metadata)'")
     }
+  }
+
+  # is metadata NULL?
+  if (is.null(metadata)) {
+    if (verbose) warning('No metadata detected - creating generic metadata')
+    metadata <- data.frame(
+      sample1 = files,
+      sample2 = files,
+      row.names = files)
   }
 
   # read in the data to a list
@@ -122,9 +131,21 @@ processFCS <- function(
         x[,which(colnames(x) %in% colsRetain)]} else {return(x)})
   }
 
+  # ensure sort order before procedding to next steps
+  # this will avoid numerous issues:
+  #   1. avoid situations where one marker may not be screen by all samples
+  #   2. ensure that new marker names that may be assigned are assigned
+  #      faithfully
+  uniquenames <- sort(unique(unlist(lapply(samples, colnames))))
+  if (verbose) message('--harmonising markers across samples')
+  for(i in seq_len(length(samples))) {
+      samples[[i]] <- samples[[i]][,match(uniquenames, colnames(samples[[i]]))]
+  }
+
   # rename markers
   if(!is.null(newColnames)) {
     for(i in seq_len(length(samples))) {
+      samples[[i]] <- samples[[i]][,match(names(newColnames), colnames(samples[[i]]))]
       colnames(samples[[i]]) <- newColnames
     }
   }
@@ -168,22 +189,20 @@ processFCS <- function(
     }
   }
 
-  # is there metadata?
+  # expand metadata to align with expression data
   names <- colnames(metadata)
   metanew <- list()
-  if (!is.null(metadata)) {
-    for (i in seq(length(samples))) {
-      tmp <- data.frame(row.names = seq_len(nrow(samples[[i]])))
-      for (j in seq_len(ncol(metadata))) {
-        tmp <- cbind(tmp, rep(metadata[i,j], nrow(samples[[i]])))
-      }
-      metanew[[i]] <- tmp
+  for (i in seq(length(samples))) {
+    tmp <- data.frame(row.names = seq_len(nrow(samples[[i]])))
+    for (j in seq_len(ncol(metadata))) {
+      tmp <- cbind(tmp, rep(metadata[i,j], nrow(samples[[i]])))
     }
-
-    metadata <- do.call(rbind, metanew)
-    colnames(metadata) <- names
-    rownames(metadata) <- paste0('cell', seq_len(nrow(metadata)))
+    metanew[[i]] <- tmp
   }
+
+  metadata <- do.call(rbind, metanew)
+  colnames(metadata) <- names
+  rownames(metadata) <- paste0('cell', seq_len(nrow(metadata)))
 
   # combine all samples
   samples <- do.call(rbind, samples)

@@ -1,7 +1,7 @@
 scDataviz: single cell dataviz and downstream analyses
 ================
 Kevin Blighe
-2020-06-05
+2020-06-20
 
 # Introduction
 
@@ -42,26 +42,25 @@ Note: to install development version:
 
 # Tutorial 1: CyTOF FCS data
 
-Here, we will start with sample data stored as FCS files. Specifically,
-we will utilise some of the data used in [Deep phenotyping detects a
-pathological CD4+ T-cell complosome signature in systemic
-sclerosis](https://www.nature.com/articles/s41423-019-0360-8).
+Here, we will utilise some of the flow cytometry data from [Deep
+phenotyping detects a pathological CD4+ T-cell complosome signature in
+systemic sclerosis](https://www.nature.com/articles/s41423-019-0360-8).
 
-In order to download this data, we can use `git clone` from your command
+This can normally be downloadedd via `git clone` from your command
 prompt:
 
 ``` bash
 
-  git clone https://github.com/kevinblighe/scDataviz_data ;
+  git clone https://github.com/kevinblighe/scDataviz_data/ ;
 ```
 
-**NB - this command (above) needs to be run outside R at your shell’s
-command prompt (e.g., BASH)**
-
-Now, read in the data and normalise it. The `processFCS` function, by
-default, removes variables based on low variance and also downsamples
-\[randomly\] your data to 100000 variables. The user can change these
-via the `downsample` and `downsampleVar` parameters.
+In a practical situation, we would normally read in this data from the
+raw FCS files and then QC filter, normalise, and transform them. This
+can be achieved via the `processFCS` function, which, by default, also
+removes variables based on low variance and downsamples \[randomly\]
+your data to 100000 variables. The user can change these via the
+`downsample` and `downsampleVar` parameters. An example (*not run*) is
+given below:
 
 ``` r
   filelist <- list.files(
@@ -69,28 +68,7 @@ via the `downsample` and `downsampleVar` parameters.
     pattern = "*.fcs|*.FCS",
     full.names = TRUE)
   filelist
-```
 
-    ##  [1] "scDataviz_data/FCS//HD00 CD46.fcs"   
-    ##  [2] "scDataviz_data/FCS//HD00 Unstim.fcs" 
-    ##  [3] "scDataviz_data/FCS//HD01 CD46.fcs"   
-    ##  [4] "scDataviz_data/FCS//HD01 Unstim.fcs" 
-    ##  [5] "scDataviz_data/FCS//HD262 CD3.fcs"   
-    ##  [6] "scDataviz_data/FCS//HD262 CD46.fcs"  
-    ##  [7] "scDataviz_data/FCS//HD262 Unstim.fcs"
-    ##  [8] "scDataviz_data/FCS//P00 CD46.fcs"    
-    ##  [9] "scDataviz_data/FCS//P00 Unstim.fcs"  
-    ## [10] "scDataviz_data/FCS//P02 CD3.fcs"     
-    ## [11] "scDataviz_data/FCS//P02 CD46.fcs"    
-    ## [12] "scDataviz_data/FCS//P03 CD3.fcs"     
-    ## [13] "scDataviz_data/FCS//P03 CD46.fcs"    
-    ## [14] "scDataviz_data/FCS//P04 CD3.fcs"     
-    ## [15] "scDataviz_data/FCS//P04 CD46.fcs"    
-    ## [16] "scDataviz_data/FCS//P08 CD3.fcs"     
-    ## [17] "scDataviz_data/FCS//P08 CD46.fcs"    
-    ## [18] "scDataviz_data/FCS//P08 Unstim.fcs"
-
-``` r
   metadata <- data.frame(
     sample = gsub('\\ [A-Za-z0-9]*\\.fcs$', '',
       gsub('scDataviz_data\\/FCS\\/\\/', '', filelist)),
@@ -100,38 +78,60 @@ via the `downsample` and `downsampleVar` parameters.
     row.names = filelist,
     stringsAsFactors = FALSE)
   metadata
-```
 
-    ##                                      sample   group treatment
-    ## scDataviz_data/FCS//HD00 CD46.fcs      HD00 Healthy      CD46
-    ## scDataviz_data/FCS//HD00 Unstim.fcs    HD00 Healthy    Unstim
-    ## scDataviz_data/FCS//HD01 CD46.fcs      HD01 Healthy      CD46
-    ## scDataviz_data/FCS//HD01 Unstim.fcs    HD01 Healthy    Unstim
-    ## scDataviz_data/FCS//HD262 CD3.fcs     HD262 Healthy       CD3
-    ## scDataviz_data/FCS//HD262 CD46.fcs    HD262 Healthy      CD46
-    ## scDataviz_data/FCS//HD262 Unstim.fcs  HD262 Healthy    Unstim
-    ## scDataviz_data/FCS//P00 CD46.fcs        P00 Disease      CD46
-    ## scDataviz_data/FCS//P00 Unstim.fcs      P00 Disease    Unstim
-    ## scDataviz_data/FCS//P02 CD3.fcs         P02 Disease       CD3
-    ## scDataviz_data/FCS//P02 CD46.fcs        P02 Disease      CD46
-    ## scDataviz_data/FCS//P03 CD3.fcs         P03 Disease       CD3
-    ## scDataviz_data/FCS//P03 CD46.fcs        P03 Disease      CD46
-    ## scDataviz_data/FCS//P04 CD3.fcs         P04 Disease       CD3
-    ## scDataviz_data/FCS//P04 CD46.fcs        P04 Disease      CD46
-    ## scDataviz_data/FCS//P08 CD3.fcs         P08 Disease       CD3
-    ## scDataviz_data/FCS//P08 CD46.fcs        P08 Disease      CD46
-    ## scDataviz_data/FCS//P08 Unstim.fcs      P08 Disease    Unstim
+  inclusions <- c('Yb171Di','Nd144Di','Nd145Di',
+    'Er168Di','Tm169Di','Sm154Di','Yb173Di','Yb174Di',
+    'Lu175Di','Nd143Di')
 
-``` r
+  markernames <- c('Foxp3','C3aR','CD4',
+    'CD46','CD25','CD3','Granzyme B','CD55',
+    'CD279','CD45RA')
+
+  names(markernames) <- inclusions
+  markernames
+
+  exclusions <- c('Time','Event_length','BCKG190Di',
+    'Center','Offset','Width','Residual')
+
   sce <- processFCS(
     files = filelist,
     metadata = metadata,
     transformation = TRUE,
     transFun = function (x) asinh(x),
     asinhFactor = 5,
-    downsample = 50000,
-    downsampleVar = 0.2,
-    newColnames = paste0('CD', 1:65))
+    downsample = 10000,
+    downsampleVar = 0.7,
+    colsRetain = inclusions,
+    colsDiscard = exclusions,
+    newColnames = markernames)
+```
+
+In flow and mass cytometry, getting the correct marker names in the FCS
+files can be surprisingly difficult. In many cases, from experience, a
+facility may label the markers by their metals, such as Iridium (Ir),
+Ruthenium (Ru), Terbium (Tb), *et cetera* - this is the case for the
+data used in this tutorial. The true marker names may be held as pData
+encoded within each FCS, accessible via:
+
+``` r
+  library(flowCore)
+  pData(parameters(
+    read.FCS(filelist[[4]], transformation = FALSE, emptyValue = FALSE)))
+```
+
+Whatever the case, it is important to sort out marker naming issues
+prior to the experiment being conducted in order to avoid any confusion.
+
+For this vignette, due to the fact that the raw FCS data is \> 500
+megabytes, we will work with a smaller pre-prepared dataset that has
+been downsampled to 10000 cells using the above code. This data comes
+included with the package.
+
+Load the pre-prepared complosome
+data.
+
+``` r
+  load(system.file('extdata/', 'complosome.rdata', package = 'scDataviz'))
 ```
 
 One can also create a new *SingleCellExperiment* object manually using
@@ -159,17 +159,17 @@ of performing PCA.
     colby = 'treatment',
     legendPosition = 'right',
     title = 'PCA applied to CyTOF data',
-    caption = paste0('50000 cells randomly selected after ',
+    caption = paste0('10000 cells randomly selected after ',
       'having filtered for low variance'))
 ```
 
 ![Perform PCA](README_files/figure-gfm/ex1-1.png)
 
 We can add the rotated component loadings as a new reduced dimensional
-component to our dataset. Let’s just add the first 20 PCs.
+component to our dataset.
 
 ``` r
-  reducedDim(sce, 'PCA') <- p$rotated[,1:20]
+  reducedDim(sce, 'PCA') <- p$rotated
 ```
 
 For more functionality via *PCAtools*, check the vignette: [PCAtools:
@@ -203,19 +203,19 @@ dimensions to use via the elbow method and Horn’s parallel analysis.
   elbow
 ```
 
-    ## PC9 
-    ##   9
+    ## PC3 
+    ##   3
 
 ``` r
   horn$n
 ```
 
-    ## [1] 4
+    ## [1] 1
 
-Let’s use the number of PCs identified by Horn’s.
+For now, let’s just use 5 PCs.
 
 ``` r
-  sce <- performUMAP(sce, reducedDim = 'PCA', dims = c(1:horn$n))
+  sce <- performUMAP(sce, reducedDim = 'PCA', dims = c(1:5))
 ```
 
 ## Create a contour plot of the UMAP layout
@@ -272,7 +272,8 @@ profiles across the UMAP layouts.
   markers
 ```
 
-    ## [1] "CD52" "CD36" "CD27" "CD11" "CD29" "CD57"
+    ## [1] "Granzyme B" "CD279"      "C3aR"       "CD55"       "CD45RA"    
+    ## [6] "CD3"
 
 ``` r
   ggout1 <- markerExpression(sce,
@@ -287,11 +288,12 @@ profiles across the UMAP layouts.
     subtitleLabSize = 18,
     captionLabSize = 18)
 
-  ggout2 <-  markerExpression(sce,
+  ggout2 <- markerExpression(sce,
     markers = markers,
     reducedDim = 'UMAP_PCA',
     subtitle = 'UMAP performed on PC eigenvectors',
     nrow = 1, ncol = 6,
+    col = c('white', 'darkblue'),
     legendKeyHeight = 1.0,
     legendLabSize = 18,
     stripLabSize = 22,
@@ -321,12 +323,12 @@ First, let’s take a look inside the metadata that we have.
 ```
 
     ##       sample   group treatment
-    ## cell1    P00 Disease    Unstim
-    ## cell2    P04 Disease       CD3
+    ## cell1    P04 Disease      CD46
+    ## cell2  HD262 Healthy    Unstim
     ## cell3   HD01 Healthy      CD46
-    ## cell4    P00 Disease      CD46
-    ## cell5    P04 Disease      CD46
-    ## cell6    P00 Disease    Unstim
+    ## cell4    P04 Disease      CD46
+    ## cell5   HD00 Healthy    Unstim
+    ## cell6    P03 Disease      CD46
 
 ``` r
   levels(metadata(sce)$group)
@@ -463,14 +465,14 @@ neighbours](README_files/figure-gfm/ex5-1.png)
   clusters
 ```
 
-    ## [1] 6 0 4 2 3 5 1 7
+    ## [1] 0 1 4 2 3 7 6 5
 
 ``` r
-  markers <- sample(rownames(sce), 8)
+  markers <- sample(rownames(sce), 5)
   markers
 ```
 
-    ## [1] "CD27" "CD58" "CD28" "CD8"  "CD13" "CD32" "CD31" "CD56"
+    ## [1] "CD3"        "CD55"       "Granzyme B" "Foxp3"      "CD46"
 
 ``` r
   markerExpressionPerCluster(sce,
@@ -496,7 +498,7 @@ Try all markers across a single cluster:
   cluster
 ```
 
-    ## [1] 6
+    ## [1] 7
 
 ``` r
   markerExpressionPerCluster(sce,
@@ -644,91 +646,91 @@ nCell\_Disease
 
 <td style="text-align:right;">
 
-9050
+5167
 
 </td>
 
 <td style="text-align:right;">
 
-50000
+15000
 
 </td>
 
 <td style="text-align:right;">
 
-18.100
+34.4466667
 
 </td>
 
 <td style="text-align:left;">
 
-CD2-CD4-CD7-CD8-CD9-CD10-CD11-CD15-CD56-
+NA
 
 </td>
 
 <td style="text-align:left;">
 
-CD1+CD23+CD32+CD57+CD58+
+CD25+
 
 </td>
 
 <td style="text-align:right;">
 
-22.2320442
+0.0580608
 
 </td>
 
 <td style="text-align:right;">
 
-0.0000000
+9.6961486
 
 </td>
 
 <td style="text-align:right;">
 
-0.0331492
+27.307916
 
 </td>
 
 <td style="text-align:right;">
 
-0.0220994
+22.450164
 
 </td>
 
 <td style="text-align:right;">
 
-18.9392265
+7.3156571
 
 </td>
 
 <td style="text-align:right;">
 
-11.5469613
+8.6317012
 
 </td>
 
 <td style="text-align:right;">
 
-47.2265193
+17.0892201
 
 </td>
 
 <td style="text-align:right;">
 
-0.0000000
+7.4511322
 
 </td>
 
 <td style="text-align:right;">
 
-2015
+1915
 
 </td>
 
 <td style="text-align:right;">
 
-7035
+3252
 
 </td>
 
@@ -744,31 +746,31 @@ CD1+CD23+CD32+CD57+CD58+
 
 <td style="text-align:right;">
 
-7753
+2931
 
 </td>
 
 <td style="text-align:right;">
 
-50000
+15000
 
 </td>
 
 <td style="text-align:right;">
 
-15.506
+19.5400000
 
 </td>
 
 <td style="text-align:left;">
 
-CD2-CD4-CD7-CD11-CD15-
+CD25-CD279-
 
 </td>
 
 <td style="text-align:left;">
 
-CD1+CD23+CD32+CD51+CD57+CD58+
+CD3+CD45RA+
 
 </td>
 
@@ -780,55 +782,55 @@ CD1+CD23+CD32+CD51+CD57+CD58+
 
 <td style="text-align:right;">
 
-32.3100735
+0.1705902
 
 </td>
 
 <td style="text-align:right;">
 
-0.1160841
+58.546571
 
 </td>
 
 <td style="text-align:right;">
 
-67.2771830
+1.194132
 
 </td>
 
 <td style="text-align:right;">
 
-0.0000000
+0.1364722
 
 </td>
 
 <td style="text-align:right;">
 
-0.0257965
+0.7164790
 
 </td>
 
 <td style="text-align:right;">
 
-0.2192700
+0.1705902
 
 </td>
 
 <td style="text-align:right;">
 
-0.0515929
+39.0651655
 
 </td>
 
 <td style="text-align:right;">
 
-2514
+1721
 
 </td>
 
 <td style="text-align:right;">
 
-5239
+1210
 
 </td>
 
@@ -844,91 +846,91 @@ CD1+CD23+CD32+CD51+CD57+CD58+
 
 <td style="text-align:right;">
 
-7594
+2267
 
 </td>
 
 <td style="text-align:right;">
 
-50000
+15000
 
 </td>
 
 <td style="text-align:right;">
 
-15.188
+15.1133333
 
 </td>
 
 <td style="text-align:left;">
 
-CD2-CD4-CD7-CD11-CD15-
+NA
 
 </td>
 
 <td style="text-align:left;">
 
-CD1+CD21+CD23+CD30+CD32+CD37+CD57+CD58+
+CD25+
 
 </td>
 
 <td style="text-align:right;">
 
-0.0000000
+5.0727834
 
 </td>
 
 <td style="text-align:right;">
 
-0.0000000
+0.6616674
 
 </td>
 
 <td style="text-align:right;">
 
-62.3650250
+16.674018
 
 </td>
 
 <td style="text-align:right;">
 
-0.1316829
+2.514336
 
 </td>
 
 <td style="text-align:right;">
 
-0.0000000
+17.9091310
 
 </td>
 
 <td style="text-align:right;">
 
-0.0131683
+6.3520071
 
 </td>
 
 <td style="text-align:right;">
 
-0.0000000
+46.6254963
 
 </td>
 
 <td style="text-align:right;">
 
-37.4901238
+4.1905602
 
 </td>
 
 <td style="text-align:right;">
 
-4736
+508
 
 </td>
 
 <td style="text-align:right;">
 
-2858
+1759
 
 </td>
 
@@ -944,91 +946,91 @@ CD1+CD21+CD23+CD30+CD32+CD37+CD57+CD58+
 
 <td style="text-align:right;">
 
-5920
+1799
 
 </td>
 
 <td style="text-align:right;">
 
-50000
+15000
 
 </td>
 
 <td style="text-align:right;">
 
-11.840
+11.9933333
 
 </td>
 
 <td style="text-align:left;">
 
-CD2-CD4-CD7-CD8-CD9-CD11-CD15-CD56-
+Granzyme B-CD279-
 
 </td>
 
 <td style="text-align:left;">
 
-CD1+CD32+CD39+CD47+CD57+CD58+
+CD3+
 
 </td>
 
 <td style="text-align:right;">
 
-0.2364865
+14.5080600
 
 </td>
 
 <td style="text-align:right;">
 
-0.0000000
+9.2829350
 
 </td>
 
 <td style="text-align:right;">
 
-0.0000000
+2.390217
 
 </td>
 
 <td style="text-align:right;">
 
-0.0168919
+66.926070
 
 </td>
 
 <td style="text-align:right;">
 
-21.0979730
+2.8904947
 
 </td>
 
 <td style="text-align:right;">
 
-30.7601351
+2.8349083
 
 </td>
 
 <td style="text-align:right;">
 
-47.8885135
+0.9449694
 
 </td>
 
 <td style="text-align:right;">
 
-0.0000000
+0.2223457
 
 </td>
 
 <td style="text-align:right;">
 
-14
+471
 
 </td>
 
 <td style="text-align:right;">
 
-5906
+1328
 
 </td>
 
@@ -1044,91 +1046,91 @@ CD1+CD32+CD39+CD47+CD57+CD58+
 
 <td style="text-align:right;">
 
-5619
+1554
 
 </td>
 
 <td style="text-align:right;">
 
-50000
+15000
 
 </td>
 
 <td style="text-align:right;">
 
-11.238
+10.3600000
 
 </td>
 
 <td style="text-align:left;">
 
-CD2-CD4-CD7-CD11-CD15-
+NA
 
 </td>
 
 <td style="text-align:left;">
 
-CD1+CD23+CD32+CD38+CD47+CD51+CD57+CD58+
+CD3+
 
 </td>
 
 <td style="text-align:right;">
 
-0.0177968
+16.5379665
 
 </td>
 
 <td style="text-align:right;">
 
-0.0533903
+26.2548263
 
 </td>
 
 <td style="text-align:right;">
 
-77.3981135
+8.236808
 
 </td>
 
 <td style="text-align:right;">
 
-0.4271223
+31.081081
 
 </td>
 
 <td style="text-align:right;">
 
-0.0000000
+2.9601030
 
 </td>
 
 <td style="text-align:right;">
 
-0.0000000
+8.4942085
 
 </td>
 
 <td style="text-align:right;">
 
-0.0177968
+4.6975547
 
 </td>
 
 <td style="text-align:right;">
 
-22.0857804
+1.7374517
 
 </td>
 
 <td style="text-align:right;">
 
-4353
+793
 
 </td>
 
 <td style="text-align:right;">
 
-1266
+761
 
 </td>
 
@@ -1144,31 +1146,55 @@ CD1+CD23+CD32+CD38+CD47+CD51+CD57+CD58+
 
 <td style="text-align:right;">
 
-4295
+577
 
 </td>
 
 <td style="text-align:right;">
 
-50000
+15000
 
 </td>
 
 <td style="text-align:right;">
 
-8.590
+3.8466667
 
 </td>
 
 <td style="text-align:left;">
 
-CD2-CD4-CD7-CD11-CD15-
+CD46-
 
 </td>
 
 <td style="text-align:left;">
 
-CD1+CD23+CD32+CD57+CD58+
+CD3+
+
+</td>
+
+<td style="text-align:right;">
+
+0.1733102
+
+</td>
+
+<td style="text-align:right;">
+
+23.7435009
+
+</td>
+
+<td style="text-align:right;">
+
+1.906413
+
+</td>
+
+<td style="text-align:right;">
+
+64.124783
 
 </td>
 
@@ -1180,55 +1206,31 @@ CD1+CD23+CD32+CD57+CD58+
 
 <td style="text-align:right;">
 
-45.0291036
+9.0121317
 
 </td>
 
 <td style="text-align:right;">
 
-0.0698487
+0.3466205
 
 </td>
 
 <td style="text-align:right;">
 
-54.7380675
+0.6932409
 
 </td>
 
 <td style="text-align:right;">
 
-0.0000000
+149
 
 </td>
 
 <td style="text-align:right;">
 
-0.0000000
-
-</td>
-
-<td style="text-align:right;">
-
-0.1629802
-
-</td>
-
-<td style="text-align:right;">
-
-0.0000000
-
-</td>
-
-<td style="text-align:right;">
-
-1937
-
-</td>
-
-<td style="text-align:right;">
-
-2358
+428
 
 </td>
 
@@ -1244,31 +1246,31 @@ CD1+CD23+CD32+CD57+CD58+
 
 <td style="text-align:right;">
 
-4254
+499
 
 </td>
 
 <td style="text-align:right;">
 
-50000
+15000
 
 </td>
 
 <td style="text-align:right;">
 
-8.508
+3.3266667
 
 </td>
 
 <td style="text-align:left;">
 
-CD2-CD4-CD7-CD11-CD15-
+CD25-CD45RA-
 
 </td>
 
 <td style="text-align:left;">
 
-CD1+CD23+CD30+CD32+CD37+CD57+CD58+
+NA
 
 </td>
 
@@ -1280,55 +1282,55 @@ CD1+CD23+CD30+CD32+CD37+CD57+CD58+
 
 <td style="text-align:right;">
 
+1.2024048
+
+</td>
+
+<td style="text-align:right;">
+
+53.707415
+
+</td>
+
+<td style="text-align:right;">
+
+0.000000
+
+</td>
+
+<td style="text-align:right;">
+
+0.4008016
+
+</td>
+
+<td style="text-align:right;">
+
+0.4008016
+
+</td>
+
+<td style="text-align:right;">
+
 0.0000000
 
 </td>
 
 <td style="text-align:right;">
 
-65.6793606
+44.2885772
 
 </td>
 
 <td style="text-align:right;">
 
-0.0940291
+274
 
 </td>
 
 <td style="text-align:right;">
 
-0.0000000
-
-</td>
-
-<td style="text-align:right;">
-
-0.0470146
-
-</td>
-
-<td style="text-align:right;">
-
-0.0000000
-
-</td>
-
-<td style="text-align:right;">
-
-34.1795957
-
-</td>
-
-<td style="text-align:right;">
-
-2794
-
-</td>
-
-<td style="text-align:right;">
-
-1460
+225
 
 </td>
 
@@ -1344,31 +1346,31 @@ CD1+CD23+CD30+CD32+CD37+CD57+CD58+
 
 <td style="text-align:right;">
 
-3588
+175
 
 </td>
 
 <td style="text-align:right;">
 
-50000
+15000
 
 </td>
 
 <td style="text-align:right;">
 
-7.176
+1.1666667
 
 </td>
 
 <td style="text-align:left;">
 
-CD2-CD4-CD7-CD8-CD9-CD11-CD15-CD55-
+CD46-CD279-
 
 </td>
 
 <td style="text-align:left;">
 
-CD1+CD21+CD23+CD31+CD32+CD57+CD58+
+NA
 
 </td>
 
@@ -1380,37 +1382,31 @@ CD1+CD21+CD23+CD31+CD32+CD57+CD58+
 
 <td style="text-align:right;">
 
-1.5050167
+94.2857143
 
 </td>
 
 <td style="text-align:right;">
 
-0.0836120
+1.714286
 
 </td>
 
 <td style="text-align:right;">
 
-98.3277592
+1.142857
 
 </td>
 
 <td style="text-align:right;">
 
-0.0278707
+0.5714286
 
 </td>
 
 <td style="text-align:right;">
 
-0.0000000
-
-</td>
-
-<td style="text-align:right;">
-
-0.0557414
+0.5714286
 
 </td>
 
@@ -1422,13 +1418,19 @@ CD1+CD21+CD23+CD31+CD32+CD57+CD58+
 
 <td style="text-align:right;">
 
-57
+1.7142857
 
 </td>
 
 <td style="text-align:right;">
 
-3531
+168
+
+</td>
+
+<td style="text-align:right;">
+
+7
 
 </td>
 
@@ -1444,49 +1446,31 @@ CD1+CD21+CD23+CD31+CD32+CD57+CD58+
 
 <td style="text-align:right;">
 
-1757
+31
 
 </td>
 
 <td style="text-align:right;">
 
-50000
+15000
 
 </td>
 
 <td style="text-align:right;">
 
-3.514
+0.2066667
 
 </td>
 
 <td style="text-align:left;">
 
-CD2-CD4-CD7-CD11-CD15-
+NA
 
 </td>
 
 <td style="text-align:left;">
 
-CD1+CD23+CD30+CD32+CD37+CD49+CD57+CD58+
-
-</td>
-
-<td style="text-align:right;">
-
-0.0000000
-
-</td>
-
-<td style="text-align:right;">
-
-0.0569152
-
-</td>
-
-<td style="text-align:right;">
-
-58.1104155
+CD25+Granzyme B+
 
 </td>
 
@@ -1504,7 +1488,19 @@ CD1+CD23+CD30+CD32+CD37+CD49+CD57+CD58+
 
 <td style="text-align:right;">
 
-0.0000000
+0.000000
+
+</td>
+
+<td style="text-align:right;">
+
+0.000000
+
+</td>
+
+<td style="text-align:right;">
+
+19.3548387
 
 </td>
 
@@ -1516,301 +1512,7 @@ CD1+CD23+CD30+CD32+CD37+CD49+CD57+CD58+
 
 <td style="text-align:right;">
 
-41.8326693
-
-</td>
-
-<td style="text-align:right;">
-
-1022
-
-</td>
-
-<td style="text-align:right;">
-
-735
-
-</td>
-
-</tr>
-
-<tr>
-
-<td style="text-align:right;">
-
-9
-
-</td>
-
-<td style="text-align:right;">
-
-62
-
-</td>
-
-<td style="text-align:right;">
-
-50000
-
-</td>
-
-<td style="text-align:right;">
-
-0.124
-
-</td>
-
-<td style="text-align:left;">
-
-CD2-CD4-CD7-CD8-CD9-CD11-CD15-CD29-
-
-</td>
-
-<td style="text-align:left;">
-
-CD1+CD23+CD38+CD41+CD47+CD51+CD57+CD58+
-
-</td>
-
-<td style="text-align:right;">
-
-0.0000000
-
-</td>
-
-<td style="text-align:right;">
-
-100.0000000
-
-</td>
-
-<td style="text-align:right;">
-
-0.0000000
-
-</td>
-
-<td style="text-align:right;">
-
-0.0000000
-
-</td>
-
-<td style="text-align:right;">
-
-0.0000000
-
-</td>
-
-<td style="text-align:right;">
-
-0.0000000
-
-</td>
-
-<td style="text-align:right;">
-
-0.0000000
-
-</td>
-
-<td style="text-align:right;">
-
-0.0000000
-
-</td>
-
-<td style="text-align:right;">
-
-62
-
-</td>
-
-<td style="text-align:right;">
-
-0
-
-</td>
-
-</tr>
-
-<tr>
-
-<td style="text-align:right;">
-
-10
-
-</td>
-
-<td style="text-align:right;">
-
-58
-
-</td>
-
-<td style="text-align:right;">
-
-50000
-
-</td>
-
-<td style="text-align:right;">
-
-0.116
-
-</td>
-
-<td style="text-align:left;">
-
-CD2-CD4-CD6-CD7-CD11-CD15-CD55-
-
-</td>
-
-<td style="text-align:left;">
-
-CD1+CD32+CD51+CD57+CD58+
-
-</td>
-
-<td style="text-align:right;">
-
-0.0000000
-
-</td>
-
-<td style="text-align:right;">
-
-100.0000000
-
-</td>
-
-<td style="text-align:right;">
-
-0.0000000
-
-</td>
-
-<td style="text-align:right;">
-
-0.0000000
-
-</td>
-
-<td style="text-align:right;">
-
-0.0000000
-
-</td>
-
-<td style="text-align:right;">
-
-0.0000000
-
-</td>
-
-<td style="text-align:right;">
-
-0.0000000
-
-</td>
-
-<td style="text-align:right;">
-
-0.0000000
-
-</td>
-
-<td style="text-align:right;">
-
-58
-
-</td>
-
-<td style="text-align:right;">
-
-0
-
-</td>
-
-</tr>
-
-<tr>
-
-<td style="text-align:right;">
-
-11
-
-</td>
-
-<td style="text-align:right;">
-
-50
-
-</td>
-
-<td style="text-align:right;">
-
-50000
-
-</td>
-
-<td style="text-align:right;">
-
-0.100
-
-</td>
-
-<td style="text-align:left;">
-
-CD2-CD4-CD6-CD7-CD9-CD10-CD11-CD15-
-
-</td>
-
-<td style="text-align:left;">
-
-CD1+CD36+CD47+CD57+CD58+
-
-</td>
-
-<td style="text-align:right;">
-
-0.0000000
-
-</td>
-
-<td style="text-align:right;">
-
-0.0000000
-
-</td>
-
-<td style="text-align:right;">
-
-0.0000000
-
-</td>
-
-<td style="text-align:right;">
-
-0.0000000
-
-</td>
-
-<td style="text-align:right;">
-
-2.0000000
-
-</td>
-
-<td style="text-align:right;">
-
-6.0000000
-
-</td>
-
-<td style="text-align:right;">
-
-92.0000000
+80.6451613
 
 </td>
 
@@ -1828,7 +1530,7 @@ CD1+CD36+CD47+CD57+CD58+
 
 <td style="text-align:right;">
 
-50
+31
 
 </td>
 
@@ -1848,8 +1550,6 @@ CD1+CD36+CD47+CD57+CD58+
     method = 'quantile',
     studyvarID = 'treatment')
 ```
-
-v
 
 <table class="table" style="width: auto !important; margin-left: auto; margin-right: auto;">
 
@@ -1927,49 +1627,49 @@ nCell\_CD3
 
 <td style="text-align:right;">
 
-9050
+5167
 
 </td>
 
 <td style="text-align:right;">
 
-50000
+15000
 
 </td>
 
 <td style="text-align:right;">
 
-18.100
+34.4466667
 
 </td>
 
 <td style="text-align:left;">
 
-CD2-CD4-CD7-CD8-CD9-CD10-CD11-CD15-CD56-
+NA
 
 </td>
 
 <td style="text-align:left;">
 
-CD1+CD23+CD32+CD57+CD58+
+CD25+
 
 </td>
 
 <td style="text-align:right;">
 
-28
+5113
 
 </td>
 
 <td style="text-align:right;">
 
-2014
+6
 
 </td>
 
 <td style="text-align:right;">
 
-7008
+48
 
 </td>
 
@@ -1985,43 +1685,43 @@ CD1+CD23+CD32+CD57+CD58+
 
 <td style="text-align:right;">
 
-7753
+2931
 
 </td>
 
 <td style="text-align:right;">
 
-50000
+15000
 
 </td>
 
 <td style="text-align:right;">
 
-15.506
+19.5400000
 
 </td>
 
 <td style="text-align:left;">
 
-CD2-CD4-CD7-CD11-CD15-
+CD25-CD279-
 
 </td>
 
 <td style="text-align:left;">
 
-CD1+CD23+CD32+CD51+CD57+CD58+
+CD3+CD45RA+
 
 </td>
 
 <td style="text-align:right;">
 
-7736
+26
 
 </td>
 
 <td style="text-align:right;">
 
-10
+2898
 
 </td>
 
@@ -2043,49 +1743,49 @@ CD1+CD23+CD32+CD51+CD57+CD58+
 
 <td style="text-align:right;">
 
-7594
+2267
 
 </td>
 
 <td style="text-align:right;">
 
-50000
+15000
 
 </td>
 
 <td style="text-align:right;">
 
-15.188
+15.1133333
 
 </td>
 
 <td style="text-align:left;">
 
-CD2-CD4-CD7-CD11-CD15-
+NA
 
 </td>
 
 <td style="text-align:left;">
 
-CD1+CD21+CD23+CD30+CD32+CD37+CD57+CD58+
+CD25+
 
 </td>
 
 <td style="text-align:right;">
 
-3
+45
 
 </td>
 
 <td style="text-align:right;">
 
-7591
+627
 
 </td>
 
 <td style="text-align:right;">
 
-0
+1595
 
 </td>
 
@@ -2101,49 +1801,49 @@ CD1+CD21+CD23+CD30+CD32+CD37+CD57+CD58+
 
 <td style="text-align:right;">
 
-5920
+1799
 
 </td>
 
 <td style="text-align:right;">
 
-50000
+15000
 
 </td>
 
 <td style="text-align:right;">
 
-11.840
+11.9933333
 
 </td>
 
 <td style="text-align:left;">
 
-CD2-CD4-CD7-CD8-CD9-CD11-CD15-CD56-
+Granzyme B-CD279-
 
 </td>
 
 <td style="text-align:left;">
 
-CD1+CD32+CD39+CD47+CD57+CD58+
+CD3+
 
 </td>
 
 <td style="text-align:right;">
 
-5863
+15
 
 </td>
 
 <td style="text-align:right;">
 
-0
+1665
 
 </td>
 
 <td style="text-align:right;">
 
-57
+119
 
 </td>
 
@@ -2159,49 +1859,49 @@ CD1+CD32+CD39+CD47+CD57+CD58+
 
 <td style="text-align:right;">
 
-5619
+1554
 
 </td>
 
 <td style="text-align:right;">
 
-50000
+15000
 
 </td>
 
 <td style="text-align:right;">
 
-11.238
+10.3600000
 
 </td>
 
 <td style="text-align:left;">
 
-CD2-CD4-CD7-CD11-CD15-
+NA
 
 </td>
 
 <td style="text-align:left;">
 
-CD1+CD23+CD32+CD38+CD47+CD51+CD57+CD58+
+CD3+
 
 </td>
 
 <td style="text-align:right;">
 
-5616
+5
 
 </td>
 
 <td style="text-align:right;">
 
-3
+1294
 
 </td>
 
 <td style="text-align:right;">
 
-0
+255
 
 </td>
 
@@ -2217,49 +1917,49 @@ CD1+CD23+CD32+CD38+CD47+CD51+CD57+CD58+
 
 <td style="text-align:right;">
 
-4295
+577
 
 </td>
 
 <td style="text-align:right;">
 
-50000
+15000
 
 </td>
 
 <td style="text-align:right;">
 
-8.590
+3.8466667
 
 </td>
 
 <td style="text-align:left;">
 
-CD2-CD4-CD7-CD11-CD15-
+CD46-
 
 </td>
 
 <td style="text-align:left;">
 
-CD1+CD23+CD32+CD57+CD58+
+CD3+
 
 </td>
 
 <td style="text-align:right;">
 
-27
+544
 
 </td>
 
 <td style="text-align:right;">
 
-4261
+32
 
 </td>
 
 <td style="text-align:right;">
 
-7
+1
 
 </td>
 
@@ -2275,49 +1975,49 @@ CD1+CD23+CD32+CD57+CD58+
 
 <td style="text-align:right;">
 
-4254
+499
 
 </td>
 
 <td style="text-align:right;">
 
-50000
+15000
 
 </td>
 
 <td style="text-align:right;">
 
-8.508
+3.3266667
 
 </td>
 
 <td style="text-align:left;">
 
-CD2-CD4-CD7-CD11-CD15-
+CD25-CD45RA-
 
 </td>
 
 <td style="text-align:left;">
 
-CD1+CD23+CD30+CD32+CD37+CD57+CD58+
+NA
 
 </td>
 
 <td style="text-align:right;">
 
-4
-
-</td>
-
-<td style="text-align:right;">
-
-4249
+14
 
 </td>
 
 <td style="text-align:right;">
 
 1
+
+</td>
+
+<td style="text-align:right;">
+
+484
 
 </td>
 
@@ -2333,49 +2033,49 @@ CD1+CD23+CD30+CD32+CD37+CD57+CD58+
 
 <td style="text-align:right;">
 
-3588
+175
 
 </td>
 
 <td style="text-align:right;">
 
-50000
+15000
 
 </td>
 
 <td style="text-align:right;">
 
-7.176
+1.1666667
 
 </td>
 
 <td style="text-align:left;">
 
-CD2-CD4-CD7-CD8-CD9-CD11-CD15-CD55-
+CD46-CD279-
 
 </td>
 
 <td style="text-align:left;">
 
-CD1+CD21+CD23+CD31+CD32+CD57+CD58+
+NA
 
 </td>
 
 <td style="text-align:right;">
 
-14
+165
 
 </td>
 
 <td style="text-align:right;">
 
-3571
+10
 
 </td>
 
 <td style="text-align:right;">
 
-3
+0
 
 </td>
 
@@ -2391,147 +2091,31 @@ CD1+CD21+CD23+CD31+CD32+CD57+CD58+
 
 <td style="text-align:right;">
 
-1757
+31
 
 </td>
 
 <td style="text-align:right;">
 
-50000
+15000
 
 </td>
 
 <td style="text-align:right;">
 
-3.514
+0.2066667
 
 </td>
 
 <td style="text-align:left;">
 
-CD2-CD4-CD7-CD11-CD15-
+NA
 
 </td>
 
 <td style="text-align:left;">
 
-CD1+CD23+CD30+CD32+CD37+CD49+CD57+CD58+
-
-</td>
-
-<td style="text-align:right;">
-
-2
-
-</td>
-
-<td style="text-align:right;">
-
-0
-
-</td>
-
-<td style="text-align:right;">
-
-1755
-
-</td>
-
-</tr>
-
-<tr>
-
-<td style="text-align:right;">
-
-9
-
-</td>
-
-<td style="text-align:right;">
-
-62
-
-</td>
-
-<td style="text-align:right;">
-
-50000
-
-</td>
-
-<td style="text-align:right;">
-
-0.124
-
-</td>
-
-<td style="text-align:left;">
-
-CD2-CD4-CD7-CD8-CD9-CD11-CD15-CD29-
-
-</td>
-
-<td style="text-align:left;">
-
-CD1+CD23+CD38+CD41+CD47+CD51+CD57+CD58+
-
-</td>
-
-<td style="text-align:right;">
-
-62
-
-</td>
-
-<td style="text-align:right;">
-
-0
-
-</td>
-
-<td style="text-align:right;">
-
-0
-
-</td>
-
-</tr>
-
-<tr>
-
-<td style="text-align:right;">
-
-10
-
-</td>
-
-<td style="text-align:right;">
-
-58
-
-</td>
-
-<td style="text-align:right;">
-
-50000
-
-</td>
-
-<td style="text-align:right;">
-
-0.116
-
-</td>
-
-<td style="text-align:left;">
-
-CD2-CD4-CD6-CD7-CD11-CD15-CD55-
-
-</td>
-
-<td style="text-align:left;">
-
-CD1+CD32+CD51+CD57+CD58+
+CD25+Granzyme B+
 
 </td>
 
@@ -2543,71 +2127,13 @@ CD1+CD32+CD51+CD57+CD58+
 
 <td style="text-align:right;">
 
-57
-
-</td>
-
-<td style="text-align:right;">
-
-0
-
-</td>
-
-</tr>
-
-<tr>
-
-<td style="text-align:right;">
-
-11
-
-</td>
-
-<td style="text-align:right;">
-
-50
-
-</td>
-
-<td style="text-align:right;">
-
-50000
-
-</td>
-
-<td style="text-align:right;">
-
-0.100
-
-</td>
-
-<td style="text-align:left;">
-
-CD2-CD4-CD6-CD7-CD9-CD10-CD11-CD15-
-
-</td>
-
-<td style="text-align:left;">
-
-CD1+CD36+CD47+CD57+CD58+
-
-</td>
-
-<td style="text-align:right;">
-
-36
-
-</td>
-
-<td style="text-align:right;">
-
 0
 
 </td>
 
 <td style="text-align:right;">
 
-14
+30
 
 </td>
 
@@ -2626,8 +2152,9 @@ more or less expressed in each identified cluster of cells.
 
 ``` r
   plotSignatures(sce,
-    labCex = 1.5,
-    legendCex = 1.5)
+    labCex = 1.2,
+    legendCex = 1.2,
+    labDegree = 40)
 ```
 
 ![Determine enriched markers in each cluster and plot the expression
@@ -2754,7 +2281,7 @@ sessionInfo()
     ##  [1] PCAtools_2.1.4              cowplot_1.0.0              
     ##  [3] lattice_0.20-41             reshape2_1.4.4             
     ##  [5] ggrepel_0.8.2               ggplot2_3.3.0              
-    ##  [7] scDataviz_0.99.48           SingleCellExperiment_1.8.0 
+    ##  [7] scDataviz_0.99.60           SingleCellExperiment_1.8.0 
     ##  [9] SummarizedExperiment_1.16.1 DelayedArray_0.12.3        
     ## [11] BiocParallel_1.20.1         matrixStats_0.56.0         
     ## [13] Biobase_2.46.0              GenomicRanges_1.38.0       

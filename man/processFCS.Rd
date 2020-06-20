@@ -16,8 +16,7 @@ processFCS(
   asinhFactor = 5,
   downsample = 1e+05,
   downsampleVar = 0.1,
-  colsDiscard = c("Time", "Event_length", "Center", "Offset", "Width", "Residual",
-    "tSNE1", "tSNE2", "BCKG"),
+  colsDiscard = NULL,
   colsRetain = NULL,
   newColnames = NULL,
   emptyValue = TRUE,
@@ -70,9 +69,10 @@ names are literal and must match exactly.}
 but in reverse. Technically, it is possible to activate both \code{colsDiscard}
 and \code{colsRetain}, but \code{colsDiscard} will be executed first.}
 
-\item{newColnames}{Assuming that you know the exact order of your final selected
-markers, rename these based on a vector passed as this argument. Please
-exercise caution when using this.}
+\item{newColnames}{A named vector of new marker names to assign to each sample.
+The values of this vector should be the new marker names; the names of this
+vector should represent the ooriginal marker names. This operation is performed
+AFTER any operation involving \code{colsDiscard} and \code{colsRetain}.}
 
 \item{emptyValue}{boolean (taken from ?flowCore::read.FCS indicating whether or
 not we allow an empty value for keyword values in TEXT segment.}

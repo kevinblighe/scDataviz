@@ -79,7 +79,15 @@ Note: to install development version:
 Here, we will utilise some of the flow cytometry data from
 [Deep phenotyping detects a pathological CD4+ T-cell complosome signature in systemic sclerosis](https://www.nature.com/articles/s41423-019-0360-8).
 
-In a practical situation, we would normally read in the data from the raw FCS
+This can normally be downloadedd via `git clone` from your command prompt:
+
+```{r, engine = 'bash', eval = FALSE}
+
+  git clone https://github.com/kevinblighe/scDataviz_data/ ;
+
+```
+
+In a practical situation, we would normally read in this data from the raw FCS
 files and then QC filter, normalise, and transform them. This can be achieved
 via the `processFCS` function, which, by default, also removes variables based
 on low variance and downsamples [randomly] your data to 100000 variables. The
@@ -104,21 +112,54 @@ example (*not run*) is given below:
     stringsAsFactors = FALSE)
   metadata
 
+  inclusions <- c('Yb171Di','Nd144Di','Nd145Di',
+    'Er168Di','Tm169Di','Sm154Di','Yb173Di','Yb174Di',
+    'Lu175Di','Nd143Di')
+
+  markernames <- c('Foxp3','C3aR','CD4',
+    'CD46','CD25','CD3','Granzyme B','CD55',
+    'CD279','CD45RA')
+
+  names(markernames) <- inclusions
+  markernames
+
+  exclusions <- c('Time','Event_length','BCKG190Di',
+    'Center','Offset','Width','Residual')
+
   sce <- processFCS(
     files = filelist,
     metadata = metadata,
     transformation = TRUE,
     transFun = function (x) asinh(x),
     asinhFactor = 5,
-    downsample = 100000,
-    downsampleVar = 0.2,
-    newColnames = paste0('CD', 1:65))
+    downsample = 10000,
+    downsampleVar = 0.7,
+    colsRetain = inclusions,
+    colsDiscard = exclusions,
+    newColnames = markernames)
 
 ```
 
+In flow and mass cytometry, getting the correct marker names in the FCS files can
+be surprisingly difficult. In many cases, from experience, a facility may label
+the markers by their metals, such as Iridium (Ir), Ruthenium (Ru), Terbium (Tb),
+*et cetera* - this is the case for the data used in this tutorial. The true marker
+names may be held as pData encoded within each FCS, accessible via:
+
+```{r readFCSparameters, eval = FALSE}
+
+  library(flowCore)
+  pData(parameters(
+    read.FCS(filelist[[4]], transformation = FALSE, emptyValue = FALSE)))
+
+```
+
+Whatever the case, it is important to sort out marker naming issues prior to the experiment
+being conducted in order to avoid any confusion.
+
 For this vignette, due to the fact that the raw FCS data is > 500 megabytes,
 we will work with a smaller pre-prepared dataset that has been downsampled to
-5000 cells using the above code. This data comes included with the package.
+10000 cells using the above code. This data comes included with the package.
 
 Load the pre-prepared complosome data.
 
@@ -127,9 +168,6 @@ Load the pre-prepared complosome data.
   load(system.file('extdata/', 'complosome.rdata', package = 'scDataviz'))
   
 ```
-
-To see a full vignette that utilises the raw FCS files, see the
-[GitHub vignette](https://github.com/kevinblighe/scDataviz/).
 
 One can also create a new *SingleCellExperiment* object manually using any
 type of data, including any data from scRNA-seq produced elsewhere. Import
@@ -158,17 +196,17 @@ PCA.
     colby = 'treatment',
     legendPosition = 'right',
     title = 'PCA applied to CyTOF data',
-    caption = paste0('5000 cells randomly selected after ',
+    caption = paste0('10000 cells randomly selected after ',
       'having filtered for low variance'))
 
 ```
 
 We can add the rotated component loadings as a new reduced dimensional
-component to our dataset. Let's just add the first 20 PCs.
+component to our dataset.
 
 ```{r addPCAdim}
 
-  reducedDim(sce, 'PCA') <- p$rotated[,1:20]
+  reducedDim(sce, 'PCA') <- p$rotated
 
 ```
 
@@ -207,11 +245,11 @@ to use via the elbow method and Horn's parallel analysis.
 
 ```
 
-Let's use the number of PCs identified by Horn's.
+For now, let's just use 5 PCs.
 
 ```{r performUMAP_PCA}
 
-  sce <- performUMAP(sce, reducedDim = 'PCA', dims = c(1:horn$n))
+  sce <- performUMAP(sce, reducedDim = 'PCA', dims = c(1:5))
 
 ```
 
@@ -233,7 +271,7 @@ gradients that blend into one another across high density 'peaks'.
 
   ggout1 <- contourPlot(sce,
     reducedDim = 'UMAP',
-    bins = 75,
+    bins = 150,
     subtitle = 'UMAP performed on expression values',
     legendLabSize = 18,
     axisLabSize = 22,
@@ -243,7 +281,7 @@ gradients that blend into one another across high density 'peaks'.
 
   ggout2 <- contourPlot(sce,
     reducedDim = 'UMAP_PCA',
-    bins = 75,
+    bins = 150,
     subtitle = 'UMAP performed on PC eigenvectors',
     legendLabSize = 18,
     axisLabSize = 22,
@@ -279,11 +317,12 @@ across the UMAP layouts.
     subtitleLabSize = 18,
     captionLabSize = 18)
 
-  ggout2 <-  markerExpression(sce,
+  ggout2 <- markerExpression(sce,
     markers = markers,
     reducedDim = 'UMAP_PCA',
     subtitle = 'UMAP performed on PC eigenvectors',
     nrow = 1, ncol = 6,
+    col = c('white', 'darkblue'),
     legendKeyHeight = 1.0,
     legendLabSize = 18,
     stripLabSize = 22,
@@ -434,12 +473,12 @@ experience.
 
 ```
 
-```{r ex6b, fig.height = 9, fig.width = 16, fig.cap = 'Plot marker expression per identified cluster2'}
+```{r ex6b, fig.height = 7, fig.width = 12, fig.cap = 'Plot marker expression per identified cluster2'}
 
   clusters <- unique(metadata(sce)[['Cluster_PCA']])
   clusters
 
-  markers <- sample(rownames(sce), 8)
+  markers <- sample(rownames(sce), 5)
   markers
 
   markerExpressionPerCluster(sce,
@@ -458,7 +497,7 @@ experience.
 
 Try all markers across a single cluster:
 
-```{r ex6c, fig.height = 6, fig.width = 20, fig.cap = 'Plot marker expression per identified cluster3'}
+```{r ex6c, fig.height = 6, fig.width = 8, fig.cap = 'Plot marker expression per identified cluster3'}
 
   cluster <- sample(unique(metadata(sce)[['Cluster']]), 1)
   cluster
@@ -506,7 +545,7 @@ analyses.
     studyvarID = 'treatment')
 
 ```
-v
+
 `r knitr::kable(markerEnrichment(sce, sampleAbundances = FALSE, method = 'quantile', studyvarID = 'treatment'), auto = TRUE) %>% kable_styling(full_width = FALSE)`
 
 .
@@ -516,11 +555,12 @@ v
 The expression signature is a quick way to visualise which markers are more or
 less expressed in each identified cluster of cells.
 
-```{r ex7, fig.height = 8, fig.width = 16, fig.cap = 'Determine enriched markers in each cluster and plot the expression signature'}
+```{r ex7, fig.height = 8, fig.width = 6, fig.cap = 'Determine enriched markers in each cluster and plot the expression signature'}
 
   plotSignatures(sce,
-    labCex = 1.5,
-    legendCex = 1.5)
+    labCex = 1.2,
+    legendCex = 1.2,
+    labDegree = 40)
 
 ```
 
