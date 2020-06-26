@@ -626,6 +626,7 @@ This will also work without any assigned metadata.
 * Jessica Timms
 * James Opzoomer
 * Marcel Ramos (Bioconductor)
+* Lori Shepherd (Bioconductor)
 * Bioinformatics CRO
 
 

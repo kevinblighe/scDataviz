@@ -1,7 +1,7 @@
 scDataviz: single cell dataviz and downstream analyses
 ================
 Kevin Blighe
-2020-06-20
+2020-06-26
 
 # Introduction
 
@@ -272,8 +272,7 @@ profiles across the UMAP layouts.
   markers
 ```
 
-    ## [1] "Granzyme B" "CD279"      "C3aR"       "CD55"       "CD45RA"    
-    ## [6] "CD3"
+    ## [1] "Foxp3"  "CD4"    "CD45RA" "CD25"   "CD279"  "CD46"
 
 ``` r
   ggout1 <- markerExpression(sce,
@@ -323,12 +322,12 @@ First, let’s take a look inside the metadata that we have.
 ```
 
     ##       sample   group treatment
-    ## cell1    P04 Disease      CD46
-    ## cell2  HD262 Healthy    Unstim
-    ## cell3   HD01 Healthy      CD46
-    ## cell4    P04 Disease      CD46
-    ## cell5   HD00 Healthy    Unstim
-    ## cell6    P03 Disease      CD46
+    ## cell1    P00 Disease    Unstim
+    ## cell2    P00 Disease    Unstim
+    ## cell3    P04 Disease      CD46
+    ## cell4    P03 Disease      CD46
+    ## cell5    P08 Disease    Unstim
+    ## cell6    P00 Disease      CD46
 
 ``` r
   levels(metadata(sce)$group)
@@ -465,14 +464,14 @@ neighbours](README_files/figure-gfm/ex5-1.png)
   clusters
 ```
 
-    ## [1] 0 1 4 2 3 7 6 5
+    ## [1] 2 0 1 6 4 3 5 7
 
 ``` r
   markers <- sample(rownames(sce), 5)
   markers
 ```
 
-    ## [1] "CD3"        "CD55"       "Granzyme B" "Foxp3"      "CD46"
+    ## [1] "Foxp3"  "C3aR"   "CD25"   "CD45RA" "CD3"
 
 ``` r
   markerExpressionPerCluster(sce,
@@ -498,7 +497,7 @@ Try all markers across a single cluster:
   cluster
 ```
 
-    ## [1] 7
+    ## [1] 1
 
 ``` r
   markerExpressionPerCluster(sce,
@@ -646,19 +645,19 @@ nCell\_Disease
 
 <td style="text-align:right;">
 
-5167
+3410
 
 </td>
 
 <td style="text-align:right;">
 
-15000
+10000
 
 </td>
 
 <td style="text-align:right;">
 
-34.4466667
+34.10
 
 </td>
 
@@ -676,61 +675,61 @@ CD25+
 
 <td style="text-align:right;">
 
-0.0580608
+0.0879765
 
 </td>
 
 <td style="text-align:right;">
 
-9.6961486
+9.6187683
 
 </td>
 
 <td style="text-align:right;">
 
-27.307916
+25.483871
 
 </td>
 
 <td style="text-align:right;">
 
-22.450164
+22.8152493
 
 </td>
 
 <td style="text-align:right;">
 
-7.3156571
+8.3870968
 
 </td>
 
 <td style="text-align:right;">
 
-8.6317012
+8.8563050
 
 </td>
 
 <td style="text-align:right;">
 
-17.0892201
+17.7126100
 
 </td>
 
 <td style="text-align:right;">
 
-7.4511322
+7.0381232
 
 </td>
 
 <td style="text-align:right;">
 
-1915
+1200
 
 </td>
 
 <td style="text-align:right;">
 
-3252
+2210
 
 </td>
 
@@ -746,19 +745,19 @@ CD25+
 
 <td style="text-align:right;">
 
-2931
+1928
 
 </td>
 
 <td style="text-align:right;">
 
-15000
+10000
 
 </td>
 
 <td style="text-align:right;">
 
-19.5400000
+19.28
 
 </td>
 
@@ -782,55 +781,55 @@ CD3+CD45RA+
 
 <td style="text-align:right;">
 
-0.1705902
+0.1556017
 
 </td>
 
 <td style="text-align:right;">
 
-58.546571
+62.085062
 
 </td>
 
 <td style="text-align:right;">
 
-1.194132
+0.5705394
 
 </td>
 
 <td style="text-align:right;">
 
-0.1364722
+0.2074689
 
 </td>
 
 <td style="text-align:right;">
 
-0.7164790
+0.0000000
 
 </td>
 
 <td style="text-align:right;">
 
-0.1705902
+0.0518672
 
 </td>
 
 <td style="text-align:right;">
 
-39.0651655
+36.9294606
 
 </td>
 
 <td style="text-align:right;">
 
-1721
+1200
 
 </td>
 
 <td style="text-align:right;">
 
-1210
+728
 
 </td>
 
@@ -846,119 +845,19 @@ CD3+CD45RA+
 
 <td style="text-align:right;">
 
-2267
+1298
 
 </td>
 
 <td style="text-align:right;">
 
-15000
+10000
 
 </td>
 
 <td style="text-align:right;">
 
-15.1133333
-
-</td>
-
-<td style="text-align:left;">
-
-NA
-
-</td>
-
-<td style="text-align:left;">
-
-CD25+
-
-</td>
-
-<td style="text-align:right;">
-
-5.0727834
-
-</td>
-
-<td style="text-align:right;">
-
-0.6616674
-
-</td>
-
-<td style="text-align:right;">
-
-16.674018
-
-</td>
-
-<td style="text-align:right;">
-
-2.514336
-
-</td>
-
-<td style="text-align:right;">
-
-17.9091310
-
-</td>
-
-<td style="text-align:right;">
-
-6.3520071
-
-</td>
-
-<td style="text-align:right;">
-
-46.6254963
-
-</td>
-
-<td style="text-align:right;">
-
-4.1905602
-
-</td>
-
-<td style="text-align:right;">
-
-508
-
-</td>
-
-<td style="text-align:right;">
-
-1759
-
-</td>
-
-</tr>
-
-<tr>
-
-<td style="text-align:right;">
-
-3
-
-</td>
-
-<td style="text-align:right;">
-
-1799
-
-</td>
-
-<td style="text-align:right;">
-
-15000
-
-</td>
-
-<td style="text-align:right;">
-
-11.9933333
+12.98
 
 </td>
 
@@ -976,61 +875,161 @@ CD3+
 
 <td style="text-align:right;">
 
-14.5080600
+15.6394453
 
 </td>
 
 <td style="text-align:right;">
 
-9.2829350
+7.8582435
 
 </td>
 
 <td style="text-align:right;">
 
-2.390217
+2.234206
 
 </td>
 
 <td style="text-align:right;">
 
-66.926070
+64.1756549
 
 </td>
 
 <td style="text-align:right;">
 
-2.8904947
+3.8520801
 
 </td>
 
 <td style="text-align:right;">
 
-2.8349083
+3.5439137
 
 </td>
 
 <td style="text-align:right;">
 
-0.9449694
+1.9260401
 
 </td>
 
 <td style="text-align:right;">
 
-0.2223457
+0.7704160
 
 </td>
 
 <td style="text-align:right;">
 
-471
+334
 
 </td>
 
 <td style="text-align:right;">
 
-1328
+964
+
+</td>
+
+</tr>
+
+<tr>
+
+<td style="text-align:right;">
+
+3
+
+</td>
+
+<td style="text-align:right;">
+
+1236
+
+</td>
+
+<td style="text-align:right;">
+
+10000
+
+</td>
+
+<td style="text-align:right;">
+
+12.36
+
+</td>
+
+<td style="text-align:left;">
+
+NA
+
+</td>
+
+<td style="text-align:left;">
+
+CD25+
+
+</td>
+
+<td style="text-align:right;">
+
+6.3915858
+
+</td>
+
+<td style="text-align:right;">
+
+1.1326861
+
+</td>
+
+<td style="text-align:right;">
+
+1.375404
+
+</td>
+
+<td style="text-align:right;">
+
+2.9126214
+
+</td>
+
+<td style="text-align:right;">
+
+24.0291262
+
+</td>
+
+<td style="text-align:right;">
+
+7.0388350
+
+</td>
+
+<td style="text-align:right;">
+
+56.8770227
+
+</td>
+
+<td style="text-align:right;">
+
+0.2427184
+
+</td>
+
+<td style="text-align:right;">
+
+110
+
+</td>
+
+<td style="text-align:right;">
+
+1126
 
 </td>
 
@@ -1046,19 +1045,19 @@ CD3+
 
 <td style="text-align:right;">
 
-1554
+962
 
 </td>
 
 <td style="text-align:right;">
 
-15000
+10000
 
 </td>
 
 <td style="text-align:right;">
 
-10.3600000
+9.62
 
 </td>
 
@@ -1076,61 +1075,61 @@ CD3+
 
 <td style="text-align:right;">
 
-16.5379665
+16.5280665
 
 </td>
 
 <td style="text-align:right;">
 
-26.2548263
+26.1954262
 
 </td>
 
 <td style="text-align:right;">
 
-8.236808
+7.484407
 
 </td>
 
 <td style="text-align:right;">
 
-31.081081
+27.9625780
 
 </td>
 
 <td style="text-align:right;">
 
-2.9601030
+3.2224532
 
 </td>
 
 <td style="text-align:right;">
 
-8.4942085
+10.0831601
 
 </td>
 
 <td style="text-align:right;">
 
-4.6975547
+6.0291060
 
 </td>
 
 <td style="text-align:right;">
 
-1.7374517
+2.4948025
 
 </td>
 
 <td style="text-align:right;">
 
-793
+483
 
 </td>
 
 <td style="text-align:right;">
 
-761
+479
 
 </td>
 
@@ -1146,55 +1145,55 @@ CD3+
 
 <td style="text-align:right;">
 
-577
+502
 
 </td>
 
 <td style="text-align:right;">
 
-15000
+10000
 
 </td>
 
 <td style="text-align:right;">
 
-3.8466667
+5.02
 
 </td>
 
 <td style="text-align:left;">
 
-CD46-
+CD25-
 
 </td>
 
 <td style="text-align:left;">
 
-CD3+
+NA
 
 </td>
 
 <td style="text-align:right;">
 
-0.1733102
+0.3984064
 
 </td>
 
 <td style="text-align:right;">
 
-23.7435009
+14.9402390
 
 </td>
 
 <td style="text-align:right;">
 
-1.906413
+40.836653
 
 </td>
 
 <td style="text-align:right;">
 
-64.124783
+11.1553785
 
 </td>
 
@@ -1206,31 +1205,31 @@ CD3+
 
 <td style="text-align:right;">
 
-9.0121317
+0.3984064
 
 </td>
 
 <td style="text-align:right;">
 
-0.3466205
+0.1992032
 
 </td>
 
 <td style="text-align:right;">
 
-0.6932409
+32.0717131
 
 </td>
 
 <td style="text-align:right;">
 
-149
+282
 
 </td>
 
 <td style="text-align:right;">
 
-428
+220
 
 </td>
 
@@ -1246,119 +1245,19 @@ CD3+
 
 <td style="text-align:right;">
 
-499
+300
 
 </td>
 
 <td style="text-align:right;">
 
-15000
+10000
 
 </td>
 
 <td style="text-align:right;">
 
-3.3266667
-
-</td>
-
-<td style="text-align:left;">
-
-CD25-CD45RA-
-
-</td>
-
-<td style="text-align:left;">
-
-NA
-
-</td>
-
-<td style="text-align:right;">
-
-0.0000000
-
-</td>
-
-<td style="text-align:right;">
-
-1.2024048
-
-</td>
-
-<td style="text-align:right;">
-
-53.707415
-
-</td>
-
-<td style="text-align:right;">
-
-0.000000
-
-</td>
-
-<td style="text-align:right;">
-
-0.4008016
-
-</td>
-
-<td style="text-align:right;">
-
-0.4008016
-
-</td>
-
-<td style="text-align:right;">
-
-0.0000000
-
-</td>
-
-<td style="text-align:right;">
-
-44.2885772
-
-</td>
-
-<td style="text-align:right;">
-
-274
-
-</td>
-
-<td style="text-align:right;">
-
-225
-
-</td>
-
-</tr>
-
-<tr>
-
-<td style="text-align:right;">
-
-7
-
-</td>
-
-<td style="text-align:right;">
-
-175
-
-</td>
-
-<td style="text-align:right;">
-
-15000
-
-</td>
-
-<td style="text-align:right;">
-
-1.1666667
+3.00
 
 </td>
 
@@ -1382,31 +1281,101 @@ NA
 
 <td style="text-align:right;">
 
-94.2857143
+41.0000000
 
 </td>
 
 <td style="text-align:right;">
 
-1.714286
+2.000000
 
 </td>
 
 <td style="text-align:right;">
 
-1.142857
+54.6666667
 
 </td>
 
 <td style="text-align:right;">
 
-0.5714286
+0.3333333
 
 </td>
 
 <td style="text-align:right;">
 
-0.5714286
+0.3333333
+
+</td>
+
+<td style="text-align:right;">
+
+0.6666667
+
+</td>
+
+<td style="text-align:right;">
+
+1.0000000
+
+</td>
+
+<td style="text-align:right;">
+
+129
+
+</td>
+
+<td style="text-align:right;">
+
+171
+
+</td>
+
+</tr>
+
+<tr>
+
+<td style="text-align:right;">
+
+7
+
+</td>
+
+<td style="text-align:right;">
+
+281
+
+</td>
+
+<td style="text-align:right;">
+
+10000
+
+</td>
+
+<td style="text-align:right;">
+
+2.81
+
+</td>
+
+<td style="text-align:left;">
+
+NA
+
+</td>
+
+<td style="text-align:left;">
+
+Foxp3+CD25+CD3+
+
+</td>
+
+<td style="text-align:right;">
+
+0.3558719
 
 </td>
 
@@ -1418,19 +1387,49 @@ NA
 
 <td style="text-align:right;">
 
-1.7142857
+70.462633
 
 </td>
 
 <td style="text-align:right;">
 
-168
+2.1352313
 
 </td>
 
 <td style="text-align:right;">
 
-7
+0.7117438
+
+</td>
+
+<td style="text-align:right;">
+
+0.7117438
+
+</td>
+
+<td style="text-align:right;">
+
+0.3558719
+
+</td>
+
+<td style="text-align:right;">
+
+25.2669039
+
+</td>
+
+<td style="text-align:right;">
+
+199
+
+</td>
+
+<td style="text-align:right;">
+
+82
 
 </td>
 
@@ -1446,19 +1445,25 @@ NA
 
 <td style="text-align:right;">
 
-31
+61
 
 </td>
 
 <td style="text-align:right;">
 
-15000
+10000
 
 </td>
 
 <td style="text-align:right;">
 
-0.2066667
+0.61
+
+</td>
+
+<td style="text-align:left;">
+
+CD46-
 
 </td>
 
@@ -1468,9 +1473,121 @@ NA
 
 </td>
 
+<td style="text-align:right;">
+
+0.0000000
+
+</td>
+
+<td style="text-align:right;">
+
+18.0327869
+
+</td>
+
+<td style="text-align:right;">
+
+1.639344
+
+</td>
+
+<td style="text-align:right;">
+
+0.0000000
+
+</td>
+
+<td style="text-align:right;">
+
+1.6393443
+
+</td>
+
+<td style="text-align:right;">
+
+78.6885246
+
+</td>
+
+<td style="text-align:right;">
+
+0.0000000
+
+</td>
+
+<td style="text-align:right;">
+
+0.0000000
+
+</td>
+
+<td style="text-align:right;">
+
+12
+
+</td>
+
+<td style="text-align:right;">
+
+49
+
+</td>
+
+</tr>
+
+<tr>
+
+<td style="text-align:right;">
+
+9
+
+</td>
+
+<td style="text-align:right;">
+
+22
+
+</td>
+
+<td style="text-align:right;">
+
+10000
+
+</td>
+
+<td style="text-align:right;">
+
+0.22
+
+</td>
+
 <td style="text-align:left;">
 
-CD25+Granzyme B+
+CD46-CD279-
+
+</td>
+
+<td style="text-align:left;">
+
+CD3+
+
+</td>
+
+<td style="text-align:right;">
+
+0.0000000
+
+</td>
+
+<td style="text-align:right;">
+
+18.1818182
+
+</td>
+
+<td style="text-align:right;">
+
+4.545454
 
 </td>
 
@@ -1488,19 +1605,7 @@ CD25+Granzyme B+
 
 <td style="text-align:right;">
 
-0.000000
-
-</td>
-
-<td style="text-align:right;">
-
-0.000000
-
-</td>
-
-<td style="text-align:right;">
-
-19.3548387
+77.2727273
 
 </td>
 
@@ -1512,25 +1617,19 @@ CD25+Granzyme B+
 
 <td style="text-align:right;">
 
-80.6451613
-
-</td>
-
-<td style="text-align:right;">
-
 0.0000000
 
 </td>
 
 <td style="text-align:right;">
 
-0
+5
 
 </td>
 
 <td style="text-align:right;">
 
-31
+17
 
 </td>
 
@@ -1627,19 +1726,19 @@ nCell\_CD3
 
 <td style="text-align:right;">
 
-5167
+3410
 
 </td>
 
 <td style="text-align:right;">
 
-15000
+10000
 
 </td>
 
 <td style="text-align:right;">
 
-34.4466667
+34.10
 
 </td>
 
@@ -1657,19 +1756,19 @@ CD25+
 
 <td style="text-align:right;">
 
-5113
+3384
 
 </td>
 
 <td style="text-align:right;">
 
-6
+2
 
 </td>
 
 <td style="text-align:right;">
 
-48
+24
 
 </td>
 
@@ -1685,19 +1784,19 @@ CD25+
 
 <td style="text-align:right;">
 
-2931
+1928
 
 </td>
 
 <td style="text-align:right;">
 
-15000
+10000
 
 </td>
 
 <td style="text-align:right;">
 
-19.5400000
+19.28
 
 </td>
 
@@ -1715,19 +1814,19 @@ CD3+CD45RA+
 
 <td style="text-align:right;">
 
-26
+3
 
 </td>
 
 <td style="text-align:right;">
 
-2898
+1921
 
 </td>
 
 <td style="text-align:right;">
 
-7
+4
 
 </td>
 
@@ -1743,77 +1842,19 @@ CD3+CD45RA+
 
 <td style="text-align:right;">
 
-2267
+1298
 
 </td>
 
 <td style="text-align:right;">
 
-15000
+10000
 
 </td>
 
 <td style="text-align:right;">
 
-15.1133333
-
-</td>
-
-<td style="text-align:left;">
-
-NA
-
-</td>
-
-<td style="text-align:left;">
-
-CD25+
-
-</td>
-
-<td style="text-align:right;">
-
-45
-
-</td>
-
-<td style="text-align:right;">
-
-627
-
-</td>
-
-<td style="text-align:right;">
-
-1595
-
-</td>
-
-</tr>
-
-<tr>
-
-<td style="text-align:right;">
-
-3
-
-</td>
-
-<td style="text-align:right;">
-
-1799
-
-</td>
-
-<td style="text-align:right;">
-
-15000
-
-</td>
-
-<td style="text-align:right;">
-
-11.9933333
+12.98
 
 </td>
 
@@ -1831,19 +1872,77 @@ CD3+
 
 <td style="text-align:right;">
 
-15
+5
 
 </td>
 
 <td style="text-align:right;">
 
-1665
+1172
 
 </td>
 
 <td style="text-align:right;">
 
-119
+121
+
+</td>
+
+</tr>
+
+<tr>
+
+<td style="text-align:right;">
+
+3
+
+</td>
+
+<td style="text-align:right;">
+
+1236
+
+</td>
+
+<td style="text-align:right;">
+
+10000
+
+</td>
+
+<td style="text-align:right;">
+
+12.36
+
+</td>
+
+<td style="text-align:left;">
+
+NA
+
+</td>
+
+<td style="text-align:left;">
+
+CD25+
+
+</td>
+
+<td style="text-align:right;">
+
+21
+
+</td>
+
+<td style="text-align:right;">
+
+132
+
+</td>
+
+<td style="text-align:right;">
+
+1083
 
 </td>
 
@@ -1859,19 +1958,19 @@ CD3+
 
 <td style="text-align:right;">
 
-1554
+962
 
 </td>
 
 <td style="text-align:right;">
 
-15000
+10000
 
 </td>
 
 <td style="text-align:right;">
 
-10.3600000
+9.62
 
 </td>
 
@@ -1889,19 +1988,19 @@ CD3+
 
 <td style="text-align:right;">
 
-5
+4
 
 </td>
 
 <td style="text-align:right;">
 
-1294
+771
 
 </td>
 
 <td style="text-align:right;">
 
-255
+187
 
 </td>
 
@@ -1917,49 +2016,49 @@ CD3+
 
 <td style="text-align:right;">
 
-577
+502
 
 </td>
 
 <td style="text-align:right;">
 
-15000
+10000
 
 </td>
 
 <td style="text-align:right;">
 
-3.8466667
+5.02
 
 </td>
 
 <td style="text-align:left;">
 
-CD46-
+CD25-
 
 </td>
 
 <td style="text-align:left;">
 
-CD3+
+NA
 
 </td>
 
 <td style="text-align:right;">
 
-544
+112
 
 </td>
 
 <td style="text-align:right;">
 
-32
+24
 
 </td>
 
 <td style="text-align:right;">
 
-1
+366
 
 </td>
 
@@ -1975,77 +2074,19 @@ CD3+
 
 <td style="text-align:right;">
 
-499
+300
 
 </td>
 
 <td style="text-align:right;">
 
-15000
+10000
 
 </td>
 
 <td style="text-align:right;">
 
-3.3266667
-
-</td>
-
-<td style="text-align:left;">
-
-CD25-CD45RA-
-
-</td>
-
-<td style="text-align:left;">
-
-NA
-
-</td>
-
-<td style="text-align:right;">
-
-14
-
-</td>
-
-<td style="text-align:right;">
-
-1
-
-</td>
-
-<td style="text-align:right;">
-
-484
-
-</td>
-
-</tr>
-
-<tr>
-
-<td style="text-align:right;">
-
-7
-
-</td>
-
-<td style="text-align:right;">
-
-175
-
-</td>
-
-<td style="text-align:right;">
-
-15000
-
-</td>
-
-<td style="text-align:right;">
-
-1.1666667
+3.00
 
 </td>
 
@@ -2063,7 +2104,7 @@ NA
 
 <td style="text-align:right;">
 
-165
+288
 
 </td>
 
@@ -2075,7 +2116,65 @@ NA
 
 <td style="text-align:right;">
 
-0
+2
+
+</td>
+
+</tr>
+
+<tr>
+
+<td style="text-align:right;">
+
+7
+
+</td>
+
+<td style="text-align:right;">
+
+281
+
+</td>
+
+<td style="text-align:right;">
+
+10000
+
+</td>
+
+<td style="text-align:right;">
+
+2.81
+
+</td>
+
+<td style="text-align:left;">
+
+NA
+
+</td>
+
+<td style="text-align:left;">
+
+Foxp3+CD25+CD3+
+
+</td>
+
+<td style="text-align:right;">
+
+2
+
+</td>
+
+<td style="text-align:right;">
+
+276
+
+</td>
+
+<td style="text-align:right;">
+
+3
 
 </td>
 
@@ -2091,19 +2190,25 @@ NA
 
 <td style="text-align:right;">
 
-31
+61
 
 </td>
 
 <td style="text-align:right;">
 
-15000
+10000
 
 </td>
 
 <td style="text-align:right;">
 
-0.2066667
+0.61
+
+</td>
+
+<td style="text-align:left;">
+
+CD46-
 
 </td>
 
@@ -2113,9 +2218,67 @@ NA
 
 </td>
 
+<td style="text-align:right;">
+
+57
+
+</td>
+
+<td style="text-align:right;">
+
+4
+
+</td>
+
+<td style="text-align:right;">
+
+0
+
+</td>
+
+</tr>
+
+<tr>
+
+<td style="text-align:right;">
+
+9
+
+</td>
+
+<td style="text-align:right;">
+
+22
+
+</td>
+
+<td style="text-align:right;">
+
+10000
+
+</td>
+
+<td style="text-align:right;">
+
+0.22
+
+</td>
+
 <td style="text-align:left;">
 
-CD25+Granzyme B+
+CD46-CD279-
+
+</td>
+
+<td style="text-align:left;">
+
+CD3+
+
+</td>
+
+<td style="text-align:right;">
+
+21
 
 </td>
 
@@ -2128,12 +2291,6 @@ CD25+Granzyme B+
 <td style="text-align:right;">
 
 0
-
-</td>
-
-<td style="text-align:right;">
-
-30
 
 </td>
 
@@ -2219,7 +2376,6 @@ cells and 20 markers:
     ## colnames(2500): cell1 cell2 ... cell2499 cell2500
     ## colData names(0):
     ## reducedDimNames(0):
-    ## spikeNames(0):
     ## altExpNames(0):
 
 This will also work without any assigned metadata.
@@ -2240,7 +2396,6 @@ This will also work without any assigned metadata.
     ## colnames(2500): cell1 cell2 ... cell2499 cell2500
     ## colData names(0):
     ## reducedDimNames(0):
-    ## spikeNames(0):
     ## altExpNames(0):
 
 # Acknowledgments
@@ -2249,6 +2404,7 @@ This will also work without any assigned metadata.
   - Jessica Timms
   - James Opzoomer
   - Marcel Ramos (Bioconductor)
+  - Lori Shepherd (Bioconductor)
   - Bioinformatics CRO
 
 # Session info
@@ -2257,7 +2413,7 @@ This will also work without any assigned metadata.
 sessionInfo()
 ```
 
-    ## R version 3.6.3 (2020-02-29)
+    ## R version 4.0.2 (2020-06-22)
     ## Platform: x86_64-pc-linux-gnu (64-bit)
     ## Running under: Ubuntu 16.04.6 LTS
     ## 
@@ -2278,60 +2434,71 @@ sessionInfo()
     ## [8] methods   base     
     ## 
     ## other attached packages:
-    ##  [1] PCAtools_2.1.4              cowplot_1.0.0              
+    ##  [1] PCAtools_2.0.0              cowplot_1.0.0              
     ##  [3] lattice_0.20-41             reshape2_1.4.4             
-    ##  [5] ggrepel_0.8.2               ggplot2_3.3.0              
-    ##  [7] scDataviz_0.99.60           SingleCellExperiment_1.8.0 
-    ##  [9] SummarizedExperiment_1.16.1 DelayedArray_0.12.3        
-    ## [11] BiocParallel_1.20.1         matrixStats_0.56.0         
-    ## [13] Biobase_2.46.0              GenomicRanges_1.38.0       
-    ## [15] GenomeInfoDb_1.22.1         IRanges_2.20.2             
-    ## [17] S4Vectors_0.24.4            BiocGenerics_0.32.0        
-    ## [19] kableExtra_1.1.0            knitr_1.28                 
+    ##  [5] ggrepel_0.8.2               ggplot2_3.3.2              
+    ##  [7] scDataviz_0.99.60           SingleCellExperiment_1.11.6
+    ##  [9] SummarizedExperiment_1.18.1 DelayedArray_0.14.0        
+    ## [11] matrixStats_0.56.0          Biobase_2.48.0             
+    ## [13] GenomicRanges_1.40.0        GenomeInfoDb_1.24.2        
+    ## [15] IRanges_2.22.2              S4Vectors_0.26.1           
+    ## [17] BiocGenerics_0.34.0         kableExtra_1.1.0           
+    ## [19] knitr_1.29                 
     ## 
     ## loaded via a namespace (and not attached):
-    ##   [1] corrplot_0.84            sn_1.6-1                 plyr_1.8.6              
-    ##   [4] igraph_1.2.5             lazyeval_0.2.2           splines_3.6.3           
-    ##   [7] flowCore_1.52.1          listenv_0.8.0            TH.data_1.0-10          
-    ##  [10] digest_0.6.25            htmltools_0.4.0          gdata_2.18.0            
-    ##  [13] fansi_0.4.1              magrittr_1.5             cluster_2.1.0           
-    ##  [16] ROCR_1.0-7               globals_0.12.5           readr_1.3.1             
-    ##  [19] sandwich_2.5-1           askpass_1.1              colorspace_1.4-1        
-    ##  [22] rvest_0.3.5              rappdirs_0.3.1           xfun_0.13               
-    ##  [25] dplyr_0.8.5              crayon_1.3.4             RCurl_1.98-1.2          
-    ##  [28] jsonlite_1.6.1           survival_3.1-12          zoo_1.8-7               
-    ##  [31] ape_5.3                  glue_1.4.0               gtable_0.3.0            
-    ##  [34] zlibbioc_1.32.0          XVector_0.26.0           webshot_0.5.2           
-    ##  [37] leiden_0.3.3             BiocSingular_1.2.2       future.apply_1.4.0      
-    ##  [40] scales_1.1.0             mvtnorm_1.1-0            bibtex_0.4.2.2          
-    ##  [43] Rcpp_1.0.4.6             isoband_0.2.1            metap_1.3               
-    ##  [46] plotrix_3.7-7            viridisLite_0.3.0        dqrng_0.2.1             
-    ##  [49] reticulate_1.15          rsvd_1.0.3               tsne_0.1-3              
-    ##  [52] umap_0.2.5.0             htmlwidgets_1.5.1        httr_1.4.1              
-    ##  [55] gplots_3.0.3             RColorBrewer_1.1-2       TFisher_0.2.0           
-    ##  [58] ellipsis_0.3.0           Seurat_3.1.4             ica_1.0-2               
-    ##  [61] farver_2.0.3             pkgconfig_2.0.3          uwot_0.1.8              
-    ##  [64] labeling_0.3             tidyselect_1.0.0         rlang_0.4.5             
-    ##  [67] munsell_0.5.0            tools_3.6.3              cli_2.0.2               
-    ##  [70] ggridges_0.5.2           evaluate_0.14            stringr_1.4.0           
-    ##  [73] yaml_2.2.1               npsurv_0.4-0             fitdistrplus_1.0-14     
-    ##  [76] caTools_1.18.0           purrr_0.3.3              RANN_2.6.1              
-    ##  [79] pbapply_1.4-2            future_1.16.0            nlme_3.1-147            
-    ##  [82] xml2_1.3.1               compiler_3.6.3           rstudioapi_0.11         
-    ##  [85] plotly_4.9.2.1           png_0.1-7                lsei_1.2-0              
-    ##  [88] tibble_3.0.0             stringi_1.4.6            highr_0.8               
-    ##  [91] RSpectra_0.16-0          Matrix_1.2-18            multtest_2.42.0         
-    ##  [94] vctrs_0.2.4              mutoss_0.1-12            pillar_1.4.3            
-    ##  [97] lifecycle_0.2.0          Rdpack_0.11-1            lmtest_0.9-37           
-    ## [100] RcppAnnoy_0.0.16         data.table_1.12.8        bitops_1.0-6            
-    ## [103] irlba_2.3.3              gbRd_0.4-11              patchwork_1.0.0         
-    ## [106] R6_2.4.1                 KernSmooth_2.23-16       gridExtra_2.3           
-    ## [109] codetools_0.2-16         MASS_7.3-51.5            gtools_3.8.2            
-    ## [112] assertthat_0.2.1         openssl_1.4.1            withr_2.1.2             
-    ## [115] sctransform_0.2.1        mnormt_1.5-6             multcomp_1.4-13         
-    ## [118] GenomeInfoDbData_1.2.2   hms_0.5.3                grid_3.6.3              
-    ## [121] tidyr_1.0.2              DelayedMatrixStats_1.8.0 rmarkdown_2.1           
-    ## [124] Rtsne_0.15               numDeriv_2016.8-1.1
+    ##   [1] Seurat_3.1.5              Rtsne_0.15               
+    ##   [3] colorspace_1.4-1          ellipsis_0.3.1           
+    ##   [5] ggridges_0.5.2            cytolib_2.0.3            
+    ##   [7] XVector_0.28.0            rstudioapi_0.11          
+    ##   [9] farver_2.0.3              leiden_0.3.3             
+    ##  [11] listenv_0.8.0             RSpectra_0.16-0          
+    ##  [13] xml2_1.3.2                codetools_0.2-16         
+    ##  [15] splines_4.0.2             jsonlite_1.7.0           
+    ##  [17] umap_0.2.6.0              ica_1.0-2                
+    ##  [19] cluster_2.1.0             png_0.1-7                
+    ##  [21] uwot_0.1.8                sctransform_0.2.1        
+    ##  [23] readr_1.3.1               compiler_4.0.2           
+    ##  [25] httr_1.4.1                dqrng_0.2.1              
+    ##  [27] Matrix_1.2-18             lazyeval_0.2.2           
+    ##  [29] BiocSingular_1.4.0        htmltools_0.5.0          
+    ##  [31] tools_4.0.2               rsvd_1.0.3               
+    ##  [33] igraph_1.2.5              gtable_0.3.0             
+    ##  [35] glue_1.4.1                GenomeInfoDbData_1.2.3   
+    ##  [37] RANN_2.6.1                dplyr_1.0.0              
+    ##  [39] rappdirs_0.3.1            Rcpp_1.0.4.6             
+    ##  [41] vctrs_0.3.1               ape_5.4                  
+    ##  [43] nlme_3.1-147              DelayedMatrixStats_1.10.0
+    ##  [45] lmtest_0.9-37             xfun_0.15                
+    ##  [47] stringr_1.4.0             globals_0.12.5           
+    ##  [49] rvest_0.3.5               lifecycle_0.2.0          
+    ##  [51] irlba_2.3.3               future_1.17.0            
+    ##  [53] zlibbioc_1.34.0           MASS_7.3-51.6            
+    ##  [55] zoo_1.8-8                 scales_1.1.1             
+    ##  [57] RProtoBufLib_2.0.0        hms_0.5.3                
+    ##  [59] RColorBrewer_1.1-2        yaml_2.2.1               
+    ##  [61] reticulate_1.16           pbapply_1.4-2            
+    ##  [63] gridExtra_2.3             stringi_1.4.6            
+    ##  [65] highr_0.8                 corrplot_0.84            
+    ##  [67] flowCore_2.0.1            BiocParallel_1.22.0      
+    ##  [69] rlang_0.4.6               pkgconfig_2.0.3          
+    ##  [71] bitops_1.0-6              evaluate_0.14            
+    ##  [73] ROCR_1.0-11               purrr_0.3.4              
+    ##  [75] labeling_0.3              patchwork_1.0.1          
+    ##  [77] htmlwidgets_1.5.1         tidyselect_1.1.0         
+    ##  [79] RcppAnnoy_0.0.16          plyr_1.8.6               
+    ##  [81] magrittr_1.5              R6_2.4.1                 
+    ##  [83] generics_0.0.2            withr_2.2.0              
+    ##  [85] pillar_1.4.4              fitdistrplus_1.1-1       
+    ##  [87] survival_3.2-3            RCurl_1.98-1.2           
+    ##  [89] tibble_3.0.1              future.apply_1.5.0       
+    ##  [91] tsne_0.1-3                crayon_1.3.4             
+    ##  [93] KernSmooth_2.23-17        plotly_4.9.2.1           
+    ##  [95] rmarkdown_2.3             isoband_0.2.2            
+    ##  [97] grid_4.0.2                data.table_1.12.8        
+    ##  [99] digest_0.6.25             webshot_0.5.2            
+    ## [101] tidyr_1.1.0               openssl_1.4.1            
+    ## [103] RcppParallel_5.0.2        munsell_0.5.0            
+    ## [105] viridisLite_0.3.0         askpass_1.1
 
 # References
 
