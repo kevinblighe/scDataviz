@@ -1,7 +1,7 @@
 Package: scDataviz
 Type: Package
 Title: scDataviz: single cell dataviz and downstream analyses
-Version: 0.99.62
+Version: 0.99.64
 Authors@R: c(
     person("Kevin", "Blighe", role=c("aut", "cre"), email="kevin@clinicalbioinformatics.co.uk"),
     person("Jessica", "Timms", role="ctb"),
