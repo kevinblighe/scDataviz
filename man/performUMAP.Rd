@@ -6,6 +6,7 @@
 \usage{
 performUMAP(
   indata,
+  config = NULL,
   assay = "scaled",
   reducedDim = NULL,
   dims = seq_len(20),
@@ -21,6 +22,8 @@ dimensions are returned. If a \code{SingleCellExperiment} object, UMAP is
 performed on the assay named by \code{assay}, and the co-ordinates for the
 first two dimensions are stored as a reduced dimension named by
 \code{reducedDim}.}
+
+\item{config}{UMAP configuration settings}
 
 \item{assay}{Name of the assay slot in \code{indata} from which data will be
 taken, assuming \code{indata} is a \code{SingleCellExperiment} object.}

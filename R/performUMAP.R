@@ -6,6 +6,7 @@
 #'   performed on the assay named by \code{assay}, and the co-ordinates for the
 #'   first two dimensions are stored as a reduced dimension named by
 #'   \code{reducedDim}.
+#' @param config UMAP configuration settings
 #' @param assay Name of the assay slot in \code{indata} from which data will be
 #'   taken, assuming \code{indata} is a \code{SingleCellExperiment} object.
 #' @param reducedDim A dimensional reduction / embedding stored within
@@ -44,6 +45,7 @@
 #' @export
 performUMAP <- function(
   indata,
+  config = NULL,
   assay = 'scaled',
   reducedDim = NULL,
   dims = seq_len(20),
@@ -51,6 +53,10 @@ performUMAP <- function(
   useMarkers = NULL,
   verbose = TRUE)
 {
+  if (is.null(config)) {
+    config <- umap::umap.defaults
+  }
+
   if (is(indata, 'SingleCellExperiment')) {
 
     if (verbose) message('--input data class is SingleCellExperiment')
@@ -75,17 +81,17 @@ performUMAP <- function(
 
     if (verbose) message('--Performing UMAP...')
     if (is.null(useMarkers)) {
-      u <- umap(mat)
+      u <- umap(mat, config = config)
     } else if (!is.null(useMarkers) && !is.null(reducedDim)) {
       warning('\'useMarkers\' and \'reducedDim\' are incompatible - ',
         'markers cannot be selected from a reduced dimensional ',
         'component in which they don\'t exist! Dimensions to use ',
         'for UMAP have already been chosen via the \'dims\' parameter')
-      u <- umap(mat)
+      u <- umap(mat, config = config)
     } else {
       if (verbose) message('Note: only using the following markers for UMAP calculation: ',
         paste(useMarkers, collapse = ', '))
-      u <- umap(mat[,useMarkers])
+      u <- umap(mat[,useMarkers], config = config)
     }
 
     colnames(u$layout) <- c('UMAP1', 'UMAP2')
@@ -105,11 +111,11 @@ performUMAP <- function(
 
     if (verbose) message('--Performing UMAP...')
     if (is.null(useMarkers)) {
-      u <- umap(mat)
+      u <- umap(mat, config = config)
     } else {
       if (verbose) message('Note: only using the following markers for UMAP calculation: ',
         paste(useMarkers, collapse = ', '))
-      u <- umap(mat[,useMarkers])
+      u <- umap(mat[,useMarkers], config = config)
     }
 
     colnames(u$layout) <- c('UMAP1', 'UMAP2')

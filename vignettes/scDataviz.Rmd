@@ -231,6 +231,16 @@ creating separate *SingleCellExperiment* objects from the very start,
 i.e., from the the data input stage, and processing the data separately
 for each group.
 
+**Nota bene** - advanced users may want to change the default configuration for UMAP. *scDataviz* currently performs UMAP via the *umap* package. In order to modify the default configuration, one can pull in the default config separately from the *umap* package and then modify these config values held in the *umap.defaults* variable, as per the [umap vinette](https://cran.r-project.org/web/packages/umap/vignettes/umap.html) (see 'Tuning UMAP' section). For example:
+
+```{r eval = FALSE, echo = TRUE}
+
+  config <- umap::umap.defaults
+  config$min_dist <- 0.5
+  performUMAP(sce, config = config)
+
+```
+
 We can also perform UMAP on a select number of PC eigenvectors.
 *PCAtools* [@PCAtools] can be used to infer ideal number of dimensions
 to use via the elbow method and Horn's parallel analysis.
@@ -289,7 +299,7 @@ gradients that blend into one another across high density 'peaks'.
     subtitleLabSize = 18,
     captionLabSize = 18)
 
-  plot_grid(ggout1, ggout2,
+  cowplot::plot_grid(ggout1, ggout2,
     labels = c('A','B'),
     ncol = 2, align = "l", label_size = 24)
 
@@ -331,7 +341,7 @@ across the UMAP layouts.
     subtitleLabSize = 18,
     captionLabSize = 18)
 
-  plot_grid(ggout1, ggout2,
+  cowplot::plot_grid(ggout1, ggout2,
     labels = c('A','B'),
     nrow = 2, align = "l", label_size = 24)
 
@@ -400,7 +410,7 @@ First, let's take a look inside the metadata that we have.
     subtitleLabSize = 16,
     captionLabSize = 16)
 
-  plot_grid(ggout1, ggout3, ggout2, ggout4,
+  cowplot::plot_grid(ggout1, ggout3, ggout2, ggout4,
     labels = c('A','B','C','D'),
     nrow = 2, ncol = 2, align = "l", label_size = 24)
 
@@ -453,7 +463,7 @@ experience.
     subtitleLabSize = 16,
     captionLabSize = 16)
 
-  plot_grid(ggout1, ggout2,
+  cowplot::plot_grid(ggout1, ggout2,
     labels = c('A','B'),
     ncol = 2, align = "l", label_size = 24)
 
