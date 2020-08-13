@@ -1,7 +1,7 @@
 scDataviz: single cell dataviz and downstream analyses
 ================
 Kevin Blighe
-2020-06-26
+2020-08-12
 
 # Introduction
 
@@ -192,6 +192,21 @@ creating separate *SingleCellExperiment* objects from the very start,
 i.e., from the the data input stage, and processing the data separately
 for each group.
 
+**Nota bene** - advanced users may want to change the default
+configuration for UMAP. *scDataviz* currently performs UMAP via the
+*umap* package. In order to modify the default configuration, one can
+pull in the default config separately from the *umap* package and then
+modify these config values held in the *umap.defaults* variable, as per
+the [umap
+vignette](https://cran.r-project.org/web/packages/umap/vignettes/umap.html)
+(see ‘Tuning UMAP’ section). For example:
+
+``` r
+  config <- umap::umap.defaults
+  config$min_dist <- 0.5
+  performUMAP(sce, config = config)
+```
+
 We can also perform UMAP on a select number of PC eigenvectors.
 *PCAtools* (Blighe and Lun 2020) can be used to infer ideal number of
 dimensions to use via the elbow method and Horn’s parallel analysis.
@@ -254,7 +269,7 @@ across high density ‘peaks’.
     subtitleLabSize = 18,
     captionLabSize = 18)
 
-  plot_grid(ggout1, ggout2,
+  cowplot::plot_grid(ggout1, ggout2,
     labels = c('A','B'),
     ncol = 2, align = "l", label_size = 24)
 ```
@@ -301,7 +316,7 @@ profiles across the UMAP layouts.
     subtitleLabSize = 18,
     captionLabSize = 18)
 
-  plot_grid(ggout1, ggout2,
+  cowplot::plot_grid(ggout1, ggout2,
     labels = c('A','B'),
     nrow = 2, align = "l", label_size = 24)
 ```
@@ -386,7 +401,7 @@ First, let’s take a look inside the metadata that we have.
     subtitleLabSize = 16,
     captionLabSize = 16)
 
-  plot_grid(ggout1, ggout3, ggout2, ggout4,
+  cowplot::plot_grid(ggout1, ggout3, ggout2, ggout4,
     labels = c('A','B','C','D'),
     nrow = 2, ncol = 2, align = "l", label_size = 24)
 ```
@@ -439,7 +454,7 @@ from my experience.
     subtitleLabSize = 16,
     captionLabSize = 16)
 
-  plot_grid(ggout1, ggout2,
+  cowplot::plot_grid(ggout1, ggout2,
     labels = c('A','B'),
     ncol = 2, align = "l", label_size = 24)
 ```
@@ -2415,7 +2430,7 @@ sessionInfo()
 
     ## R version 4.0.2 (2020-06-22)
     ## Platform: x86_64-pc-linux-gnu (64-bit)
-    ## Running under: Ubuntu 16.04.6 LTS
+    ## Running under: Ubuntu 16.04.7 LTS
     ## 
     ## Matrix products: default
     ## BLAS:   /usr/lib/atlas-base/atlas/libblas.so.3.0
@@ -2434,16 +2449,14 @@ sessionInfo()
     ## [8] methods   base     
     ## 
     ## other attached packages:
-    ##  [1] PCAtools_2.0.0              cowplot_1.0.0              
-    ##  [3] lattice_0.20-41             reshape2_1.4.4             
-    ##  [5] ggrepel_0.8.2               ggplot2_3.3.2              
-    ##  [7] scDataviz_0.99.60           SingleCellExperiment_1.11.6
-    ##  [9] SummarizedExperiment_1.18.1 DelayedArray_0.14.0        
-    ## [11] matrixStats_0.56.0          Biobase_2.48.0             
-    ## [13] GenomicRanges_1.40.0        GenomeInfoDb_1.24.2        
-    ## [15] IRanges_2.22.2              S4Vectors_0.26.1           
-    ## [17] BiocGenerics_0.34.0         kableExtra_1.1.0           
-    ## [19] knitr_1.29                 
+    ##  [1] PCAtools_2.1.22             ggrepel_0.8.2              
+    ##  [3] ggplot2_3.3.2               scDataviz_0.99.60          
+    ##  [5] SingleCellExperiment_1.11.6 SummarizedExperiment_1.18.1
+    ##  [7] DelayedArray_0.14.0         matrixStats_0.56.0         
+    ##  [9] Biobase_2.48.0              GenomicRanges_1.40.0       
+    ## [11] GenomeInfoDb_1.24.2         IRanges_2.22.2             
+    ## [13] S4Vectors_0.26.1            BiocGenerics_0.34.0        
+    ## [15] kableExtra_1.1.0            knitr_1.29                 
     ## 
     ## loaded via a namespace (and not attached):
     ##   [1] Seurat_3.1.5              Rtsne_0.15               
@@ -2464,41 +2477,43 @@ sessionInfo()
     ##  [31] tools_4.0.2               rsvd_1.0.3               
     ##  [33] igraph_1.2.5              gtable_0.3.0             
     ##  [35] glue_1.4.1                GenomeInfoDbData_1.2.3   
-    ##  [37] RANN_2.6.1                dplyr_1.0.0              
-    ##  [39] rappdirs_0.3.1            Rcpp_1.0.4.6             
-    ##  [41] vctrs_0.3.1               ape_5.4                  
-    ##  [43] nlme_3.1-147              DelayedMatrixStats_1.10.0
-    ##  [45] lmtest_0.9-37             xfun_0.15                
-    ##  [47] stringr_1.4.0             globals_0.12.5           
-    ##  [49] rvest_0.3.5               lifecycle_0.2.0          
-    ##  [51] irlba_2.3.3               future_1.17.0            
-    ##  [53] zlibbioc_1.34.0           MASS_7.3-51.6            
-    ##  [55] zoo_1.8-8                 scales_1.1.1             
-    ##  [57] RProtoBufLib_2.0.0        hms_0.5.3                
-    ##  [59] RColorBrewer_1.1-2        yaml_2.2.1               
-    ##  [61] reticulate_1.16           pbapply_1.4-2            
-    ##  [63] gridExtra_2.3             stringi_1.4.6            
-    ##  [65] highr_0.8                 corrplot_0.84            
-    ##  [67] flowCore_2.0.1            BiocParallel_1.22.0      
-    ##  [69] rlang_0.4.6               pkgconfig_2.0.3          
-    ##  [71] bitops_1.0-6              evaluate_0.14            
-    ##  [73] ROCR_1.0-11               purrr_0.3.4              
-    ##  [75] labeling_0.3              patchwork_1.0.1          
-    ##  [77] htmlwidgets_1.5.1         tidyselect_1.1.0         
-    ##  [79] RcppAnnoy_0.0.16          plyr_1.8.6               
-    ##  [81] magrittr_1.5              R6_2.4.1                 
-    ##  [83] generics_0.0.2            withr_2.2.0              
-    ##  [85] pillar_1.4.4              fitdistrplus_1.1-1       
-    ##  [87] survival_3.2-3            RCurl_1.98-1.2           
-    ##  [89] tibble_3.0.1              future.apply_1.5.0       
-    ##  [91] tsne_0.1-3                crayon_1.3.4             
-    ##  [93] KernSmooth_2.23-17        plotly_4.9.2.1           
-    ##  [95] rmarkdown_2.3             isoband_0.2.2            
-    ##  [97] grid_4.0.2                data.table_1.12.8        
-    ##  [99] digest_0.6.25             webshot_0.5.2            
-    ## [101] tidyr_1.1.0               openssl_1.4.1            
-    ## [103] RcppParallel_5.0.2        munsell_0.5.0            
-    ## [105] viridisLite_0.3.0         askpass_1.1
+    ##  [37] RANN_2.6.1                reshape2_1.4.4           
+    ##  [39] dplyr_1.0.0               rappdirs_0.3.1           
+    ##  [41] Rcpp_1.0.4.6              vctrs_0.3.1              
+    ##  [43] ape_5.4                   nlme_3.1-147             
+    ##  [45] DelayedMatrixStats_1.10.0 lmtest_0.9-37            
+    ##  [47] xfun_0.15                 stringr_1.4.0            
+    ##  [49] globals_0.12.5            rvest_0.3.5              
+    ##  [51] lifecycle_0.2.0           irlba_2.3.3              
+    ##  [53] future_1.17.0             zlibbioc_1.34.0          
+    ##  [55] MASS_7.3-51.6             zoo_1.8-8                
+    ##  [57] scales_1.1.1              RProtoBufLib_2.0.0       
+    ##  [59] hms_0.5.3                 RColorBrewer_1.1-2       
+    ##  [61] yaml_2.2.1                reticulate_1.16          
+    ##  [63] pbapply_1.4-2             gridExtra_2.3            
+    ##  [65] stringi_1.4.6             highr_0.8                
+    ##  [67] corrplot_0.84             flowCore_2.0.1           
+    ##  [69] BiocParallel_1.22.0       rlang_0.4.6              
+    ##  [71] pkgconfig_2.0.3           bitops_1.0-6             
+    ##  [73] evaluate_0.14             lattice_0.20-41          
+    ##  [75] ROCR_1.0-11               purrr_0.3.4              
+    ##  [77] labeling_0.3              patchwork_1.0.1          
+    ##  [79] htmlwidgets_1.5.1         cowplot_1.0.0            
+    ##  [81] tidyselect_1.1.0          RcppAnnoy_0.0.16         
+    ##  [83] plyr_1.8.6                magrittr_1.5             
+    ##  [85] R6_2.4.1                  generics_0.0.2           
+    ##  [87] withr_2.2.0               pillar_1.4.4             
+    ##  [89] fitdistrplus_1.1-1        survival_3.2-3           
+    ##  [91] RCurl_1.98-1.2            tibble_3.0.1             
+    ##  [93] future.apply_1.5.0        tsne_0.1-3               
+    ##  [95] crayon_1.3.4              KernSmooth_2.23-17       
+    ##  [97] plotly_4.9.2.1            rmarkdown_2.3            
+    ##  [99] isoband_0.2.2             grid_4.0.2               
+    ## [101] data.table_1.12.8         digest_0.6.25            
+    ## [103] webshot_0.5.2             tidyr_1.1.0              
+    ## [105] openssl_1.4.1             RcppParallel_5.0.2       
+    ## [107] munsell_0.5.0             viridisLite_0.3.0        
+    ## [109] askpass_1.1
 
 # References
 

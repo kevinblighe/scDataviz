@@ -231,7 +231,7 @@ creating separate *SingleCellExperiment* objects from the very start,
 i.e., from the the data input stage, and processing the data separately
 for each group.
 
-**Nota bene** - advanced users may want to change the default configuration for UMAP. *scDataviz* currently performs UMAP via the *umap* package. In order to modify the default configuration, one can pull in the default config separately from the *umap* package and then modify these config values held in the *umap.defaults* variable, as per the [umap vinette](https://cran.r-project.org/web/packages/umap/vignettes/umap.html) (see 'Tuning UMAP' section). For example:
+**Nota bene** - advanced users may want to change the default configuration for UMAP. *scDataviz* currently performs UMAP via the *umap* package. In order to modify the default configuration, one can pull in the default config separately from the *umap* package and then modify these config values held in the *umap.defaults* variable, as per the [umap vignette](https://cran.r-project.org/web/packages/umap/vignettes/umap.html) (see 'Tuning UMAP' section). For example:
 
 ```{r eval = FALSE, echo = TRUE}
 
