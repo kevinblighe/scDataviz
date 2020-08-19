@@ -1,6 +1,6 @@
 ---
 title: "scDataviz: single cell dataviz and downstream analyses"
-author: "Kevin Blighe"
+author: "Kevin Blighe, Jessica Timms, James Opzoomer, and Shahram Kordasti"
 date: "`r Sys.Date()`"
 package: "`r packageVersion('scDataviz')`"
 output:
@@ -632,9 +632,6 @@ This will also work without any assigned metadata.
 
 # Acknowledgments
 
-* Shahram Kordasti
-* Jessica Timms
-* James Opzoomer
 * Marcel Ramos (Bioconductor)
 * Lori Shepherd (Bioconductor)
 * Bioinformatics CRO
