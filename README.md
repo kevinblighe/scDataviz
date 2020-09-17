@@ -1,6 +1,6 @@
 scDataviz: single cell dataviz and downstream analyses
 ================
-Kevin Blighe, Jessica Timms, James Opzoomer, and Shahram Kordasti
+Kevin Blighe
 2020-08-12
 
 # Introduction
@@ -2415,6 +2415,9 @@ This will also work without any assigned metadata.
 
 # Acknowledgments
 
+  - Jessica Timms
+  - James Opzoomer
+  - Shahram Kordasti
   - Marcel Ramos (Bioconductor)
   - Lori Shepherd (Bioconductor)
   - Bioinformatics CRO
