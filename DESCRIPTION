@@ -32,6 +32,7 @@ Suggests:
   PCAtools,
   cowplot,
   BiocGenerics,
+  RUnit,
   knitr,
   kableExtra
 URL: https://github.com/kevinblighe/scDataviz
