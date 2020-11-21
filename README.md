@@ -2343,8 +2343,6 @@ Peripheral Blood Mononuclear Cells (PBMCs), we can convert this to a
 *SingleCellExperiment* object recognisable by *scDataviz* via
 `as.SingleCellExperiment()`.
 
-For a full workflow for *Seurat*-to-*scDataviz*, see the [GitHub
-vignette](https://github.com/kevinblighe/scDataviz/).
 
 # Tutorial 3: Import any numerical data
 
@@ -2421,6 +2419,7 @@ This will also work without any assigned metadata.
   - Marcel Ramos (Bioconductor)
   - Lori Shepherd (Bioconductor)
   - Bioinformatics CRO
+  - Henrik Bengtsson
 
 # Session info
 
