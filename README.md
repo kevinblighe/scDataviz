@@ -17,6 +17,13 @@ studies that go beyond *scDataviz*. Finally, the graphics in *scDataviz*
 are generated via the *ggplot* (Wickham 2016) engine, which means that
 users can ‘add on’ features to these with ease.
 
+This package just provides some additional functions for dataviz and is not
+intended as stanndalone analysis package. For a comprehensive high-dimensional
+cytometry workflow, it is recommended to check out the work by Nowicka
+*et al.* [CyTOF workflow: differential discovery in high-throughput high-dimensional cytometry datasets](https://f1000research.com/articles/6-748).
+For a more comprehensive scRNA-seq workflow, please check out [OSCA](https://osca.bioconductor.org)
+and [Analysis of single cell RNA-seq data](https://scrnaseq-course.cog.sanger.ac.uk/website/index.html).
+
 # Installation
 
 ## 1\. Download the package from Bioconductor
