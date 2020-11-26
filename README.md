@@ -2538,21 +2538,21 @@ Wickham (2016)
 <div id="ref-scDataviz">
 
 Blighe, K. 2020. “scDataviz: single cell dataviz and downstream
-analyses.” <https://github.com/kevinblighe/scDataviz>
+analyses.” <https://github.com/kevinblighe/scDataviz>.
 
 </div>
 
 <div id="ref-PCAtools">
 
 Blighe, K, and A Lun. 2020. “PCAtools: everything Principal Component
-Analysis.” <https://github.com/kevinblighe/PCAtools>
+Analysis.” <https://github.com/kevinblighe/PCAtools>.
 
 </div>
 
 <div id="ref-Lun">
 
 Lun, A, and D Risso. 2020. “SingleCellExperiment: S4 Classes for Single
-Cell Data.” <https://bioconductor.org/packages/SingleCellExperiment>
+Cell Data.” <https://bioconductor.org/packages/SingleCellExperiment>.
 
 </div>
 
