@@ -23,8 +23,6 @@
 #' @param ylim Limits of the y-axis.
 #' @param label Logical, indicating whether or not to label the clusters.
 #' @param labSize Size of labels.
-#' @param labhjust Horizontal adjustment of label.
-#' @param labvjust Vertical adjustment of label.
 #' @param drawConnectors Logical, indicating whether or not to connect plot
 #'   labels to their corresponding cluster islands by line connectors.
 #' @param widthConnectors Line width of connectors.
@@ -105,8 +103,6 @@ plotClusters <- function(
   ylim = NULL,
   label = TRUE,
   labSize = 5.0,
-  labhjust = 1.5,
-  labvjust = 0,
   drawConnectors = TRUE,
   widthConnectors = 0.5,
   colConnectors = 'black',
@@ -256,19 +252,21 @@ plotClusters <- function(
       plot <- plot + geom_text_repel(
         data = subset(plotobj, !is.na(plotobj[,'lab'])),
           aes(label = lab),
+          xlim = c(NA, NA),
+          ylim = c(NA, NA),
+          direction = 'both',
+          max.overlaps = Inf,
+          min.segment.length = 0,
           size = labSize,
           segment.color = colConnectors,
           segment.size = widthConnectors,
-          hjust = labhjust,
-          vjust = labvjust)
+          na.rm = TRUE)
     } else if (!drawConnectors) {
       plot <- plot + geom_text(
         data = subset(plotobj, !is.na(plotobj[,'lab'])),
           aes(label = lab),
           size = labSize,
-          check_overlap = TRUE,
-          hjust = labhjust,
-          vjust = labvjust)
+          check_overlap = TRUE)
     }
   }
 

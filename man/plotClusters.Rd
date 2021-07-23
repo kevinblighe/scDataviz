@@ -17,8 +17,6 @@ plotClusters(
   ylim = NULL,
   label = TRUE,
   labSize = 5,
-  labhjust = 1.5,
-  labvjust = 0,
   drawConnectors = TRUE,
   widthConnectors = 0.5,
   colConnectors = "black",
@@ -89,10 +87,6 @@ contains the cell-to-cluster assignment, assuming \code{indata} is a
 \item{label}{Logical, indicating whether or not to label the clusters.}
 
 \item{labSize}{Size of labels.}
-
-\item{labhjust}{Horizontal adjustment of label.}
-
-\item{labvjust}{Vertical adjustment of label.}
 
 \item{drawConnectors}{Logical, indicating whether or not to connect plot
 labels to their corresponding cluster islands by line connectors.}

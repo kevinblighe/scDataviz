@@ -1,7 +1,7 @@
 scDataviz: single cell dataviz and downstream analyses
 ================
 Kevin Blighe
-2020-08-12
+2021-07-23
 
 # Introduction
 
@@ -17,13 +17,17 @@ studies that go beyond *scDataviz*. Finally, the graphics in *scDataviz*
 are generated via the *ggplot* (Wickham 2016) engine, which means that
 users can ‘add on’ features to these with ease.
 
-This package just provides some additional functions for dataviz and clustering,
-and provides another way of identifying cell-types in clusters. It is not strictly
-intended as a standalone analysis package. For a comprehensive high-dimensional
-cytometry workflow, it is recommended to check out the work by Nowicka
-*et al.* [CyTOF workflow: differential discovery in high-throughput high-dimensional cytometry datasets](https://f1000research.com/articles/6-748).
-For a more comprehensive scRNA-seq workflow, please check out [OSCA](https://osca.bioconductor.org)
-and [Analysis of single cell RNA-seq data](https://scrnaseq-course.cog.sanger.ac.uk/website/index.html).
+This package just provides some additional functions for dataviz and
+clustering, and provides another way of identifying cell-types in
+clusters. It is not strictly intended as a standalone analysis package.
+For a comprehensive high-dimensional cytometry workflow, it is
+recommended to check out the work by Nowicka *et al.* [CyTOF workflow:
+differential discovery in high-throughput high-dimensional cytometry
+datasets](https://f1000research.com/articles/6-748). For a more
+comprehensive scRNA-seq workflow, please check out
+[OSCA](https://osca.bioconductor.org) and [Analysis of single cell
+RNA-seq
+data](https://scrnaseq-course.cog.sanger.ac.uk/website/index.html).
 
 # Installation
 
@@ -2351,7 +2355,6 @@ Peripheral Blood Mononuclear Cells (PBMCs), we can convert this to a
 *SingleCellExperiment* object recognisable by *scDataviz* via
 `as.SingleCellExperiment()`.
 
-
 # Tutorial 3: Import any numerical data
 
 *scDataviz* will work with any numerical data, too. Here, we show a
@@ -2435,7 +2438,7 @@ This will also work without any assigned metadata.
 sessionInfo()
 ```
 
-    ## R version 4.0.2 (2020-06-22)
+    ## R version 4.0.3 (2020-10-10)
     ## Platform: x86_64-pc-linux-gnu (64-bit)
     ## Running under: Ubuntu 16.04.7 LTS
     ## 
@@ -2456,71 +2459,80 @@ sessionInfo()
     ## [8] methods   base     
     ## 
     ## other attached packages:
-    ##  [1] PCAtools_2.1.22             ggrepel_0.8.2              
-    ##  [3] ggplot2_3.3.2               scDataviz_0.99.60          
-    ##  [5] SingleCellExperiment_1.11.6 SummarizedExperiment_1.18.1
-    ##  [7] DelayedArray_0.14.0         matrixStats_0.56.0         
+    ##  [1] PCAtools_2.5.5              ggrepel_0.9.1              
+    ##  [3] ggplot2_3.3.3               scDataviz_1.1.3            
+    ##  [5] SingleCellExperiment_1.11.6 SummarizedExperiment_1.18.2
+    ##  [7] DelayedArray_0.14.1         matrixStats_0.57.0         
     ##  [9] Biobase_2.48.0              GenomicRanges_1.40.0       
     ## [11] GenomeInfoDb_1.24.2         IRanges_2.22.2             
     ## [13] S4Vectors_0.26.1            BiocGenerics_0.34.0        
-    ## [15] kableExtra_1.1.0            knitr_1.29                 
+    ## [15] kableExtra_1.3.1            knitr_1.31                 
     ## 
     ## loaded via a namespace (and not attached):
-    ##   [1] Seurat_3.1.5              Rtsne_0.15               
-    ##   [3] colorspace_1.4-1          ellipsis_0.3.1           
-    ##   [5] ggridges_0.5.2            cytolib_2.0.3            
-    ##   [7] XVector_0.28.0            rstudioapi_0.11          
-    ##   [9] farver_2.0.3              leiden_0.3.3             
-    ##  [11] listenv_0.8.0             RSpectra_0.16-0          
-    ##  [13] xml2_1.3.2                codetools_0.2-16         
-    ##  [15] splines_4.0.2             jsonlite_1.7.0           
-    ##  [17] umap_0.2.6.0              ica_1.0-2                
-    ##  [19] cluster_2.1.0             png_0.1-7                
-    ##  [21] uwot_0.1.8                sctransform_0.2.1        
-    ##  [23] readr_1.3.1               compiler_4.0.2           
-    ##  [25] httr_1.4.1                dqrng_0.2.1              
-    ##  [27] Matrix_1.2-18             lazyeval_0.2.2           
-    ##  [29] BiocSingular_1.4.0        htmltools_0.5.0          
-    ##  [31] tools_4.0.2               rsvd_1.0.3               
-    ##  [33] igraph_1.2.5              gtable_0.3.0             
-    ##  [35] glue_1.4.1                GenomeInfoDbData_1.2.3   
-    ##  [37] RANN_2.6.1                reshape2_1.4.4           
-    ##  [39] dplyr_1.0.0               rappdirs_0.3.1           
-    ##  [41] Rcpp_1.0.4.6              vctrs_0.3.1              
-    ##  [43] ape_5.4                   nlme_3.1-147             
-    ##  [45] DelayedMatrixStats_1.10.0 lmtest_0.9-37            
-    ##  [47] xfun_0.15                 stringr_1.4.0            
-    ##  [49] globals_0.12.5            rvest_0.3.5              
-    ##  [51] lifecycle_0.2.0           irlba_2.3.3              
-    ##  [53] future_1.17.0             zlibbioc_1.34.0          
-    ##  [55] MASS_7.3-51.6             zoo_1.8-8                
-    ##  [57] scales_1.1.1              RProtoBufLib_2.0.0       
-    ##  [59] hms_0.5.3                 RColorBrewer_1.1-2       
-    ##  [61] yaml_2.2.1                reticulate_1.16          
-    ##  [63] pbapply_1.4-2             gridExtra_2.3            
-    ##  [65] stringi_1.4.6             highr_0.8                
-    ##  [67] corrplot_0.84             flowCore_2.0.1           
-    ##  [69] BiocParallel_1.22.0       rlang_0.4.6              
-    ##  [71] pkgconfig_2.0.3           bitops_1.0-6             
-    ##  [73] evaluate_0.14             lattice_0.20-41          
-    ##  [75] ROCR_1.0-11               purrr_0.3.4              
-    ##  [77] labeling_0.3              patchwork_1.0.1          
-    ##  [79] htmlwidgets_1.5.1         cowplot_1.0.0            
-    ##  [81] tidyselect_1.1.0          RcppAnnoy_0.0.16         
-    ##  [83] plyr_1.8.6                magrittr_1.5             
-    ##  [85] R6_2.4.1                  generics_0.0.2           
-    ##  [87] withr_2.2.0               pillar_1.4.4             
-    ##  [89] fitdistrplus_1.1-1        survival_3.2-3           
-    ##  [91] RCurl_1.98-1.2            tibble_3.0.1             
-    ##  [93] future.apply_1.5.0        tsne_0.1-3               
-    ##  [95] crayon_1.3.4              KernSmooth_2.23-17       
-    ##  [97] plotly_4.9.2.1            rmarkdown_2.3            
-    ##  [99] isoband_0.2.2             grid_4.0.2               
-    ## [101] data.table_1.12.8         digest_0.6.25            
-    ## [103] webshot_0.5.2             tidyr_1.1.0              
-    ## [105] openssl_1.4.1             RcppParallel_5.0.2       
-    ## [107] munsell_0.5.0             viridisLite_0.3.0        
-    ## [109] askpass_1.1
+    ##   [1] corrplot_0.84             plyr_1.8.6               
+    ##   [3] igraph_1.2.6              lazyeval_0.2.2           
+    ##   [5] splines_4.0.3             flowCore_2.0.1           
+    ##   [7] BiocParallel_1.22.0       listenv_0.8.0            
+    ##   [9] scattermore_0.7           digest_0.6.27            
+    ##  [11] htmltools_0.5.1.1         magrittr_2.0.1           
+    ##  [13] tensor_1.5                cluster_2.1.0            
+    ##  [15] ROCR_1.0-11               globals_0.14.0           
+    ##  [17] RcppParallel_5.0.2        askpass_1.1              
+    ##  [19] cytolib_2.0.3             colorspace_2.0-0         
+    ##  [21] rvest_0.3.6               xfun_0.20                
+    ##  [23] dplyr_1.0.3               crayon_1.3.4             
+    ##  [25] RCurl_1.98-1.2            jsonlite_1.7.2           
+    ##  [27] spatstat_1.64-1           spatstat.data_1.7-0      
+    ##  [29] survival_3.2-7            zoo_1.8-8                
+    ##  [31] glue_1.4.2                polyclip_1.10-0          
+    ##  [33] gtable_0.3.0              zlibbioc_1.34.0          
+    ##  [35] XVector_0.28.0            webshot_0.5.2            
+    ##  [37] leiden_0.3.7              BiocSingular_1.4.0       
+    ##  [39] future.apply_1.7.0        abind_1.4-5              
+    ##  [41] scales_1.1.1              DBI_1.1.1                
+    ##  [43] miniUI_0.1.1.1            Rcpp_1.0.6               
+    ##  [45] isoband_0.2.3             viridisLite_0.3.0        
+    ##  [47] xtable_1.8-4              dqrng_0.2.1              
+    ##  [49] reticulate_1.18           rsvd_1.0.3               
+    ##  [51] umap_0.2.7.0              htmlwidgets_1.5.3        
+    ##  [53] httr_1.4.2                RColorBrewer_1.1-2       
+    ##  [55] ellipsis_0.3.1            Seurat_4.0.0             
+    ##  [57] ica_1.0-2                 farver_2.0.3             
+    ##  [59] pkgconfig_2.0.3           uwot_0.1.10              
+    ##  [61] deldir_0.2-9              labeling_0.4.2           
+    ##  [63] tidyselect_1.1.0          rlang_0.4.10             
+    ##  [65] reshape2_1.4.4            later_1.1.0.1            
+    ##  [67] munsell_0.5.0             tools_4.0.3              
+    ##  [69] generics_0.1.0            ggridges_0.5.3           
+    ##  [71] evaluate_0.14             stringr_1.4.0            
+    ##  [73] fastmap_1.1.0             yaml_2.2.1               
+    ##  [75] goftest_1.2-2             fitdistrplus_1.1-3       
+    ##  [77] purrr_0.3.4               RANN_2.6.1               
+    ##  [79] pbapply_1.4-3             future_1.21.0            
+    ##  [81] nlme_3.1-151              mime_0.9                 
+    ##  [83] xml2_1.3.2                compiler_4.0.3           
+    ##  [85] rstudioapi_0.13           plotly_4.9.3             
+    ##  [87] png_0.1-7                 spatstat.utils_2.0-0     
+    ##  [89] tibble_3.0.1              stringi_1.5.3            
+    ##  [91] highr_0.8                 RSpectra_0.16-0          
+    ##  [93] lattice_0.20-41           Matrix_1.3-2             
+    ##  [95] vctrs_0.3.6               pillar_1.4.7             
+    ##  [97] lifecycle_0.2.0           lmtest_0.9-38            
+    ##  [99] RcppAnnoy_0.0.18          data.table_1.13.6        
+    ## [101] cowplot_1.1.1             bitops_1.0-6             
+    ## [103] irlba_2.3.3               httpuv_1.5.5             
+    ## [105] patchwork_1.1.1           R6_2.5.0                 
+    ## [107] promises_1.1.1            KernSmooth_2.23-18       
+    ## [109] gridExtra_2.3             RProtoBufLib_2.0.0       
+    ## [111] parallelly_1.23.0         codetools_0.2-18         
+    ## [113] MASS_7.3-53               assertthat_0.2.1         
+    ## [115] openssl_1.4.3             withr_2.4.1              
+    ## [117] SeuratObject_4.0.0        sctransform_0.3.2        
+    ## [119] GenomeInfoDbData_1.2.3    mgcv_1.8-33              
+    ## [121] grid_4.0.3                rpart_4.1-15             
+    ## [123] tidyr_1.1.2               rmarkdown_2.6            
+    ## [125] DelayedMatrixStats_1.10.1 Rtsne_0.15               
+    ## [127] shiny_1.6.0
 
 # References
 

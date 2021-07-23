@@ -19,8 +19,6 @@ metadataPlot(
   ylim = NULL,
   celllab = NULL,
   labSize = 3,
-  labhjust = 1.5,
-  labvjust = 0,
   drawConnectors = TRUE,
   widthConnectors = 0.5,
   colConnectors = "black",
@@ -96,10 +94,6 @@ e.g., \code{c(A='forestgreen', B='gold')}.}
 in the plot.}
 
 \item{labSize}{Size of labels.}
-
-\item{labhjust}{Horizontal adjustment of label.}
-
-\item{labvjust}{Vertical adjustment of label.}
 
 \item{drawConnectors}{Logical, indicating whether or not to connect plot
 labels to their corresponding points by line connectors.}
