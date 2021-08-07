@@ -1,7 +1,7 @@
 scDataviz: single cell dataviz and downstream analyses
 ================
 Kevin Blighe
-2021-07-23
+2021-08-07
 
 # Introduction
 
@@ -2355,6 +2355,36 @@ Peripheral Blood Mononuclear Cells (PBMCs), we can convert this to a
 *SingleCellExperiment* object recognisable by *scDataviz* via
 `as.SingleCellExperiment()`.
 
+When deriving from the Seurat route, be sure to manually assign the
+metadata slot, which is required for some functions. Also be sure to
+modify the default values for `assay`, `reducedDim`, and `dimColnames`,
+as these are assigned differently in Seurat.
+
+``` r
+  sce <- as.SingleCellExperiment(pbmc)
+
+  metadata(sce) <- data.frame(colData(sce))
+
+  markerExpression(sce,
+    assay = 'logcounts',
+    reducedDim = 'UMAP',
+    dimColnames = c('UMAP_1','UMAP_2'),
+    markers = c('CD79A', 'Cd79B', 'MS4A1'))
+```
+
+For `markerEnrichment()`, a typical command using an ex-Seurat object
+could be:
+
+``` r
+  markerEnrichment(sce,
+    assay = 'logcounts',
+    method = 'quantile',
+    sampleAbundances = TRUE,
+    sampleID = 'orig.ident',
+    studyvarID = 'ident',
+    clusterAssign = as.character(colData(sce)[['seurat_clusters']]))
+```
+
 # Tutorial 3: Import any numerical data
 
 *scDataviz* will work with any numerical data, too. Here, we show a
@@ -2402,7 +2432,8 @@ cells and 20 markers:
     ## reducedDimNames(0):
     ## altExpNames(0):
 
-This will also work without any assigned metadata.
+This will also work without any assigned metadata; however, having no
+metadata limits the functionality of the package.
 
 ``` r
   sce <- importData(mat,
@@ -2460,7 +2491,7 @@ sessionInfo()
     ## 
     ## other attached packages:
     ##  [1] PCAtools_2.5.5              ggrepel_0.9.1              
-    ##  [3] ggplot2_3.3.3               scDataviz_1.1.3            
+    ##  [3] ggplot2_3.3.3               scDataviz_1.3.3            
     ##  [5] SingleCellExperiment_1.11.6 SummarizedExperiment_1.18.2
     ##  [7] DelayedArray_0.14.1         matrixStats_0.57.0         
     ##  [9] Biobase_2.48.0              GenomicRanges_1.40.0       

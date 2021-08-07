@@ -593,6 +593,37 @@ Peripheral Blood Mononuclear Cells (PBMCs), we can convert this to a
 *SingleCellExperiment* object recognisable by *scDataviz* via
 `as.SingleCellExperiment()`.
 
+When deriving from the Seurat route, be sure to manually assign the metadata slot,
+which is required for some functions. Also be sure to modify the default values for
+`assay`, `reducedDim`, and `dimColnames`, as these are assigned differently in Seurat.
+
+```{r import_Seurat1, eval = FALSE}
+
+  sce <- as.SingleCellExperiment(pbmc)
+
+  metadata(sce) <- data.frame(colData(sce))
+
+  markerExpression(sce,
+    assay = 'logcounts',
+    reducedDim = 'UMAP',
+    dimColnames = c('UMAP_1','UMAP_2'),
+    markers = c('CD79A', 'Cd79B', 'MS4A1'))
+
+```
+
+For `markerEnrichment()`, a typical command using an ex-Seurat object could be:
+
+```{r import_Seurat2, eval = FALSE}
+
+  markerEnrichment(sce,
+    assay = 'logcounts',
+    method = 'quantile',
+    sampleAbundances = TRUE,
+    sampleID = 'orig.ident',
+    studyvarID = 'ident',
+    clusterAssign = as.character(colData(sce)[['seurat_clusters']]))
+
+```
 
 
 # Tutorial 3: Import any numerical data
@@ -623,7 +654,8 @@ markers:
 
 ```
 
-This will also work without any assigned metadata.
+This will also work without any assigned metadata; however, having no metadata limits
+the functionality of the package.
 
 ```{r importRandomData2}
 
@@ -645,7 +677,6 @@ This will also work without any assigned metadata.
 * Lori Shepherd (Bioconductor)
 * Bioinformatics CRO
 * Henrik Bengtsson
-
 
 
 # Session info
