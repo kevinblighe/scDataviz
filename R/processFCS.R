@@ -21,7 +21,7 @@
 #'   5. Note that this is not used if the user has supplied their own function
 #'   to \code{transFun}.
 #' @param downsample Downsample to this number of random variables. This is
-#'   perfromed on the final merged dataset, i.e., after all samples have been
+#'   performed on the final merged dataset, i.e., after all samples have been
 #'   bound together. NULL to disable.
 #' @param downsampleVar Downsample based on variance. Removes this proportion of
 #'   cells based on lesser variance. This is applied per sample. If user wishes
@@ -158,7 +158,7 @@ processFCS <- function(
     samples <- lapply(
       samples,
       function(x)
-        x[apply(x, 1, FUN = function(x) sqrt(sum(x^2))) > euclideanNormThreshold,])
+        x[apply(x, 1, FUN = function(x) sqrt(sum(x^2, na.rm = TRUE))) > euclideanNormThreshold,])
 
     # noise correction
     for(i in seq_len(length(samples))) {
