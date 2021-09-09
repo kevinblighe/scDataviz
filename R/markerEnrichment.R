@@ -151,6 +151,8 @@ markerEnrichment <- function(
       metaclusAbundance <- table(metadata[which(clusterAssign == j), sampleID])
       metaclusAbundance <- (metaclusAbundance / iCellsPerCluster) * 100
       metaclusAbundance <- metaclusAbundance[match(sort(unique(metadata[,sampleID])), names(metaclusAbundance))]
+      metaclusAbundance[is.na(metaclusAbundance)] <- 0
+      names(metaclusAbundance) <- sort(unique(metadata[,sampleID]))
     }
 
     if (!is.null(studyvarID)) {
