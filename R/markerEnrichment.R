@@ -156,7 +156,10 @@ markerEnrichment <- function(
     }
 
     if (!is.null(studyvarID)) {
-        studyvar <- table(metadata[which(clusterAssign == j),studyvarID])
+      studyvar <- table(metadata[which(clusterAssign == j),studyvarID])
+      studyvar <- studyvar[match(sort(unique(metadata[,studyvarID])), names(studyvar))]
+      studyvar[is.na(studyvar)] <- 0
+      names(studyvar) <- sort(unique(metadata[,studyvarID]))
     }
 
     res <- rbind(res,
