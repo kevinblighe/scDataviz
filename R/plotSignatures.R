@@ -13,6 +13,7 @@
 #'    per marker, per cluster.
 #' @param col colorRampPalette to be used for shading low-to-high expression.
 #' @param labCex cex (size) of the main plot labels.
+#' @param legendPosition position of legend. Can be one of 'top', 'right', 'bottom', 'left'
 #' @param legendCex cex (size) of the legend labels.
 #' @param labDegree Rotation angle of the main plot labels.
 #' @param verbose Boolean (TRUE / FALSE) to print messages to console or not.
@@ -59,6 +60,7 @@ plotSignatures <- function(
   funcSummarise = function(x) mean(x, na.rm = TRUE),
   col = colorRampPalette(brewer.pal(9, 'RdPu'))(100),
   labCex = 1.0,
+  legendPosition = 'right',
   legendCex = 1.0,
   labDegree = 90,
   verbose = TRUE)
@@ -94,7 +96,7 @@ plotSignatures <- function(
     tl.srt = labDegree,
     mar = c(1,3,1,2))
   legend(
-    'top',
+    legendPosition,
     bty = 'n',
     cex = legendCex,
     title = '',

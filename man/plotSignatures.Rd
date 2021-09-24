@@ -11,6 +11,7 @@ plotSignatures(
   funcSummarise = function(x) mean(x, na.rm = TRUE),
   col = colorRampPalette(brewer.pal(9, "RdPu"))(100),
   labCex = 1,
+  legendPosition = "right",
   legendCex = 1,
   labDegree = 90,
   verbose = TRUE
@@ -35,6 +36,8 @@ per marker, per cluster.}
 \item{col}{colorRampPalette to be used for shading low-to-high expression.}
 
 \item{labCex}{cex (size) of the main plot labels.}
+
+\item{legendPosition}{position of legend. Can be one of 'top', 'right', 'bottom', 'left'}
 
 \item{legendCex}{cex (size) of the legend labels.}
 

@@ -54,7 +54,7 @@ flow cytometry, this is usually 150; for mass cytometry and CyTOF, it is
 to \code{transFun}.}
 
 \item{downsample}{Downsample to this number of random variables. This is
-perfromed on the final merged dataset, i.e., after all samples have been
+performed on the final merged dataset, i.e., after all samples have been
 bound together. NULL to disable.}
 
 \item{downsampleVar}{Downsample based on variance. Removes this proportion of
